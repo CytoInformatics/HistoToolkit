@@ -57,6 +57,14 @@ html, body {
         cursor: pointer;
     }
 
+    .di-selected {
+        -webkit-transform: rotate(270deg);
+        -moz-transform: rotate(270deg);
+        -o-transform: rotate(270deg);
+        -ms-transform: rotate(270deg);
+        transform: rotate(270deg);
+    }
+
     .dropdown-name {
         width: 85%;
         height: 100%;
@@ -75,7 +83,7 @@ html, body {
     .do-show {
         border-bottom: 1px solid black;
     }
-    
+
 #viewer {
     width: 65%;
     height: 95%;
