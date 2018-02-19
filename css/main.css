@@ -1,7 +1,7 @@
 html, body {
     width: 100%;
     height: 100%;
-    
+
     border: 0;
     margin: 0;
     padding: 0;
@@ -44,11 +44,11 @@ html, body {
     }
 
     .dropdown-icon {
-        width: 10%;
         height: 100%;
+        width: 10%;
 
         float: left;
-        background-color: red;
+        font-size: 30px;
     }
 
     .dropdown-name {
