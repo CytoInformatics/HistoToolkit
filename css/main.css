@@ -91,4 +91,29 @@ html, body {
     margin-left: 2%;
 
     border: 1px solid black;
+    flex-direction: column;
 }
+
+    #tabs {
+        height: 5%;
+        width: 100%;
+    }
+
+    .tab {
+        width: 10%;
+        height: 100%;
+
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+
+        border-right: 1px solid black;
+        border-bottom: 1px solid black;
+        float: left;
+
+    }
+
+    #content {
+        height: 95%;
+        width: 100%;
+    }
