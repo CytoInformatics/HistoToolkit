@@ -66,12 +66,16 @@ html, body {
     }
 
     .dropdown-options {
-        height: 90%;
+        height: 0%;
         width: 100%;
 
         background-color: grey;
     }
 
+    .do-show {
+        border-bottom: 1px solid black;
+    }
+    
 #viewer {
     width: 65%;
     height: 95%;
