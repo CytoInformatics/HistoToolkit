@@ -19,14 +19,42 @@ html, body {
     justify-content: center;
 }
 
+.hcenter-items {
+    display: flex;
+    align-items: center;
+}
+
 #options {
     width: 30%;
     height: 95%;
 
-    border: 2px solid black;
+    border: 1px solid black;
 
     float: left;
 }
+
+    .dropdown {
+        width: 100%;
+        height: 5%;
+
+        border-bottom: 1px solid black;
+    }
+
+    .dropdown-icon {
+        width: 10%;
+        height: 100%;
+
+        float: left;
+        background-color: red;
+    }
+
+    .dropdown-name {
+        width: 85%;
+        height: 100%;
+
+        padding-left: 5%;
+        font-size: 20px;
+    }
 
 #viewer {
     width: 65%;
@@ -34,5 +62,5 @@ html, body {
 
     margin-left: 2%;
 
-    border: 2px solid black;
+    border: 1px solid black;
 }
