@@ -9,7 +9,7 @@ data_folder = '/home/masonmcgough/Workspace/HistoToolkit/app/test'
 def home():
     return render_template('index.html')
 
-@app.route('/set-folder')
+@app.route('/set-folder', methods=['GET', 'POST'])
 def set_folder():
     # new_folder = request.form['new_folder']
     new_folder = '/home/masonmcgough/Pictures'
@@ -19,6 +19,9 @@ def set_folder():
     except:
         return 'failed'
     
+@app.route('/get-image-names', methods=['GET', 'POST'])
+def get_image_names():
+    return jsonify(htk.list_all_images(data_folder))
 
 @app.route('/data-step', methods=['GET', 'POST'])
 def data_step():
