@@ -4,7 +4,6 @@ from .tools import histotoolkit as htk
 import os
 
 data_folder = '/home/masonmcgough/Workspace/HistoToolkit/app/test'
-# data_folder = '/home/masonmcgough/Pictures'
 
 @app.route('/')
 def home():
@@ -16,7 +15,7 @@ def set_folder():
     new_folder = '/home/masonmcgough/Pictures'
     try:
         data_folder = new_folder
-        return data_folder
+        return 'success'
     except:
         return 'failed'
     
