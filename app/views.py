@@ -3,12 +3,23 @@ from flask import render_template, jsonify
 from .tools import histotoolkit as htk
 import os
 
-# data_folder = '/home/masonmcgough/Workspace/HistoToolkit/app/test'
-data_folder = '/home/masonmcgough/Pictures'
+data_folder = '/home/masonmcgough/Workspace/HistoToolkit/app/test'
+# data_folder = '/home/masonmcgough/Pictures'
 
 @app.route('/')
 def home():
     return render_template('index.html')
+
+@app.route('/set-folder')
+def set_folder():
+    # new_folder = request.form['new_folder']
+    new_folder = '/home/masonmcgough/Pictures'
+    try:
+        data_folder = new_folder
+        return data_folder
+    except:
+        return 'failed'
+    
 
 @app.route('/data-step', methods=['GET', 'POST'])
 def data_step():
