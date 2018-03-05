@@ -1,9 +1,9 @@
 from app import app
-from flask import render_template, jsonify
+from flask import request, render_template, jsonify
 from .tools import histotoolkit as htk
 import os
 
-data_folder = './test'
+app.config["DATA_FOLDER"] = './app/test'
 
 @app.route('/')
 def home():
@@ -21,8 +21,8 @@ def set_folder():
 
     new_folder = request.form['new_folder']
     try:
-        data_folder = new_folder
-        return 'success'
+        app.config["DATA_FOLDER"] = new_folder
+        return app.config["DATA_FOLDER"]
     except:
         return 'failed'
     
@@ -32,7 +32,7 @@ def get_image_names():
     Return list of all image files within active folder.
     """
 
-    return jsonify(htk.list_all_images(data_folder))
+    return jsonify(htk.list_all_images(app.config["DATA_FOLDER"]))
 
 @app.route('/data-step', methods=['POST'])
 def data_step():
