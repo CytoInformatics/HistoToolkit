@@ -3,16 +3,23 @@ from flask import render_template, jsonify
 from .tools import histotoolkit as htk
 import os
 
-data_folder = '/home/masonmcgough/Workspace/HistoToolkit/app/test'
+data_folder = './test'
 
 @app.route('/')
 def home():
+    """
+    Serve the application home page.
+    """
+
     return render_template('index.html')
 
-@app.route('/set-folder', methods=['GET', 'POST'])
+@app.route('/set-folder', methods=['POST'])
 def set_folder():
-    # new_folder = request.form['new_folder']
-    new_folder = '/home/masonmcgough/Pictures'
+    """
+    Set active folder for data methods.
+    """
+
+    new_folder = request.form['new_folder']
     try:
         data_folder = new_folder
         return 'success'
@@ -21,21 +28,29 @@ def set_folder():
     
 @app.route('/get-image-names', methods=['GET', 'POST'])
 def get_image_names():
+    """
+    Return list of all image files within active folder.
+    """
+
     return jsonify(htk.list_all_images(data_folder))
 
-@app.route('/data-step', methods=['GET', 'POST'])
+@app.route('/data-step', methods=['POST'])
 def data_step():
-    # ops_names = request.form['ops_names']
-    # ops_params = request.form['ops_params']
-    ops_names = ['count_data_types']
-    ops_params = [
-        {'folder': data_folder}
-    ]
+    """
+    Run all data operations and returns output to user.
+    """
 
+    ops_names = request.form['ops_names']
+    ops_params = request.form['ops_params']
     img, ops_output = _call_ops(None, ops_names, ops_params)
     return jsonify(ops_output)
 
 def _call_ops(data, ops_names, ops_params):
+    """
+    Sequentially run DATA through all functions in list OPS_NAMES using the 
+    parameters in list OPS_PARAMS.
+    """
+
     ops = [
         {'op': getattr(htk, op_name),
          'op_name': op_name,

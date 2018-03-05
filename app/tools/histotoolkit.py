@@ -5,10 +5,18 @@ from .PythonHelpers.file_utils import list_files
 VALID_EXTS = ('.jpg', '.jpeg', '.png', '.tif', '.tiff', '.bmp',)
 
 def list_all_images(folder):
+    """
+    Return list of all files in FOLDER with extensions in VALID_EXTS.
+    """
+
     all_images = list_files(folder, valid_exts=VALID_EXTS)
     return all_images
 
 def count_data_types(data, folder):
+    """
+    Return Counter object for all image files in FOLDER.
+    """
+
     all_files = list_all_images(folder)
 
     all_exts = []
