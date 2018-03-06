@@ -34,8 +34,8 @@ def get_image_names():
 
     return jsonify(htk.list_all_images(app.config["DATA_FOLDER"]))
 
-@app.route('/data-step', methods=['POST'])
-def data_step():
+@app.route('/data-summary', methods=['POST'])
+def data_summary():
     """
     Run all data operations and returns output to user.
     """
