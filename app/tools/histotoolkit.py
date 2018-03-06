@@ -1,4 +1,5 @@
 import os
+import numpy as np
 from collections import Counter
 from imageio import imread
 from .PythonHelpers.file_utils import list_files
@@ -38,18 +39,27 @@ def rescale_range(data, out_min, out_max):
     """
 
     in_dtype = data.dtype
-
     if out_min is None:
-        switch = {
-            "uint8": 0,
-        }
-        out_min = switch.get(in_dtype, 0)
+        try:
+            out_min = np.iinfo(in_dtype).min
+        except ValueError:
+            try:
+                out_min = np.finfo(in_dtype).min
+            except ValueError:
+                out_min = 0
+        else:
+            out_min = 0
 
     if out_max is None:
-        switch = {
-            "uint8": 255,
-        }
-        out_max = switch.get(in_dtype, 1)
+        try:
+            out_max = np.iinfo(in_dtype).max
+        except ValueError:
+            try:
+                out_max = np.finfo(in_dtype).max
+            except ValueError:
+                out_max = 0
+        else:
+            out_max = 0
 
     in_range = data.max() - data.min()
     out_range = out_max - out_min
