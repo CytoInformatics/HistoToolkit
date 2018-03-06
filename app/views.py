@@ -41,10 +41,21 @@ def data_summary():
     Run all data operations and returns output to user.
     """
 
-    ops_names = ['count_data_types']
-    ops_params = {'folder': app.config["DATA_FOLDER"]}
+    ops_names = [
+        'count_file_types', 
+        'count_data_types',
+    ]
+    ops_params = [
+        {'folder': app.config["DATA_FOLDER"]},
+        {'folder': app.config["DATA_FOLDER"]},
+    ]
     img, ops_output = _call_ops(None, ops_names, ops_params)
     return jsonify(ops_output)
+
+@app.route('/count-data-types', methods=['POST'])
+def count_data_types():
+    out = htk.count_data_types(None, app.config["DATA_FOLDER"])
+    return jsonify(out)
 
 @app.route('/run-ops', methods=['POST'])
 def run_ops():
@@ -56,7 +67,7 @@ def run_ops():
     ops_names = request.form['ops_names']
     ops_params = request.form['ops_params']
     img = load_image(os.path.join(app.config["DATA_FOLDER"], img_name))
-    
+
     img, ops_output = _call_ops(img, ops_names, ops_params)
     return jsonify(ops_output)
 

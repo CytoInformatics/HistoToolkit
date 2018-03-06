@@ -17,9 +17,9 @@ def list_all_images(folder):
 def load_image(name):
     return imread(name)
 
-def count_data_types(data, folder):
+def count_file_types(data, folder):
     """
-    Return Counter object for all image files in FOLDER.
+    Return Counter object for all image file types in FOLDER.
     """
 
     all_files = list_all_images(folder)
@@ -30,7 +30,23 @@ def count_data_types(data, folder):
         all_exts.append(f_ext)
 
     counts = Counter(all_exts)
+    counts = dict((key.name, value) for (key, value) in counts.items())
+    return counts
 
+def count_data_types(data, folder):
+    """
+    Return Counter object for all image data types in FOLDER.
+    """
+
+    all_files = list_all_images(folder)
+
+    all_dtypes = []
+    for f in all_files:
+        d = imread(f).dtype
+        all_dtypes.append(d)
+
+    counts = Counter(all_dtypes)
+    counts = dict((key.name, value) for (key, value) in counts.items())
     return counts
 
 def rescale_range(data, out_min, out_max):
@@ -73,8 +89,8 @@ def rescale_range(data, out_min, out_max):
     }
     return op_output
 
-def convert_data_type():
-    pass
+def convert_data_type(data, datatype):
+    return data.astype(datatype)
 
 
 # TESTING ONLY

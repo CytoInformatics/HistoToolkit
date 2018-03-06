@@ -39,4 +39,12 @@
     }
     $("#tab-2").click(setFolder);
 
+    var countDataTypes = function() {
+        console.log("Running: countDataTypes!");
+        $.post("count-data-types", function(data) {
+            console.log(data);
+        })
+    }
+    $("#tab-3").click(countDataTypes);
+
 })();
