@@ -1,7 +1,9 @@
 import os
 import numpy as np
+from PIL import Image
+from imageio import imread, get_reader
+from skimage.transform import resize
 from collections import Counter
-from imageio import imread
 from .PythonHelpers.file_utils import list_files
 
 VALID_EXTS = ('.jpg', '.jpeg', '.png', '.tif', '.tiff', '.bmp',)
@@ -14,40 +16,69 @@ def list_all_images(folder):
     all_images = list_files(folder, valid_exts=VALID_EXTS)
     return all_images
 
-def load_image(name):
-    return imread(name)
-
-def count_file_types(data, folder):
+def count_file_types(img_names):
     """
-    Return Counter object for all image file types in FOLDER.
+    Return Counter object for all image file types in IMG_NAMES.
     """
-
-    all_files = list_all_images(folder)
 
     all_exts = []
-    for f in all_files:
+    for f in img_names:
         _, f_ext = os.path.splitext(f)
         all_exts.append(f_ext)
 
     counts = Counter(all_exts)
-    counts = dict((key.name, value) for (key, value) in counts.items())
+    counts = dict((key, value) for (key, value) in counts.items())
     return counts
 
-def count_data_types(data, folder):
+def count_data_types(img_names):
     """
-    Return Counter object for all image data types in FOLDER.
+    Return Counter object for all image data types in IMG_NAMES.
     """
-
-    all_files = list_all_images(folder)
 
     all_dtypes = []
-    for f in all_files:
+    for f in img_names:
         d = imread(f).dtype
         all_dtypes.append(d)
 
     counts = Counter(all_dtypes)
     counts = dict((key.name, value) for (key, value) in counts.items())
     return counts
+
+def get_image_shapes(img_names):
+    """
+    Return shape of all image files in IMG_NAMES.
+    """
+
+    all_shapes = []
+    for f in img_names:
+        img = Image.open(f)
+        all_shapes.append(img.size)
+
+    return all_shapes
+
+def load_image(name):
+    """
+    Load image from uri NAME.
+    """
+    
+    return imread(name)
+
+def get_metadata(name, mode="i"):
+    """
+    Return metadata for image at uri NAME.
+    """
+
+    reader = get_reader(name, mode=mode)
+    metadata = reader.get_meta_data()
+    reader.close()
+    return metadata
+
+def convert_data_type(data, datatype):
+    """
+    Convert DATA to DATATYPE.
+    """
+
+    return data.astype(datatype)
 
 def rescale_range(data, out_min, out_max):
     """
@@ -89,8 +120,17 @@ def rescale_range(data, out_min, out_max):
     }
     return op_output
 
-def convert_data_type(data, datatype):
-    return data.astype(datatype)
+def resize_image(data, output_shape):
+    """
+    Resize DATA to OUTPUT_SHAPE.
+    """
+
+    data = resize(data, output_shape, anti_aliasing=True)
+
+    op_output = {
+        'data': data
+    }
+    return op_output
 
 
 # TESTING ONLY

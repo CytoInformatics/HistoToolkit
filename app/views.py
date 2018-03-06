@@ -35,25 +35,27 @@ def get_image_names():
 
     return jsonify(htk.list_all_images(app.config["DATA_FOLDER"]))
 
-@app.route('/data-summary', methods=['POST'])
+@app.route('/data-summary', methods=['GET', 'POST'])
 def data_summary():
     """
-    Run all data operations and returns output to user.
+    Run all data operations and return output to user.
     """
 
-    ops_names = [
-        'count_file_types', 
-        'count_data_types',
-    ]
-    ops_params = [
-        {'folder': app.config["DATA_FOLDER"]},
-        {'folder': app.config["DATA_FOLDER"]},
-    ]
-    img, ops_output = _call_ops(None, ops_names, ops_params)
+    img_names = htk.list_all_images(app.config["DATA_FOLDER"])
+
+    ops_output = []
+    ops_output.append(htk.count_file_types(img_names))
+    ops_output.append(htk.count_data_types(img_names))
+    ops_output.append(htk.get_image_shapes(img_names))
+
     return jsonify(ops_output)
 
 @app.route('/count-data-types', methods=['POST'])
 def count_data_types():
+    """
+    Count all unique data types in list of images at DATA_FOLDER.
+    """
+
     out = htk.count_data_types(None, app.config["DATA_FOLDER"])
     return jsonify(out)
 
