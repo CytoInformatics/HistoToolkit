@@ -3,6 +3,18 @@ class OpNet:
 
 class Node:
     def __init__(self, op, params, outputs):
+        """
+        Create new node.
+
+        Inputs:
+            op: Reference to function.
+            params: Dictionary of parameters to function defined in 'op'. The key 
+                is the name of the parameter and the value is its assigned value.
+            outputs: List of strings with arbitrary names for ordered outputs of 
+                function 'op'.
+        """
+
+        # init op
         self.op = op
 
         # init params
