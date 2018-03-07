@@ -1,7 +1,7 @@
 from app import app
 from flask import request, render_template, jsonify
 from .tools import histotoolkit as htk
-from .utils import *
+from .opnet import *
 import os
 
 app.config["DATA_FOLDER"] = './app/test'
@@ -49,7 +49,8 @@ def count_data_types():
     Count all unique data types in list of images at DATA_FOLDER.
     """
 
-    out = htk.count_data_types(None, app.config["DATA_FOLDER"])
+    img_names = htk.list_all_images(app.config["DATA_FOLDER"])
+    out = htk.count_data_types(img_names)
     return jsonify(out)
 
 @app.route('/run-ops', methods=['POST'])

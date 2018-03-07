@@ -1,3 +1,21 @@
+class OpNet:
+    pass
+
+class Node:
+    def __init__(self, op, params, outputs):
+        self.op = op
+
+        # init params
+        self.params = {
+            key: {
+                'value': value,
+                'source': None,
+            } for (key, value) in params.items()
+        }
+
+        # init outputs (maintain similar structure as params)
+        self.outputs = {key: {'output': None} for key in outputs}
+
 def _call_ops(data, ops_names, ops_params):
     """
     Sequentially run DATA through all functions in list OPS_NAMES using the 
