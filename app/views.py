@@ -17,23 +17,16 @@ def home():
 @app.route('/set-folder', methods=['POST'])
 def set_folder():
     """
-    Set active folder for data methods.
+    Set active folder for data methods. Returns list of all images in folder.
     """
 
     new_folder = request.form['new_folder']
     try:
         app.config["DATA_FOLDER"] = new_folder
-        return app.config["DATA_FOLDER"]
+        image_list = htk.list_all_images(app.config["DATA_FOLDER"])
+        return jsonify(image_list)
     except:
         return 'failed'
-    
-@app.route('/get-image-names', methods=['GET', 'POST'])
-def get_image_names():
-    """
-    Return list of all image files within active folder.
-    """
-
-    return jsonify(htk.list_all_images(app.config["DATA_FOLDER"]))
 
 @app.route('/data-summary', methods=['GET', 'POST'])
 def data_summary():
