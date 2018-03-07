@@ -32,6 +32,15 @@ class Node:
         # init outputs (maintain similar structure as params)
         self.outputs = {key: Node.Output() for key in outputs}
 
+    def __repr__(self):
+        return "<Node op:{0} params:{1} outputs:{2}>".format(self.op, self.params, self.outputs)
+
+    def __str__(self):
+        return "Node: \
+                    \n\top: {0} \
+                    \n\tparams: {1} \
+                    \n\toutputs: {2}".format(self.op, self.params, self.outputs)
+
 def _call_ops(data, ops_names, ops_params):
     """
     Sequentially run DATA through all functions in list OPS_NAMES using the 
