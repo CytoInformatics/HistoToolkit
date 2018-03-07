@@ -29,8 +29,8 @@ class Node:
         # init params
         self.params = {key: Node.Param(value) for (key, value) in params.items()}
 
-        # init outputs (maintain similar structure as params)
-        self.outputs = {key: Node.Output() for key in outputs}
+        # init outputs (needs to be ordered)
+        self.outputs = [{key: Node.Output()} for key in outputs]
 
     def __repr__(self):
         return "<Node op:{0} params:{1} outputs:{2}>".format(self.op, self.params, self.outputs)
@@ -40,6 +40,20 @@ class Node:
                     \n\top: {0} \
                     \n\tparams: {1} \
                     \n\toutputs: {2}".format(self.op, self.params, self.outputs)
+
+    def unpack_params(self):
+        return {key: param.value for (key, param) in self.params.items()}
+
+    def unpack_outputs(self):
+        return [next(iter(output)) for output in self.outputs]
+
+    def execute(self):
+        out = self.op(**self.unpack_params())
+        if not isinstance(out, (list, tuple)):
+            out = [out,]
+
+        out = {name: out for (name, out) in zip(self.unpack_outputs(), out)}
+        return out
 
 def _call_ops(data, ops_names, ops_params):
     """
