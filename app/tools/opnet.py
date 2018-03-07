@@ -2,6 +2,15 @@ class OpNet:
     pass
 
 class Node:
+    class Param:
+        def __init__(self, value, source=None):
+            self.value = value
+            self.source = source
+
+    class Output:
+        def __init__(self, output=None):
+            self.output = output
+
     def __init__(self, op, params, outputs):
         """
         Create new node.
@@ -18,15 +27,10 @@ class Node:
         self.op = op
 
         # init params
-        self.params = {
-            key: {
-                'value': value,
-                'source': None,
-            } for (key, value) in params.items()
-        }
+        self.params = {key: Node.Param(value) for (key, value) in params.items()}
 
         # init outputs (maintain similar structure as params)
-        self.outputs = {key: {'output': None} for key in outputs}
+        self.outputs = {key: Node.Output() for key in outputs}
 
 def _call_ops(data, ops_names, ops_params):
     """
