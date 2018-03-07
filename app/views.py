@@ -1,7 +1,7 @@
 from app import app
 from flask import request, render_template, jsonify
 from .tools import histotoolkit as htk
-from .opnet import *
+from .tools import opnet
 import os
 
 app.config["DATA_FOLDER"] = './app/test'
@@ -64,7 +64,7 @@ def run_ops():
     ops_params = request.form['ops_params']
     img = load_image(os.path.join(app.config["DATA_FOLDER"], img_name))
 
-    img, ops_output = _call_ops(img, ops_names, ops_params)
+    img, ops_output = opnet._call_ops(img, ops_names, ops_params)
     return jsonify(ops_output)
 
 
@@ -79,6 +79,6 @@ def test():
     ]
 
     val = 2
-    val, ops_output = _call_ops(val, ops_names, ops_params)
+    val, ops_output = opnet._call_ops(val, ops_names, ops_params)
 
     return "Result: {0}<br \>{1}".format(val, ops_output)
