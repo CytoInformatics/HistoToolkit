@@ -6,6 +6,7 @@ def basicAdd(arg1, arg2):
 def basicSquare(arg1):
     return arg1 ** 2
 
+# test manually adding conduit
 node1 = opnet.Node(basicAdd, {'arg2': 4, 'arg1': 3}, ['sum', 'is???'])
 node2 = opnet.Node(basicSquare, {'arg1': None}, ['pow'])
 
@@ -15,3 +16,10 @@ print(conduit1.value)
 print(node1.execute())
 print(conduit1.value)
 print(node2.execute())
+
+# test automatically making conduit by passing output
+# node1 = opnet.Node(basicAdd, {'arg2': 4, 'arg1': 3}, ['sum', 'is???'])
+# node2 = opnet.Node(basicSquare, {'arg1': node1.outputs['sum']}, ['pow'])
+# print(node1.execute())
+# print(conduit1.value)
+# print(node2.execute())

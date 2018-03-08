@@ -1,7 +1,6 @@
 class OpNet:
     pass
 
-
 class Conduit:
     value = None
     def __init__(self, source, output):
@@ -67,6 +66,30 @@ class Node:
                     \n\tparams: {1} \
                     \n\toutputs: {2}".format(self.op, self.params, self.outputs)
 
+    def get_param(self, name):
+        target_param = None
+        for param in self.params:
+            if param.name == name:
+                target_param = param
+                break
+
+        if target_param is None:
+            raise NameError("{0} was not found in params of node2.".format(name))
+
+        return target_param
+
+    def get_output(self, name):
+        target_output = None
+        for output in self.outputs:
+            if output.name == name:
+                target_output = output
+                break
+
+        if target_output is None:
+            raise NameError("{0} was not found in outputs of node1.".format(name))
+
+        return target_output
+
     def unpack_params(self):
         """
         Return dict of params with key as name and source as value.
@@ -82,12 +105,24 @@ class Node:
         return [output.name for output in self.outputs]
 
     def param_values(self):
+        """
+        Return dict with param names as keys and param values as values.
+        """
+
         return {param.name: param.get_value() for param in self.params}
 
     def output_values(self):
+        """
+        Return dict with output names as keys and output values as values.
+        """
+
         return {output.name: output.get_value() for output in self.outputs}
 
     def execute(self):
+        """
+        Run operation stored at node. 
+        """
+
         outs = self.op(**self.unpack_params())
         outs = ensure_is_listlike(outs)
 
@@ -104,23 +139,8 @@ def Bind(node1, output_name, node2, param_name):
     Create Conduit to connect OUTPUT_NAME of NODE1 to PARAM_NAME of NODE2.
     """
 
-    node1_output = None
-    for output in node1.outputs:
-        if output.name == output_name:
-            node1_output = output
-            break
-
-    if node1_output is None:
-        raise NameError("{0} was not found in outputs of node1.".format(output_name))
-
-    node2_param = None
-    for param in node2.params:
-        if param.name == param_name:
-            node2_param = param
-            break
-
-    if node2_param is None:
-        raise NameError("{0} was not found in params of node2.".format(param_name))
+    node1_output = node1.get_output(output_name)
+    node2_param = node2.get_param(param_name)
 
     return Conduit(node1_output, node2_param)
 
