@@ -5,4 +5,6 @@ def basicAdd(arg1, arg2):
 
 node = opnet.Node(basicAdd, {'arg2': 4, 'arg1': 3}, ['sum', 'is???'])
 print(node)
+print(node.output_values())
 print(node.execute())
+print(node.output_values())

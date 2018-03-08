@@ -2,20 +2,21 @@ class OpNet:
     pass
 
 class Node:
-    class Param:
+    class Conduit:
+        last_value = None
+
+    class Param(Conduit):
         def __init__(self, name, source=None, datatypes=(None,)):
             self.name = name
             self.source = source
-            self.last_value = None
 
             datatypes = ensure_is_listlike(datatypes)
             self.datatypes = datatypes
 
-    class Output:
+    class Output(Conduit):
         def __init__(self, name, output=None, datatypes=(None,)):
             self.name = name
             self.output = output
-            self.last_value = None
 
             datatypes = ensure_is_listlike(datatypes)
             self.datatypes = datatypes
@@ -64,13 +65,19 @@ class Node:
 
         return [output.name for output in self.outputs]
 
+    def param_values(self):
+        return {param.name: param.last_value for param in self.params}
+
+    def output_values(self):
+        return {output.name: output.last_value for output in self.outputs}
+
     def execute(self):
         outs = self.op(**self.unpack_params())
         outs = ensure_is_listlike(outs)
 
         # store outputs as last_value
-        # for (s_out, out) in zip(self.outputs, outs):
-        #     s_out.last_value = out
+        for (s_out, out) in zip(self.outputs, outs):
+            s_out.last_value = out
 
         # convert to dict for output
         outs = {name: out for (name, out) in zip(self.list_outputs(), outs)}
