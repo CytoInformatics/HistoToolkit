@@ -144,15 +144,24 @@ class OpNet:
         self.nodes.append(new_node)
         return new_node
 
+    def add_conduit(self, node1_output, node2_param):
+        """
+        Add new conduit to net.
+        """
+
+        conduit = self.Conduit(node1_output, node2_param)
+        self.conduits.append(conduit)
+        return conduit
+
     def bind(self, node1, output_name, node2, param_name):
         """
-        Create Conduit to connect OUTPUT_NAME of NODE1 to PARAM_NAME of NODE2.
+        Connect OUTPUT_NAME of NODE1 to PARAM_NAME of NODE2 via a new conduit.
         """
 
         node1_output = node1.get_output(output_name)
         node2_param = node2.get_param(param_name)
 
-        return self.Conduit(node1_output, node2_param)
+        return self.add_conduit(node1_output, node2_param)
 
 
 def ensure_is_listlike(thing):
