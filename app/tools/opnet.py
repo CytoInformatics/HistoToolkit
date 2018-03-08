@@ -4,31 +4,31 @@ class OpNet:
 class Conduit:
     value = None
     def __init__(self, source, output):
-        source.conduit = self
-        output.conduit = self
+        source._value = self
+        output._value = self
         self.source = source
         self.output = output
 
 class Node:
     class Port:
-        def __init__(self, name, conduit=None, datatypes=(None,)):
+        def __init__(self, name, value=None, datatypes=(None,)):
             self.name = name
-            self.conduit = conduit
+            self._value = value
 
             datatypes = ensure_is_listlike(datatypes)
             self.datatypes = datatypes
 
         def get_value(self):
-            if isinstance(self.conduit, Conduit):
-                return self.conduit.value
+            if isinstance(self._value, Conduit):
+                return self._value.value
             else:
-                return self.conduit
+                return self._value
 
         def set_value(self, value):
-            if isinstance(self.conduit, Conduit):
-                self.conduit.value = value
+            if isinstance(self._value, Conduit):
+                self._value.value = value
             else:
-                self.conduit = value
+                self._value = value
 
     class Param(Port):
         pass
