@@ -5,6 +5,8 @@ class OpNet:
 class Conduit:
     value = None
     def __init__(self, source, output):
+        source.conduit = self
+        output.conduit = self
         self.source = source
         self.output = output
 
@@ -97,7 +99,37 @@ class Node:
         outs = {name: out for (name, out) in zip(self.list_outputs(), outs)}
         return outs
 
+def Bind(node1, output_name, node2, param_name):
+    """
+    Create Conduit to connect OUTPUT_NAME of NODE1 to PARAM_NAME of NODE2.
+    """
+
+    node1_output = None
+    for output in node1.outputs:
+        if output.name == output_name:
+            node1_output = output
+            break
+
+    if node1_output is None:
+        raise NameError("{0} was not found in outputs of node1.".format(output_name))
+
+    node2_param = None
+    for param in node2.params:
+        if param.name == param_name:
+            node2_param = param
+            break
+
+    if node2_param is None:
+        raise NameError("{0} was not found in params of node2.".format(param_name))
+
+    return Conduit(node1_output, node2_param)
+
+
 def ensure_is_listlike(thing):
+    """
+    Check if THING is list or tuple and, if neither, converts to list.
+    """
+
     if not isinstance(thing, (list, tuple)):
         thing = [thing,]
 
