@@ -3,13 +3,20 @@ class OpNet:
 
 class Node:
     class Param:
-        def __init__(self, value, source=None):
-            self.value = value
+        def __init__(self, source=None, datatypes=(None,)):
             self.source = source
+            self.last_value = None
+
+            datatypes = ensure_is_listlike(datatypes)
+            self.datatypes = datatypes
 
     class Output:
-        def __init__(self, output=None):
+        def __init__(self, output=None, datatypes=(None,)):
             self.output = output
+            self.last_value = None
+
+            datatypes = ensure_is_listlike(datatypes)
+            self.datatypes = datatypes
 
     def __init__(self, op, params, outputs):
         """
@@ -42,18 +49,30 @@ class Node:
                     \n\toutputs: {2}".format(self.op, self.params, self.outputs)
 
     def unpack_params(self):
-        return {key: param.value for (key, param) in self.params.items()}
+        """
+        Return dict of params with key as name and source as value.
+        """
 
-    def unpack_outputs(self):
+        return {key: param.source for (key, param) in self.params.items()}
+
+    def list_outputs(self):
+        """
+        Return list of output names.
+        """
+
         return [next(iter(output)) for output in self.outputs]
 
     def execute(self):
         out = self.op(**self.unpack_params())
-        if not isinstance(out, (list, tuple)):
-            out = [out,]
-
-        out = {name: out for (name, out) in zip(self.unpack_outputs(), out)}
+        out = ensure_is_listlike(out)
+        out = {name: out for (name, out) in zip(self.list_outputs(), out)}
         return out
+
+def ensure_is_listlike(thing):
+    if not isinstance(thing, (list, tuple)):
+        thing = [thing,]
+
+    return thing
 
 def _call_ops(data, ops_names, ops_params):
     """
