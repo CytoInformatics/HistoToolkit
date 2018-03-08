@@ -1,14 +1,15 @@
 class OpNet:
-    nodes = []
-    conduits = []
+    def __init__(self):
+        self.nodes = []
+        self.conduits = []
 
     class Conduit:
-        value = None
         def __init__(self, source, output):
             source._value = self
             output._value = self
             self.source = source
             self.output = output
+            self.value = None
 
     class Node:
         def __init__(self, op, params, outputs):
