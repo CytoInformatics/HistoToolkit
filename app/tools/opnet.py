@@ -3,7 +3,8 @@ class OpNet:
 
 class Node:
     class Param:
-        def __init__(self, source=None, datatypes=(None,)):
+        def __init__(self, name, source=None, datatypes=(None,)):
+            self.name = name
             self.source = source
             self.last_value = None
 
@@ -11,7 +12,8 @@ class Node:
             self.datatypes = datatypes
 
     class Output:
-        def __init__(self, output=None, datatypes=(None,)):
+        def __init__(self, name, output=None, datatypes=(None,)):
+            self.name = name
             self.output = output
             self.last_value = None
 
@@ -34,10 +36,10 @@ class Node:
         self.op = op
 
         # init params
-        self.params = {key: Node.Param(value) for (key, value) in params.items()}
+        self.params = [Node.Param(name, value) for (name, value) in params.items()]
 
-        # init outputs (needs to be ordered)
-        self.outputs = [{key: Node.Output()} for key in outputs]
+        # init outputs
+        self.outputs = [Node.Output(name) for name in outputs]
 
     def __repr__(self):
         return "<Node op:{0} params:{1} outputs:{2}>".format(self.op, self.params, self.outputs)
@@ -53,20 +55,26 @@ class Node:
         Return dict of params with key as name and source as value.
         """
 
-        return {key: param.source for (key, param) in self.params.items()}
+        return {param.name: param.source for param in self.params}
 
     def list_outputs(self):
         """
         Return list of output names.
         """
 
-        return [next(iter(output)) for output in self.outputs]
+        return [output.name for output in self.outputs]
 
     def execute(self):
-        out = self.op(**self.unpack_params())
-        out = ensure_is_listlike(out)
-        out = {name: out for (name, out) in zip(self.list_outputs(), out)}
-        return out
+        outs = self.op(**self.unpack_params())
+        outs = ensure_is_listlike(outs)
+
+        # store outputs as last_value
+        # for (s_out, out) in zip(self.outputs, outs):
+        #     s_out.last_value = out
+
+        # convert to dict for output
+        outs = {name: out for (name, out) in zip(self.list_outputs(), outs)}
+        return outs
 
 def ensure_is_listlike(thing):
     if not isinstance(thing, (list, tuple)):
