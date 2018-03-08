@@ -1,25 +1,39 @@
 class OpNet:
     pass
 
+
+class Conduit:
+    value = None
+    def __init__(self, source, output):
+        self.source = source
+        self.output = output
+
 class Node:
-    class Conduit:
-        last_value = None
-
-    class Param(Conduit):
-        def __init__(self, name, source=None, datatypes=(None,)):
+    class Port:
+        def __init__(self, name, conduit=None, datatypes=(None,)):
             self.name = name
-            self.source = source
+            self.conduit = conduit
 
             datatypes = ensure_is_listlike(datatypes)
             self.datatypes = datatypes
 
-    class Output(Conduit):
-        def __init__(self, name, output=None, datatypes=(None,)):
-            self.name = name
-            self.output = output
+        def get_value(self):
+            if isinstance(self.conduit, Conduit):
+                return self.conduit.value
+            else:
+                return self.conduit
 
-            datatypes = ensure_is_listlike(datatypes)
-            self.datatypes = datatypes
+        def set_value(self, value):
+            if isinstance(self.conduit, Conduit):
+                self.conduit.value = value
+            else:
+                self.conduit = value
+
+    class Param(Port):
+        pass
+
+    class Output(Port):
+        pass
 
     def __init__(self, op, params, outputs):
         """
@@ -56,7 +70,7 @@ class Node:
         Return dict of params with key as name and source as value.
         """
 
-        return {param.name: param.source for param in self.params}
+        return {param.name: param.get_value() for param in self.params}
 
     def list_outputs(self):
         """
@@ -66,18 +80,18 @@ class Node:
         return [output.name for output in self.outputs]
 
     def param_values(self):
-        return {param.name: param.last_value for param in self.params}
+        return {param.name: param.get_value() for param in self.params}
 
     def output_values(self):
-        return {output.name: output.last_value for output in self.outputs}
+        return {output.name: output.get_value() for output in self.outputs}
 
     def execute(self):
         outs = self.op(**self.unpack_params())
         outs = ensure_is_listlike(outs)
 
-        # store outputs as last_value
+        # store outputs as value
         for (s_out, out) in zip(self.outputs, outs):
-            s_out.last_value = out
+            s_out.set_value(out)
 
         # convert to dict for output
         outs = {name: out for (name, out) in zip(self.list_outputs(), outs)}
