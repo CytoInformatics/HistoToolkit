@@ -166,19 +166,6 @@ class OpNet:
         return conduit
 
     def remove_conduit(self, conduit):
-        pass
-
-    def bind(self, node1, output_name, node2, param_name):
-        """
-        Connect OUTPUT_NAME of NODE1 to PARAM_NAME of NODE2 via a new conduit.
-        """
-
-        node1_output = node1.get_output(output_name)
-        node2_param = node2.get_param(param_name)
-
-        return self.add_conduit(node1_output, node2_param)
-
-    def unbind(self, conduit):
         # remove conduit from references in its bound parameters
         conduit.source._value = None
         conduit.output._value = None
@@ -197,6 +184,19 @@ class OpNet:
 
         if not located:
             raise ValueError("conduit not found in this instance of OpNet.")
+
+    def bind(self, node1, output_name, node2, param_name):
+        """
+        Connect OUTPUT_NAME of NODE1 to PARAM_NAME of NODE2 via a new conduit.
+        """
+
+        node1_output = node1.get_output(output_name)
+        node2_param = node2.get_param(param_name)
+
+        return self.add_conduit(node1_output, node2_param)
+
+    def unbind(self, conduit):
+        self.remove_conduit(conduit)
 
         # set conduit to None
         conduit = None
