@@ -41,3 +41,17 @@ print(conduit2.value)
 print(conduit3.value)
 print("# nodes: {0}".format(len(mynet2.nodes)))
 print("# conduits: {0}".format(len(mynet2.conduits)))
+
+# test manually removing conduit
+print("\nValue of conduit changes after execute()")
+mynet3 = opnet.OpNet()
+node1 = mynet3.add_node(basic_add, {'arg2': 4, 'arg1': 3}, ['sum', 'is???'])
+node2 = mynet3.add_node(basic_square, {'arg1': None}, ['pow'])
+conduit1 = mynet3.bind(node1, 'sum', node2, 'arg1')
+
+print("conduit1 value: {0}".format(conduit1))
+conduit1 = mynet3.unbind(conduit1)
+print("conduit1 value: {0}".format(conduit1))
+print("node1.execute(): {0}".format(node1.execute()))
+print("# nodes: {0}".format(len(mynet3.nodes)))
+print("# conduits: {0}".format(len(mynet3.conduits)))

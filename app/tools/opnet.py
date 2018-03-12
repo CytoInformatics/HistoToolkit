@@ -145,6 +145,17 @@ class OpNet:
         self.nodes.append(new_node)
         return new_node
 
+    def remove_node(self, node):
+        # target_node = None
+        # for n in self.nodes:
+        #     if n == node:
+        #         target_node = n
+        #         break
+
+        # if target_node is None:
+        #     raise NameError("{0} was not found in params of node2.".format(name))
+        pass
+
     def add_conduit(self, node1_output, node2_param):
         """
         Add new conduit to net.
@@ -153,6 +164,9 @@ class OpNet:
         conduit = self.Conduit(node1_output, node2_param)
         self.conduits.append(conduit)
         return conduit
+
+    def remove_conduit(self, conduit):
+        pass
 
     def bind(self, node1, output_name, node2, param_name):
         """
@@ -164,6 +178,29 @@ class OpNet:
 
         return self.add_conduit(node1_output, node2_param)
 
+    def unbind(self, conduit):
+        # remove conduit from references in its bound parameters
+        conduit.source._value = None
+        conduit.output._value = None
+
+        # remove references to parameters from conduit
+        conduit.source = None
+        conduit.output = None
+
+        # remove conduit from opnet internal list
+        located = False
+        for idx, c in enumerate(self.conduits):
+            if c is conduit:
+                del self.conduits[idx]
+                located = True
+                break
+
+        if not located:
+            raise ValueError("conduit not found in this instance of OpNet.")
+
+        # set conduit to None
+        conduit = None
+        return conduit
 
 def ensure_is_listlike(thing):
     """
