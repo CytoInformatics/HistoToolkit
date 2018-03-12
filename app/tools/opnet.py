@@ -3,145 +3,12 @@ class OpNet:
         self.nodes = []
         self.conduits = []
 
-    class Conduit:
-        def __init__(self, source, output):
-            source._value = self
-            output._value = self
-            self.source = source
-            self.output = output
-            self.value = None
-
-    class Node:
-        def __init__(self, op, params, outputs):
-            """
-            Create new node.
-
-            Inputs:
-                op: Reference to function.
-                params: Dictionary of parameters to function defined in 'op'. The key 
-                    is the name of the parameter and the value is its assigned value.
-                outputs: List of strings with arbitrary names for ordered outputs of 
-                    function 'op'.
-            """
-
-            # init op
-            self.op = op
-
-            # init params
-            self.params = [self.Param(name, value) for (name, value) in params.items()]
-
-            # init outputs
-            self.outputs = [self.Output(name) for name in outputs]
-
-        def __repr__(self):
-            return "<Node op:{0} params:{1} outputs:{2}>".format(self.op, self.params, self.outputs)
-
-        def __str__(self):
-            return "Node: \
-                        \n\top: {0} \
-                        \n\tparams: {1} \
-                        \n\toutputs: {2}".format(self.op, self.params, self.outputs)
-
-        class Port:
-            def __init__(self, name, value=None, datatypes=(None,)):
-                self.name = name
-                self._value = value
-
-                datatypes = ensure_is_listlike(datatypes)
-                self.datatypes = datatypes
-
-            def get_value(self):
-                if isinstance(self._value, OpNet.Conduit):
-                    return self._value.value
-                else:
-                    return self._value
-
-            def set_value(self, value):
-                if isinstance(self._value, OpNet.Conduit):
-                    self._value.value = value
-                else:
-                    self._value = value
-
-        class Param(Port):
-            pass
-
-        class Output(Port):
-            pass
-
-        def get_param(self, name):
-            target_param = None
-            for param in self.params:
-                if param.name == name:
-                    target_param = param
-                    break
-
-            if target_param is None:
-                raise NameError("{0} was not found in params of node2.".format(name))
-
-            return target_param
-
-        def get_output(self, name):
-            target_output = None
-            for output in self.outputs:
-                if output.name == name:
-                    target_output = output
-                    break
-
-            if target_output is None:
-                raise NameError("{0} was not found in outputs of node1.".format(name))
-
-            return target_output
-
-        def unpack_params(self):
-            """
-            Return dict of params with key as name and source as value.
-            """
-
-            return {param.name: param.get_value() for param in self.params}
-
-        def list_outputs(self):
-            """
-            Return list of output names.
-            """
-
-            return [output.name for output in self.outputs]
-
-        def param_values(self):
-            """
-            Return dict with param names as keys and param values as values.
-            """
-
-            return {param.name: param.get_value() for param in self.params}
-
-        def output_values(self):
-            """
-            Return dict with output names as keys and output values as values.
-            """
-
-            return {output.name: output.get_value() for output in self.outputs}
-
-        def execute(self):
-            """
-            Run operation stored at node. 
-            """
-
-            outs = self.op(**self.unpack_params())
-            outs = ensure_is_listlike(outs)
-
-            # store outputs as value
-            for (s_out, out) in zip(self.outputs, outs):
-                s_out.set_value(out)
-
-            # convert to dict for output
-            outs = {name: out for (name, out) in zip(self.list_outputs(), outs)}
-            return outs
-
     def add_node(self, op, params, outputs):
         """
         Add new node to net.
         """
 
-        new_node = self.Node(op, params, outputs)
+        new_node = Node(op, params, outputs)
         self.nodes.append(new_node)
         return new_node
 
@@ -161,7 +28,7 @@ class OpNet:
         Add new conduit to net.
         """
 
-        conduit = self.Conduit(node1_output, node2_param)
+        conduit = Conduit(node1_output, node2_param)
         self.conduits.append(conduit)
         return conduit
 
@@ -201,6 +68,139 @@ class OpNet:
         # set conduit to None
         conduit = None
         return conduit
+
+class Node:
+    def __init__(self, op, params, outputs):
+        """
+        Create new node.
+
+        Inputs:
+            op: Reference to function.
+            params: Dictionary of parameters to function defined in 'op'. The key 
+                is the name of the parameter and the value is its assigned value.
+            outputs: List of strings with arbitrary names for ordered outputs of 
+                function 'op'.
+        """
+
+        # init op
+        self.op = op
+
+        # init params
+        self.params = [Param(name, value) for (name, value) in params.items()]
+
+        # init outputs
+        self.outputs = [Output(name) for name in outputs]
+
+    def __repr__(self):
+        return "<Node op:{0} params:{1} outputs:{2}>".format(self.op, self.params, self.outputs)
+
+    def __str__(self):
+        return "Node: \
+                    \n\top: {0} \
+                    \n\tparams: {1} \
+                    \n\toutputs: {2}".format(self.op, self.params, self.outputs)
+
+    def get_param(self, name):
+        target_param = None
+        for param in self.params:
+            if param.name == name:
+                target_param = param
+                break
+
+        if target_param is None:
+            raise NameError("{0} was not found in params of node2.".format(name))
+
+        return target_param
+
+    def get_output(self, name):
+        target_output = None
+        for output in self.outputs:
+            if output.name == name:
+                target_output = output
+                break
+
+        if target_output is None:
+            raise NameError("{0} was not found in outputs of node1.".format(name))
+
+        return target_output
+
+    def unpack_params(self):
+        """
+        Return dict of params with key as name and source as value.
+        """
+
+        return {param.name: param.get_value() for param in self.params}
+
+    def list_outputs(self):
+        """
+        Return list of output names.
+        """
+
+        return [output.name for output in self.outputs]
+
+    def param_values(self):
+        """
+        Return dict with param names as keys and param values as values.
+        """
+
+        return {param.name: param.get_value() for param in self.params}
+
+    def output_values(self):
+        """
+        Return dict with output names as keys and output values as values.
+        """
+
+        return {output.name: output.get_value() for output in self.outputs}
+
+    def execute(self):
+        """
+        Run operation stored at node. 
+        """
+
+        outs = self.op(**self.unpack_params())
+        outs = ensure_is_listlike(outs)
+
+        # store outputs as value
+        for (s_out, out) in zip(self.outputs, outs):
+            s_out.set_value(out)
+
+        # convert to dict for output
+        outs = {name: out for (name, out) in zip(self.list_outputs(), outs)}
+        return outs
+
+class Port:
+    def __init__(self, name, value=None, datatypes=(None,)):
+        self.name = name
+        self._value = value
+
+        datatypes = ensure_is_listlike(datatypes)
+        self.datatypes = datatypes
+
+    def get_value(self):
+        if isinstance(self._value, Conduit):
+            return self._value.value
+        else:
+            return self._value
+
+    def set_value(self, value):
+        if isinstance(self._value, Conduit):
+            self._value.value = value
+        else:
+            self._value = value
+
+class Param(Port):
+    pass
+
+class Output(Port):
+    pass
+
+class Conduit:
+    def __init__(self, source, output):
+        source._value = self
+        output._value = self
+        self.source = source
+        self.output = output
+        self.value = None
 
 def ensure_is_listlike(thing):
     """
