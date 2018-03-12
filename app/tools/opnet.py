@@ -13,15 +13,27 @@ class OpNet:
         return new_node
 
     def remove_node(self, node):
-        # target_node = None
-        # for n in self.nodes:
-        #     if n == node:
-        #         target_node = n
-        #         break
+        for param in node.params:
+            if isinstance(param._value, Conduit):
+                self.unbind(param._value)
 
-        # if target_node is None:
-        #     raise NameError("{0} was not found in params of node2.".format(name))
-        pass
+        for output in node.outputs:
+            if isinstance(output._value, Conduit):
+                self.unbind(output._value)
+
+        # remove conduit from opnet internal list
+        located = False
+        for idx, n in enumerate(self.nodes):
+            if n is node:
+                del self.nodes[idx]
+                located = True
+                break
+
+        if not located:
+            raise ValueError("conduit not found in this instance of OpNet.")
+
+        node = None
+        return node
 
     def add_conduit(self, node1_output, node2_param):
         """
