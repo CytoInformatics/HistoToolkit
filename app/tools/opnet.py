@@ -1,4 +1,8 @@
 class OpNet:
+    """
+    Manager class for all created nodes, ports, and conduits.
+    """
+
     def __init__(self):
         self.nodes = []
         self.conduits = []
@@ -13,6 +17,10 @@ class OpNet:
         return new_node
 
     def remove_node(self, node):
+        """
+        Unbind conduits attached to node and remove node from net.
+        """
+
         for param in node.params:
             if isinstance(param._value, Conduit):
                 self.unbind(param._value)
@@ -45,6 +53,10 @@ class OpNet:
         return conduit
 
     def remove_conduit(self, conduit):
+        """
+        Unbind conduit and remove from net.
+        """
+
         # remove conduit from references in its bound parameters
         conduit.source._value = None
         conduit.output._value = None
@@ -75,6 +87,10 @@ class OpNet:
         return self.add_conduit(node1_output, node2_param)
 
     def unbind(self, conduit):
+        """
+        Disconnect ports from conduit and remove conduit from net.
+        """
+
         self.remove_conduit(conduit)
 
         # set conduit to None
@@ -82,6 +98,10 @@ class OpNet:
         return conduit
 
 class Node:
+    """
+    Represents an operation and its associated input parameters and outputs.
+    """
+
     def __init__(self, op, params, outputs):
         """
         Create new node.
@@ -113,6 +133,10 @@ class Node:
                     \n\toutputs: {2}".format(self.op, self.params, self.outputs)
 
     def get_param(self, name):
+        """
+        Return parameter with given name from node.
+        """
+
         target_param = None
         for param in self.params:
             if param.name == name:
@@ -125,6 +149,10 @@ class Node:
         return target_param
 
     def get_output(self, name):
+        """
+        Return output with given name from node.
+        """
+
         target_output = None
         for output in self.outputs:
             if output.name == name:
@@ -181,6 +209,11 @@ class Node:
         return outs
 
 class Port:
+    """
+    Represents a value for a given parameter or output of a Node along with its 
+    management logic.
+    """
+
     def __init__(self, name, value=None, datatypes=(None,)):
         self.name = name
         self._value = value
@@ -189,24 +222,45 @@ class Port:
         self.datatypes = datatypes
 
     def get_value(self):
+        """
+        Return value stored at this port.
+        """
+
         if isinstance(self._value, Conduit):
             return self._value.value
         else:
             return self._value
 
     def set_value(self, value):
+        """
+        Set value stored at this port.
+        """
+
         if isinstance(self._value, Conduit):
             self._value.value = value
         else:
             self._value = value
 
 class Param(Port):
+    """
+    Subclass of Port with behavior specific to operation parameters.
+    """
+
     pass
 
 class Output(Port):
+    """
+    Subclass of Port with behavior specific to operation outputs.
+    """
+
     pass
 
 class Conduit:
+    """
+    Manages a connection between the Output of a given Node and the Param of 
+    another Node.
+    """
+
     def __init__(self, source, output):
         source._value = self
         output._value = self
