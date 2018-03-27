@@ -25,7 +25,7 @@
     // NOTE: the code below is just intended as examples. Change it as you see fit!
     var setFolder = function() {
         console.log("Running: setFolder!");
-        $.post("set-folder", {new_folder: "/home/masonmcgough/Pictures"}, function(data) {
+        $.post("set-folder", {new_folder: "./app/test"}, function(data) {
             console.log(data);
         })
     }
