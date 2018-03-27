@@ -7,5 +7,7 @@ A graphical user interface for prototyping histology and cytology image processi
 conda create -n HistoToolkit python=3.6
 #### Activate environment
 activate HistoToolkit
-#### Install dependencies
+#### Install requirements
 conda install --file requirements.txt
+#### Run server
+python run.py
