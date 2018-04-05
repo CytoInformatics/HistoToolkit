@@ -43,7 +43,7 @@ class OpNet:
         node = None
         return node
 
-    def add_conduit(self, node1_output, node2_param):
+    def _add_conduit(self, node1_output, node2_param):
         """
         Add new conduit to net.
         """
@@ -52,7 +52,7 @@ class OpNet:
         self.conduits.append(conduit)
         return conduit
 
-    def remove_conduit(self, conduit):
+    def _remove_conduit(self, conduit):
         """
         Unbind conduit and remove from net.
         """
@@ -84,18 +84,54 @@ class OpNet:
         node1_output = node1.get_output(node1_output_name)
         node2_param = node2.get_param(node2_param_name)
 
-        return self.add_conduit(node1_output, node2_param)
+        return self._add_conduit(node1_output, node2_param)
 
     def unbind(self, conduit):
         """
         Disconnect ports from conduit and remove conduit from net.
         """
 
-        self.remove_conduit(conduit)
+        self._remove_conduit(conduit)
 
         # set conduit to None
         conduit = None
         return conduit
+
+    def get_root_nodes(self):
+        """
+        Return list of nodes that have non-conduit inputs.
+        """
+
+        rootnodes = []
+        for node in self.nodes:
+            if any(not isinstance(p._value, Conduit) for p in node.params):
+                rootnodes.append(node)
+
+        return rootnodes
+
+    def _walk_conduits_for_depth(self, node, depth=0):
+        """
+        Traverse output conduits from node to determine depth of node.
+        """
+
+        new_depth = depth
+        for output in node.outputs:
+            if isinstance(output._value, Conduit):
+                dest_node = output._value.output.node
+                new_depth = min(depth, self._walk_conduits_for_depth(dest_node, depth + 1))
+            
+        node.depth = new_depth
+        return new_depth
+
+    def _compute_depths(self):
+        """
+        Traverse graph from root nodes and assign depth to all nodes.
+        """
+
+        rootnodes = self.get_root_nodes()
+
+        for rootnode in rootnodes:
+            self._walk_conduits_for_depth(rootnode)
 
 class Node:
     """
