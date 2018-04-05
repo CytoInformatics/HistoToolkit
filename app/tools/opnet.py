@@ -76,13 +76,13 @@ class OpNet:
         if not located:
             raise ValueError("conduit not found in this instance of OpNet.")
 
-    def bind(self, node1, output_name, node2, param_name):
+    def bind(self, node1, node1_output_name, node2, node2_param_name):
         """
         Connect OUTPUT_NAME of NODE1 to PARAM_NAME of NODE2 via a new conduit.
         """
 
-        node1_output = node1.get_output(output_name)
-        node2_param = node2.get_param(param_name)
+        node1_output = node1.get_output(node1_output_name)
+        node2_param = node2.get_param(node2_param_name)
 
         return self.add_conduit(node1_output, node2_param)
 
@@ -109,7 +109,8 @@ class Node:
         Inputs:
             op: Reference to function.
             params: Dictionary of parameters to function defined in 'op'. The key 
-                is the name of the parameter and the value is its assigned value.
+                is the name of the parameter and the value is its assigned value. 
+                Set to None if you intend to connect a conduit to it.
             outputs: List of strings with arbitrary names for ordered outputs of 
                 function 'op'.
         """
@@ -118,19 +119,22 @@ class Node:
         self.op = op
 
         # init params
-        self.params = [Param(name, value) for (name, value) in params.items()]
+        self.params = [Param(name, self, value) for (name, value) in params.items()]
 
         # init outputs
-        self.outputs = [Output(name) for name in outputs]
+        self.outputs = [Output(name, self) for name in outputs]
+
+        self.depth = None
 
     def __repr__(self):
-        return "<Node op:{0} params:{1} outputs:{2}>".format(self.op, self.params, self.outputs)
+        return "<Node op:{0} params:{1} outputs:{2} depth:{3}>".format(self.op, self.params, self.outputs, self.depth)
 
     def __str__(self):
         return "Node: \
                     \n\top: {0} \
                     \n\tparams: {1} \
-                    \n\toutputs: {2}".format(self.op, self.params, self.outputs)
+                    \n\toutputs: {2} \
+                    \n\tdepth: {3}".format(self.op, self.params, self.outputs, self.depth)
 
     def get_param(self, name):
         """
@@ -214,8 +218,9 @@ class Port:
     management logic.
     """
 
-    def __init__(self, name, value=None, datatypes=(None,)):
+    def __init__(self, name, node, value=None, datatypes=(None,)):
         self.name = name
+        self.node = node
         self._value = value
 
         datatypes = ensure_is_listlike(datatypes)
