@@ -38,7 +38,7 @@ class OpNet:
                 break
 
         if not located:
-            raise ValueError("conduit not found in this instance of OpNet.")
+            raise ValueError("node not found in this instance of OpNet.")
 
         node = None
         return node
@@ -132,6 +132,23 @@ class OpNet:
 
         for rootnode in rootnodes:
             self._walk_conduits_for_depth(rootnode)
+
+    def run(self):
+        """
+        Evaluate all node operations in ascending order of depth.
+        """
+
+        self._compute_depths()
+        sorted_nodes = sorted(self.nodes, key=lambda x: x.depth)
+        results = []
+        for node in sorted_nodes:
+            result = {
+                'node': node,
+                'outputs': node.execute()
+            }
+            results.append(result)
+
+        return results
 
 class Node:
     """
