@@ -14,6 +14,14 @@ def home():
 
     return render_template('index.html')
 
+@app.route('/graph')
+def graph():
+    """
+    Serve the graph application page.
+    """
+
+    return render_template('graph.html')
+
 @app.route('/set-folder', methods=['POST'])
 def set_folder():
     """
