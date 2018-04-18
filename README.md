@@ -3,7 +3,6 @@
 A graphical user interface for prototyping histology and cytology image processing workflows.
 
 ### To-do
-* Move group by clicking on it and dragging
 * Draw connectors between param and output when clicking on them
 
 #### Notes

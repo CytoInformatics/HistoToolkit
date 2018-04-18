@@ -80,6 +80,9 @@ function Node(n_params, n_outputs, box_props) {
     box.onMouseLeave = function(event) {
         this.strokeColor = this.previousStrokeColor;
     }; 
+    box.onMouseDrag = function(event) {
+        this.parent.position += event.delta;
+    }
 
     // create group for all items
     this.group = new Group([box]);
