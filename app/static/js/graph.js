@@ -26,6 +26,11 @@ node_props = {
     port_spacing: 10,
 };
 
+conduit_props = {
+    strokeColor: 'black',
+    strokeWidth: 6
+}
+
 function assignProperties(path, properties) {
     for (key in properties) {
         path[key] = properties[key];
@@ -44,6 +49,7 @@ function Node(n_params, n_outputs, box_props) {
                 var center = [box_corner[0], box_corner[1] + offset];
             }
 
+            // create port group
             var port = new Group();
             port.port_type = port_type;
             var port_path = new Path.Circle({
@@ -61,13 +67,14 @@ function Node(n_params, n_outputs, box_props) {
             };
             if (port_type == "output") {   
                 port_path.onMouseDown = function(event) {
-                    // remove previous line
-                    if (this.line != undefined) {
+                    // remove previous conduit
+                    if (this.conduit != undefined) {
                         this.conduit.remove();
                     }
+
+                    // create line to add as conduit
                     var line = new Path.Line(this.position, this.position + [200, 200]);
-                    line.strokeColor = 'black';
-                    line.strokeWidth = 5;
+                    assignProperties(line, conduit_props);
                     line.onMouseMove = function(event) {
                         this.segments[0].point = event.point;
                     }
