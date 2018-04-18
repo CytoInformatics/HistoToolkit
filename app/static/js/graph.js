@@ -32,9 +32,9 @@ function assignProperties(path, properties) {
     }
 }
 
-function createNode(n_params, n_outputs, box_props) {
-    function createPorts(node, n_ports, port_type, port_defaults) {
-        var box_corner = node.firstChild.point;
+function Node(n_params, n_outputs, box_props) {
+    this.createPorts = function(n_ports, port_type, port_defaults) {
+        var box_corner = this.group.firstChild.point;
         for (var i = 0; i < n_ports; i++) {
             var offset = i * (sp + 2 * r) + sp + r;
 
@@ -58,7 +58,7 @@ function createNode(n_params, n_outputs, box_props) {
                 this.fillColor = this.previousFillColor;
             };
 
-            node.appendTop(port);
+            this.group.appendTop(port);
         }
     }
 
@@ -82,19 +82,19 @@ function createNode(n_params, n_outputs, box_props) {
     }; 
 
     // create group for all items
-    var node = new Group([box]);
-    node.onMouseEnter = function(event) {
+    this.group = new Group([box]);
+    this.group.onMouseEnter = function(event) {
         cursor.visible = false;
     };
-    node.onMouseLeave = function(event) {
+    this.group.onMouseLeave = function(event) {
         cursor.visible = true;
     };
 
     // create ports for params and outputs
-    createPorts(node, n_params, "param", param_defaults);
-    createPorts(node, n_outputs, "output", output_defaults);
+    this.createPorts(n_params, "param", param_defaults);
+    this.createPorts(n_outputs, "output", output_defaults);
 
-    return node;
+    return this;
 }
 
 // create cursor
@@ -104,4 +104,4 @@ function onMouseMove(event) {
     cursor.position = event.point;
 }
 
-var node = createNode(3, 4, box_defaults);
+var node = Node(3, 4, box_defaults);
