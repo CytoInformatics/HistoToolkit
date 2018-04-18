@@ -44,19 +44,37 @@ function Node(n_params, n_outputs, box_props) {
                 var center = [box_corner[0], box_corner[1] + offset];
             }
 
-            var port = new Path.Circle({
+            var port = new Group();
+            port.port_type = port_type;
+            var port_path = new Path.Circle({
                 center: center, 
                 radius: r
             });
-            assignProperties(port, port_defaults);
-            port.port_type = port_type;
-            port.onMouseEnter = function(event) {
+            port.appendTop(port_path);
+            assignProperties(port_path, port_defaults);
+            port_path.onMouseEnter = function(event) {
                 this.previousFillColor = this.fillColor;
                 this.fillColor = this.hoverFillColor;
             };
-            port.onMouseLeave = function(event) {
+            port_path.onMouseLeave = function(event) {
                 this.fillColor = this.previousFillColor;
             };
+            if (port_type == "output") {   
+                port_path.onMouseDown = function(event) {
+                    // remove previous line
+                    if (this.line != undefined) {
+                        this.conduit.remove();
+                    }
+                    var line = new Path.Line(this.position, this.position + [200, 200]);
+                    line.strokeColor = 'black';
+                    line.strokeWidth = 5;
+                    line.onMouseMove = function(event) {
+                        this.segments[0].point = event.point;
+                    }
+                    this.parent.appendBottom(line);
+                    this.conduit = line;
+                }
+            }
 
             this.group.appendTop(port);
         }
