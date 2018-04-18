@@ -10,6 +10,11 @@ param_defaults = {
     hoverFillColor: 'green'
 };
 
+output_defaults = {
+    fillColor: 'black',
+    hoverFillColor: 'red'
+};
+
 cursor_defaults = {
     center: [-100, -100],
     radius: 5,
@@ -27,8 +32,38 @@ function assignProperties(path, properties) {
     }
 }
 
-function createNode(n_ports, box_props) {
+function createNode(n_params, n_outputs, box_props) {
+    function createPorts(node, n_ports, port_type, port_defaults) {
+        var box_corner = node.firstChild.point;
+        for (var i = 0; i < n_ports; i++) {
+            var offset = i * (sp + 2 * r) + sp + r;
+
+            if (port_type == "output") {
+                var center = [box_corner[0] + box_w, box_corner[1] + offset];
+            } else {
+                var center = [box_corner[0], box_corner[1] + offset];
+            }
+
+            var port = new Path.Circle({
+                center: center, 
+                radius: r
+            });
+            assignProperties(port, port_defaults);
+            port.port_type = port_type;
+            port.onMouseEnter = function(event) {
+                this.previousFillColor = this.fillColor;
+                this.fillColor = this.hoverFillColor;
+            };
+            port.onMouseLeave = function(event) {
+                this.fillColor = this.previousFillColor;
+            };
+
+            node.appendTop(port);
+        }
+    }
+
     // create box for node base
+    var n_ports = n_params > n_outputs ? n_params : n_outputs;
     var sp = node_props.port_spacing;
     var r = node_props.port_radius;
     var box_w = 200;
@@ -55,26 +90,9 @@ function createNode(n_ports, box_props) {
         cursor.visible = true;
     };
 
-    // create ports for params
-    var box_corner = box.point;
-    for (var i = 0; i < n_ports; i++) {
-        // var offset = (i + 1) * (sp + r) + i * sp;
-        var offset = i * (sp + 2 * r) + sp + r;
-        var param = new Path.Circle({
-            center: [box_corner[0], box_corner[1] + offset], 
-            radius: r
-        });
-
-        assignProperties(param, param_defaults); 
-        param.onMouseEnter = function(event) {
-            this.previousFillColor = this.fillColor;
-            this.fillColor = this.hoverFillColor;
-        };
-        param.onMouseLeave = function(event) {
-            this.fillColor = this.previousFillColor;
-        };
-        node.appendTop(param);
-    }
+    // create ports for params and outputs
+    createPorts(node, n_params, "param", param_defaults);
+    createPorts(node, n_outputs, "output", output_defaults);
 
     return node;
 }
@@ -86,4 +104,4 @@ function onMouseMove(event) {
     cursor.position = event.point;
 }
 
-var node = createNode(3, box_defaults);
+var node = createNode(3, 4, box_defaults);

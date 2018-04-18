@@ -2,6 +2,10 @@
 
 A graphical user interface for prototyping histology and cytology image processing workflows.
 
+### To-do
+* Make node object and convert createNode into constructor
+* Draw connectors between param and output when clicking on them
+
 #### Notes
 * Launch server
 ```
