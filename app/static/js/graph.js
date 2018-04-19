@@ -15,12 +15,6 @@ var output_defaults = {
     hoverFillColor: 'red'
 };
 
-var cursor_defaults = {
-    center: [-100, -100],
-    radius: 5,
-    fillColor: 'black'
-};
-
 var node_props = {
     port_radius: 15,
     port_spacing: 10,
@@ -101,13 +95,7 @@ function Node(n_params, n_outputs, box_props) {
 
     // create group for all items
     this.group = new Group([box]);
-    this.group.onMouseEnter = function(event) {
-        cursor.visible = false;
-    };
-    this.group.onMouseLeave = function(event) {
-        cursor.visible = true;
-    };
-
+    
     // create ports for params and outputs
     this.createPorts(n_params, "param", param_defaults);
     this.createPorts(n_outputs, "output", output_defaults);
@@ -115,20 +103,12 @@ function Node(n_params, n_outputs, box_props) {
     return this;
 }
 
-// create cursor
-var cursor = new Path.Circle(cursor_defaults);
-cursor.sendToBack();
-function onMouseMove(event) {
-    cursor.position = event.point;
-}
-
+// event handlers
 var drawingConduit = undefined;
 function onMouseDown(event) {
     var hit_result = project.hitTest(event.point, hitOptions);
     var item = hit_result.item;
     if (item) {
-        console.log(item);
-
         // output port
         if (item.parent.port_type == "output") {
             if (item.conduit != undefined) {
@@ -156,4 +136,6 @@ function onMouseUp(event) {
     drawingConduit = undefined;
 }
 
+
+// create example node
 var node = Node(3, 4, box_defaults);
