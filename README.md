@@ -3,7 +3,6 @@
 A graphical user interface for prototyping histology and cytology image processing workflows.
 
 ### To-do
-* Stop nodes from being dragged when onMouseDown event does not start on them
 * Allow conduits to be snapped from outputs to ports
 * Sync conduit position when node is dragged
 

@@ -42,17 +42,17 @@ function Node(n_params, n_outputs, box_props) {
     this.createPorts = function(n_ports, port_type, port_defaults) {
         var box_corner = this.group.firstChild.point;
         for (var i = 0; i < n_ports; i++) {
-            var offset = i * (sp + 2 * r) + sp + r;
+            // create port group
+            var port = new Group();
+            port.obj_type = port_type;
 
+            // create port path
+            var offset = i * (sp + 2 * r) + sp + r;
             if (port_type == "output") {
                 var center = [box_corner[0] + box_w, box_corner[1] + offset];
             } else {
                 var center = [box_corner[0], box_corner[1] + offset];
             }
-
-            // create port group
-            var port = new Group();
-            port.port_type = port_type;
             var port_path = new Path.Circle({
                 center: center, 
                 radius: r
@@ -89,13 +89,14 @@ function Node(n_params, n_outputs, box_props) {
     box.onMouseLeave = function(event) {
         this.strokeColor = this.previousStrokeColor;
     }; 
-    box.onMouseDrag = function(event) {
-        this.parent.position += event.delta;
-    }
+    // box.onMouseDrag = function(event) {
+    //     this.parent.position += event.delta;
+    // }
 
     // create group for all items
     this.group = new Group([box]);
-    
+    this.group.obj_type = "node";
+
     // create ports for params and outputs
     this.createPorts(n_params, "param", param_defaults);
     this.createPorts(n_outputs, "output", output_defaults);
@@ -104,13 +105,15 @@ function Node(n_params, n_outputs, box_props) {
 }
 
 // event handlers
+var draggingNode = undefined;
 var drawingConduit = undefined;
 function onMouseDown(event) {
     var hit_result = project.hitTest(event.point, hitOptions);
-    var item = hit_result.item;
-    if (item) {
-        // output port
-        if (item.parent.port_type == "output") {
+    if (hit_result.item) {
+        var item = hit_result.item;
+
+        // check group item belongs to
+        if (item.parent.obj_type == "output") {
             if (item.conduit != undefined) {
                 item.conduit.remove();
             }
@@ -121,19 +124,25 @@ function onMouseDown(event) {
             drawingConduit = line;
             item.parent.appendBottom(line);
             item.conduit = line;
+        } else if (item.parent.obj_type == "node") {
+            draggingNode = item.parent;
         }
     }
 }
 
 function onMouseDrag(event) {
-    // move conduit endpoint
-    if (drawingConduit) {
+    if (draggingNode) {
+        // move node
+        draggingNode.position += event.delta;
+    } else if (drawingConduit) {
+        // move conduit endpoint
         drawingConduit.segments[0].point = event.point;
     }
 }
 
 function onMouseUp(event) {
     drawingConduit = undefined;
+    draggingNode = undefined;
 }
 
 
