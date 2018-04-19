@@ -114,16 +114,17 @@ function onMouseDown(event) {
 
         // check group item belongs to
         if (item.parent.obj_type == "output") {
-            if (item.conduit != undefined) {
-                item.conduit.remove();
+            if (item.parent.conduit != undefined) {
+                item.parent.conduit.remove();
             }
 
             // create line to add as conduit
+            // line is added as property of group but is NOT child of group
             var line = new Path.Line(item.position, item.position);
             assignProperties(line, conduit_props);
             drawingConduit = line;
-            item.parent.appendBottom(line);
-            item.conduit = line;
+            line.sendToBack();
+            item.parent.conduit = line;
         } else if (item.parent.obj_type == "node") {
             draggingNode = item.parent;
         }
@@ -134,9 +135,21 @@ function onMouseDrag(event) {
     if (draggingNode) {
         // move node
         draggingNode.position += event.delta;
+        for (key in draggingNode.children) {
+            var child = draggingNode.children[key];
+            if (!child.obj_type || !child.conduit) {
+                continue;
+            }
+
+            if (child.obj_type == "param") {
+                child.conduit.segments[1].point = child.position;
+            } else if (child.obj_type == "output") {
+                child.conduit.segments[0].point = child.position;
+            }
+        }
     } else if (drawingConduit) {
         // move conduit endpoint
-        drawingConduit.segments[0].point = event.point;
+        drawingConduit.segments[1].point = event.point;
     }
 }
 
@@ -144,8 +157,8 @@ function onMouseUp(event) {
     if (drawingConduit) {    
         var hit_result = project.hitTest(event.point, hitOptions);
         if (hit_result.item && hit_result.item.parent.obj_type == "param") {
-            console.log(hit_result.item);
-            drawingConduit.segments[0].point = hit_result.item.position;
+            drawingConduit.segments[1].point = hit_result.item.position;
+            hit_result.item.parent.conduit = drawingConduit;
         } else {
             drawingConduit.remove();
         }
