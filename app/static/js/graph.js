@@ -122,9 +122,15 @@ function onMouseDown(event) {
             // line is added as property of group but is NOT child of group
             var line = new Path.Line(item.position, item.position);
             assignProperties(line, conduit_props);
-            drawingConduit = line;
             line.sendToBack();
+
+            // add reference to output as property of line
+            line.output = item.parent;
+
+            // add reference to line as property of output
             item.parent.conduit = line;
+
+            drawingConduit = line;
         } else if (item.parent.obj_type == "node") {
             draggingNode = item.parent;
         }
@@ -157,9 +163,26 @@ function onMouseUp(event) {
     if (drawingConduit) {    
         var hit_result = project.hitTest(event.point, hitOptions);
         if (hit_result.item && hit_result.item.parent.obj_type == "param") {
-            drawingConduit.segments[1].point = hit_result.item.position;
-            hit_result.item.parent.conduit = drawingConduit;
+            var item = hit_result.item;
+
+            // remove existing conduit and references if present
+            if (item.parent.conduit) {
+                item.parent.conduit.param = undefined;
+                item.parent.conduit.output = undefined;
+                item.parent.conduit.remove();
+            }
+
+            // move line endpoint to item position
+            drawingConduit.segments[1].point = item.position;
+
+            // add reference to param as property of conduit
+            drawingConduit.param = item.parent;
+
+            // add reference to conduit as property of param
+            item.parent.conduit = drawingConduit;
         } else {
+            drawingConduit.param = undefined;
+            drawingConduit.output = undefined;
             drawingConduit.remove();
         }
     }

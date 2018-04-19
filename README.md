@@ -4,7 +4,6 @@ A graphical user interface for prototyping histology and cytology image processi
 
 ### To-do
 * Prevent conduits from snapping to params on same node
-* Overwrite existing conduit when two outputs dragged to same param
 
 #### Notes
 * Launch server
