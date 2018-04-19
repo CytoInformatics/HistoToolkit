@@ -38,7 +38,7 @@ function assignProperties(path, properties) {
     }
 }
 
-function Node(n_params, n_outputs, box_props) {
+function Node(position, n_params, n_outputs, box_props) {
     this.createPorts = function(n_ports, port_type, port_defaults) {
         var box_corner = this.group.firstChild.point;
         for (var i = 0; i < n_ports; i++) {
@@ -78,7 +78,7 @@ function Node(n_params, n_outputs, box_props) {
     var box_w = 200;
     var box_h = (n_ports - 1) * (sp + 2 * r) + 2 * (sp + r);
     var box = new Path.Rectangle({
-        point: [200, 200],
+        point: position,
         size: [box_w, box_h],
     }); 
     assignProperties(box, box_defaults);
@@ -141,10 +141,21 @@ function onMouseDrag(event) {
 }
 
 function onMouseUp(event) {
+    if (drawingConduit) {    
+        var hit_result = project.hitTest(event.point, hitOptions);
+        if (hit_result.item && hit_result.item.parent.obj_type == "param") {
+            console.log(hit_result.item);
+            drawingConduit.segments[0].point = hit_result.item.position;
+        } else {
+            drawingConduit.remove();
+        }
+    }
+
     drawingConduit = undefined;
     draggingNode = undefined;
 }
 
 
 // create example node
-var node = Node(3, 4, box_defaults);
+var node1 = Node([200, 200], 3, 4, box_defaults);
+var node2 = Node([700, 300], 2, 1, box_defaults);

@@ -3,8 +3,9 @@
 A graphical user interface for prototyping histology and cytology image processing workflows.
 
 ### To-do
-* Allow conduits to be snapped from outputs to ports
+* Prevent conduits from snapping to params on same node
 * Sync conduit position when node is dragged
+* Overwrite existing conduit when two outputs dragged to same param
 
 #### Notes
 * Launch server
