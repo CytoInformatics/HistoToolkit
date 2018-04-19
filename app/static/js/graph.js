@@ -1,35 +1,42 @@
-box_defaults = {
+var box_defaults = {
     strokeColor: 'black',
     fillColor: 'blue',
     strokeWidth: 6,
     hoverStrokeColor: 'green'
 };
 
-param_defaults = {
+var param_defaults = {
     fillColor: 'black',
     hoverFillColor: 'green'
 };
 
-output_defaults = {
+var output_defaults = {
     fillColor: 'black',
     hoverFillColor: 'red'
 };
 
-cursor_defaults = {
+var cursor_defaults = {
     center: [-100, -100],
     radius: 5,
     fillColor: 'black'
 };
 
-node_props = {
+var node_props = {
     port_radius: 15,
     port_spacing: 10,
 };
-
-conduit_props = {
+ 
+var conduit_props = {
     strokeColor: 'black',
     strokeWidth: 6
 }
+
+var hitOptions = {
+    segments: true,
+    stroke: true,
+    fill: true,
+    tolerance: 5
+};
 
 function assignProperties(path, properties) {
     for (key in properties) {
@@ -65,23 +72,6 @@ function Node(n_params, n_outputs, box_props) {
             port_path.onMouseLeave = function(event) {
                 this.fillColor = this.previousFillColor;
             };
-            if (port_type == "output") {   
-                port_path.onMouseDown = function(event) {
-                    // remove previous conduit
-                    if (this.conduit != undefined) {
-                        this.conduit.remove();
-                    }
-
-                    // create line to add as conduit
-                    var line = new Path.Line(this.position, this.position + [200, 200]);
-                    assignProperties(line, conduit_props);
-                    line.onMouseMove = function(event) {
-                        this.segments[0].point = event.point;
-                    }
-                    this.parent.appendBottom(line);
-                    this.conduit = line;
-                }
-            }
 
             this.group.appendTop(port);
         }
@@ -130,6 +120,40 @@ var cursor = new Path.Circle(cursor_defaults);
 cursor.sendToBack();
 function onMouseMove(event) {
     cursor.position = event.point;
+}
+
+var drawingConduit = undefined;
+function onMouseDown(event) {
+    var hit_result = project.hitTest(event.point, hitOptions);
+    var item = hit_result.item;
+    if (item) {
+        console.log(item);
+
+        // output port
+        if (item.parent.port_type == "output") {
+            if (item.conduit != undefined) {
+                item.conduit.remove();
+            }
+
+            // create line to add as conduit
+            var line = new Path.Line(item.position, item.position);
+            assignProperties(line, conduit_props);
+            drawingConduit = line;
+            item.parent.appendBottom(line);
+            item.conduit = line;
+        }
+    }
+}
+
+function onMouseDrag(event) {
+    // move conduit endpoint
+    if (drawingConduit) {
+        drawingConduit.segments[0].point = event.point;
+    }
+}
+
+function onMouseUp(event) {
+    drawingConduit = undefined;
 }
 
 var node = Node(3, 4, box_defaults);

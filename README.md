@@ -3,7 +3,10 @@
 A graphical user interface for prototyping histology and cytology image processing workflows.
 
 ### To-do
-* Draw connectors between param and output when clicking on them
+* Stop nodes from being dragged when onMouseDown event does not start on them
+* Get rid of cursor
+* Allow conduits to be snapped from outputs to ports
+* Sync conduit position when node is dragged
 
 #### Notes
 * Launch server
