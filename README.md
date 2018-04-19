@@ -3,7 +3,7 @@
 A graphical user interface for prototyping histology and cytology image processing workflows.
 
 ### To-do
-* Prevent conduits from snapping to params on same node
+* 
 
 #### Notes
 * Launch server

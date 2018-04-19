@@ -109,7 +109,7 @@ var draggingNode = undefined;
 var drawingConduit = undefined;
 function onMouseDown(event) {
     var hit_result = project.hitTest(event.point, hitOptions);
-    if (hit_result.item) {
+    if (hit_result && hit_result.item) {
         var item = hit_result.item;
 
         // check group item belongs to
@@ -162,7 +162,11 @@ function onMouseDrag(event) {
 function onMouseUp(event) {
     if (drawingConduit) {    
         var hit_result = project.hitTest(event.point, hitOptions);
-        if (hit_result.item && hit_result.item.parent.obj_type == "param") {
+        if (
+            hit_result.item
+            && hit_result.item.parent.obj_type == "param"
+            && hit_result.item.parent.parent !== drawingConduit.output.parent
+        ) {
             var item = hit_result.item;
 
             // remove existing conduit and references if present
