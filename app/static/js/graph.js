@@ -117,12 +117,12 @@ function Conduit(props, output, param) {
     } else {
         var endpoint = output.position;
     }
-    var conduit = new Path.Line(output.position, endpoint);
-    assignProperties(conduit, props);
-    conduit.sendToBack();
+    this.line = new Path.Line(output.position, endpoint);
+    assignProperties(this.line, props);
+    this.line.sendToBack();
 
     // function to delete itself
-    conduit.delete = function() {
+    this.delete = function() {
         if (this.param) {
             this.param.conduit = undefined;
         }
@@ -131,25 +131,26 @@ function Conduit(props, output, param) {
         }
         this.param = undefined;
         this.output = undefined;
-        this.remove();
+        this.line.remove();
+        this.line = undefined;
     }
 
     // add references to link conduit and output
-    output.conduit = conduit;
-    conduit.output = output;
+    output.conduit = this;
+    this.output = output;
 
     // add references to link conduit and param, if given
     if (typeof param !== 'undefined') {
-        param.conduit = conduit;
-        conduit.param = param;
+        param.conduit = this;
+        this.param = param;
     } else {
-        conduit.param = undefined;
+        this.param = undefined;
     }
 
     // add to graph object
     graph.conduits.push(this);
 
-    return conduit;
+    return this;
 }
 
 // event handlers
@@ -167,8 +168,7 @@ function onMouseDown(event) {
             }
 
             // // create conduit
-            conduit = new Conduit(conduit_props, item.parent);
-            drawingConduit = conduit;
+            drawingConduit = new Conduit(conduit_props, item.parent);
         } else if (item.parent.obj_type == "node") {
             draggingNode = item.parent;
         }
@@ -186,14 +186,14 @@ function onMouseDrag(event) {
             }
 
             if (child.obj_type == "param") {
-                child.conduit.segments[1].point = child.position;
+                child.conduit.line.segments[1].point = child.position;
             } else if (child.obj_type == "output") {
-                child.conduit.segments[0].point = child.position;
+                child.conduit.line.segments[0].point = child.position;
             }
         }
     } else if (drawingConduit) {
         // move conduit endpoint
-        drawingConduit.segments[1].point = event.point;
+        drawingConduit.line.segments[1].point = event.point;
     }
 }
 
@@ -213,7 +213,7 @@ function onMouseUp(event) {
             }
 
             // move line endpoint to item position
-            drawingConduit.segments[1].point = item.position;
+            drawingConduit.line.segments[1].point = item.position;
 
             // add reference to param as property of conduit
             drawingConduit.param = item.parent;
@@ -227,22 +227,23 @@ function onMouseUp(event) {
 
     drawingConduit = undefined;
     draggingNode = undefined;
-    for (key in graph.nodes) {
-        var obj = graph.nodes[key];
-        if (obj instanceof Node) {
-            console.log('Node!');
-        } else {
-            console.log(obj);
-        }
-    }
-    for (key in graph.conduits) {
-        var obj = graph.conduits[key];
-        if (obj instanceof Conduit) {
-            console.log('Conduit!');
-        } else {
-            console.log(obj);
-        }
-    }
+
+    // for (key in graph.nodes) {
+    //     var obj = graph.nodes[key];
+    //     if (obj instanceof Node) {
+    //         console.log('Node!');
+    //     } else {
+    //         console.log(obj);
+    //     }
+    // }
+    // for (key in graph.conduits) {
+    //     var obj = graph.conduits[key];
+    //     if (obj instanceof Conduit) {
+    //         console.log('Conduit!');
+    //     } else {
+    //         console.log(obj);
+    //     }
+    // }
 }
 
 
