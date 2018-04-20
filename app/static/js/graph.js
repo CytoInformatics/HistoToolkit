@@ -104,7 +104,7 @@ function Node(position, n_params, n_outputs, box_props) {
 function Conduit(props, output, param) {
     // create line to add as conduit
     // line is added as property of group but is NOT child of group
-    if (param) {
+    if (typeof param !== 'undefined') {
         var endpoint = param.position;
     } else {
         var endpoint = output.position;
@@ -131,7 +131,7 @@ function Conduit(props, output, param) {
     conduit.output = output;
 
     // add references to link conduit and param, if given
-    if (param) {
+    if (typeof param !== 'undefined') {
         param.conduit = conduit;
         conduit.param = param;
     } else {
