@@ -1,3 +1,8 @@
+var graph = {
+    nodes: [],
+    conduits: []
+};
+
 var box_defaults = {
     strokeColor: 'black',
     fillColor: 'blue',
@@ -98,6 +103,9 @@ function Node(position, n_params, n_outputs, box_props) {
     this.createPorts(n_params, "param", param_defaults);
     this.createPorts(n_outputs, "output", output_defaults);
 
+    // add to graph object
+    graph.nodes.push(this);
+
     return this;
 }
 
@@ -137,6 +145,9 @@ function Conduit(props, output, param) {
     } else {
         conduit.param = undefined;
     }
+
+    // add to graph object
+    graph.conduits.push(this);
 
     return conduit;
 }
@@ -216,10 +227,26 @@ function onMouseUp(event) {
 
     drawingConduit = undefined;
     draggingNode = undefined;
+    for (key in graph.nodes) {
+        var obj = graph.nodes[key];
+        if (obj instanceof Node) {
+            console.log('Node!');
+        } else {
+            console.log(obj);
+        }
+    }
+    for (key in graph.conduits) {
+        var obj = graph.conduits[key];
+        if (obj instanceof Conduit) {
+            console.log('Conduit!');
+        } else {
+            console.log(obj);
+        }
+    }
 }
 
 
 // create example node
-var node1 = Node([200, 300], 3, 4, box_defaults);
-var node2 = Node([700, 200], 2, 2, box_defaults);
-var node2 = Node([700, 600], 2, 1, box_defaults);
+var node1 = new Node([200, 300], 3, 4, box_defaults);
+var node2 = new Node([700, 200], 2, 2, box_defaults);
+var node2 = new Node([700, 600], 2, 1, box_defaults);
