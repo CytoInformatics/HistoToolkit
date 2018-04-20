@@ -38,6 +38,14 @@ function assignProperties(path, properties) {
     }
 }
 
+var deleteConduit = function() {
+    this.param.conduit = undefined;
+    this.output.conduit = undefined;
+    this.param = undefined;
+    this.output = undefined;
+    this.remove();
+}
+
 function Node(position, n_params, n_outputs, box_props) {
     this.createPorts = function(n_ports, port_type, port_defaults) {
         var box_corner = this.group.firstChild.point;
@@ -103,6 +111,7 @@ function Node(position, n_params, n_outputs, box_props) {
 
     return this;
 }
+
 
 // event handlers
 var draggingNode = undefined;
@@ -185,6 +194,7 @@ function onMouseUp(event) {
             // add reference to conduit as property of param
             item.parent.conduit = drawingConduit;
         } else {
+            drawingConduit.output.conduit = undefined;
             drawingConduit.param = undefined;
             drawingConduit.output = undefined;
             drawingConduit.remove();
@@ -197,5 +207,6 @@ function onMouseUp(event) {
 
 
 // create example node
-var node1 = Node([200, 200], 3, 4, box_defaults);
-var node2 = Node([700, 300], 2, 1, box_defaults);
+var node1 = Node([200, 300], 3, 4, box_defaults);
+var node2 = Node([700, 200], 2, 2, box_defaults);
+var node2 = Node([700, 600], 2, 1, box_defaults);
