@@ -38,14 +38,6 @@ function assignProperties(path, properties) {
     }
 }
 
-var deleteConduit = function() {
-    this.param.conduit = undefined;
-    this.output.conduit = undefined;
-    this.param = undefined;
-    this.output = undefined;
-    this.remove();
-}
-
 function Node(position, n_params, n_outputs, box_props) {
     this.createPorts = function(n_ports, port_type, port_defaults) {
         var box_corner = this.group.firstChild.point;
@@ -97,9 +89,6 @@ function Node(position, n_params, n_outputs, box_props) {
     box.onMouseLeave = function(event) {
         this.strokeColor = this.previousStrokeColor;
     }; 
-    // box.onMouseDrag = function(event) {
-    //     this.parent.position += event.delta;
-    // }
 
     // create group for all items
     this.group = new Group([box]);
@@ -112,6 +101,45 @@ function Node(position, n_params, n_outputs, box_props) {
     return this;
 }
 
+function Conduit(props, output, param) {
+    // create line to add as conduit
+    // line is added as property of group but is NOT child of group
+    if (param) {
+        var endpoint = param.position;
+    } else {
+        var endpoint = output.position;
+    }
+    var conduit = new Path.Line(output.position, endpoint);
+    assignProperties(conduit, props);
+    conduit.sendToBack();
+
+    // function to delete itself
+    conduit.delete = function() {
+        if (this.param) {
+            this.param.conduit = undefined;
+        }
+        if (this.output) {
+            this.output.conduit = undefined;
+        }
+        this.param = undefined;
+        this.output = undefined;
+        this.remove();
+    }
+
+    // add references to link conduit and output
+    output.conduit = conduit;
+    conduit.output = output;
+
+    // add references to link conduit and param, if given
+    if (param) {
+        param.conduit = conduit;
+        conduit.param = param;
+    } else {
+        conduit.param = undefined;
+    }
+
+    return conduit;
+}
 
 // event handlers
 var draggingNode = undefined;
@@ -124,22 +152,12 @@ function onMouseDown(event) {
         // check group item belongs to
         if (item.parent.obj_type == "output") {
             if (item.parent.conduit != undefined) {
-                item.parent.conduit.remove();
+                item.parent.conduit.delete();
             }
 
-            // create line to add as conduit
-            // line is added as property of group but is NOT child of group
-            var line = new Path.Line(item.position, item.position);
-            assignProperties(line, conduit_props);
-            line.sendToBack();
-
-            // add reference to output as property of line
-            line.output = item.parent;
-
-            // add reference to line as property of output
-            item.parent.conduit = line;
-
-            drawingConduit = line;
+            // // create conduit
+            conduit = new Conduit(conduit_props, item.parent);
+            drawingConduit = conduit;
         } else if (item.parent.obj_type == "node") {
             draggingNode = item.parent;
         }
@@ -180,9 +198,7 @@ function onMouseUp(event) {
 
             // remove existing conduit and references if present
             if (item.parent.conduit) {
-                item.parent.conduit.param = undefined;
-                item.parent.conduit.output = undefined;
-                item.parent.conduit.remove();
+                item.parent.conduit.delete();
             }
 
             // move line endpoint to item position
@@ -194,10 +210,7 @@ function onMouseUp(event) {
             // add reference to conduit as property of param
             item.parent.conduit = drawingConduit;
         } else {
-            drawingConduit.output.conduit = undefined;
-            drawingConduit.param = undefined;
-            drawingConduit.output = undefined;
-            drawingConduit.remove();
+            drawingConduit.delete();
         }
     }
 
