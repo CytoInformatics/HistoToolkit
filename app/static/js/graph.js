@@ -7,8 +7,8 @@ var graph = {
         obj.conduits = [];
 
         // loop nodes
-        for (key in graph.nodes) {
-            var node = graph.nodes[key];
+        for (key in this.nodes) {
+            var node = this.nodes[key];
             if (node instanceof Node) {
                 var node_obj = new Object();
                 node_obj.name = "node" + key
@@ -27,8 +27,8 @@ var graph = {
         }
 
         // loop conduits
-        for (key in graph.conduits) {
-            var conduit = graph.conduits[key];
+        for (key in this.conduits) {
+            var conduit = this.conduits[key];
             if (conduit instanceof Conduit) {
                 var conduit_obj = new Object();
                 conduit_obj.name = "conduit" + key;
