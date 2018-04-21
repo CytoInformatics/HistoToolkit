@@ -1,6 +1,45 @@
 var graph = {
     nodes: [],
-    conduits: []
+    conduits: [],
+    jsonify: function() {
+        var obj = new Object();
+        obj.nodes = [];
+        obj.conduits = [];
+
+        // loop nodes
+        for (key in graph.nodes) {
+            var node = graph.nodes[key];
+            if (node instanceof Node) {
+                var node_obj = new Object();
+                node_obj.name = "node" + key
+                node_obj.params = [];
+                node_obj.outputs = [];
+                for (key in node.params) {
+                    var param_obj = node.params[key];
+                    node_obj.params.push(param_obj.obj_type + key);
+                }
+                for (key in node.outputs) {
+                    var output_obj = node.outputs[key];
+                    node_obj.outputs.push(param_obj.obj_type + key);
+                }
+                obj.nodes.push(node_obj);
+            }
+        }
+
+        // loop conduits
+        for (key in graph.conduits) {
+            var conduit = graph.conduits[key];
+            if (conduit instanceof Conduit) {
+                var conduit_obj = new Object();
+                conduit_obj.name = "conduit" + key;
+                conduit_obj.output = "output";
+                conduit_obj.param = "param";
+                obj.conduits.push(conduit_obj);
+            }
+        }
+
+        return JSON.stringify(obj);
+    }
 };
 
 var box_defaults = {
@@ -44,6 +83,8 @@ function assignProperties(path, properties) {
 }
 
 function Node(position, n_params, n_outputs, box_props) {
+    this.params = [];
+    this.outputs = [];
     this.createPorts = function(n_ports, port_type, port_defaults) {
         var box_corner = this.group.firstChild.point;
         for (var i = 0; i < n_ports; i++) {
@@ -73,6 +114,11 @@ function Node(position, n_params, n_outputs, box_props) {
             };
 
             this.group.appendTop(port);
+            if (port_type == "output") {
+                this.outputs.push(port);
+            } else {
+                this.params.push(port);
+            }
         }
     }
 
@@ -228,22 +274,7 @@ function onMouseUp(event) {
     drawingConduit = undefined;
     draggingNode = undefined;
 
-    // for (key in graph.nodes) {
-    //     var obj = graph.nodes[key];
-    //     if (obj instanceof Node) {
-    //         console.log('Node!');
-    //     } else {
-    //         console.log(obj);
-    //     }
-    // }
-    // for (key in graph.conduits) {
-    //     var obj = graph.conduits[key];
-    //     if (obj instanceof Conduit) {
-    //         console.log('Conduit!');
-    //     } else {
-    //         console.log(obj);
-    //     }
-    // }
+    console.log(graph.jsonify());
 }
 
 
