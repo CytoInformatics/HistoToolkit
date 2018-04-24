@@ -19,6 +19,7 @@ def graph():
     """
     Serve the graph application page.
     """
+    print(htk.valid_ops)
 
     return render_template('graph.html')
 

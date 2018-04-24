@@ -6,6 +6,8 @@ from skimage.transform import resize
 from collections import Counter
 from .PythonHelpers.file_utils import list_files
 
+from . import opnet
+
 VALID_EXTS = ('.jpg', '.jpeg', '.png', '.tif', '.tiff', '.bmp',)
 
 def list_all_images(folder):
@@ -73,6 +75,8 @@ def get_metadata(name, mode="i"):
     reader.close()
     return metadata
 
+
+# Operations
 def convert_data_type(data, datatype):
     """
     Convert DATA to DATATYPE.
@@ -131,6 +135,21 @@ def resize_image(data, output_shape):
         'data': data
     }
     return op_output
+
+# Object that lists all valid operations
+valid_ops = {}
+
+def add_valid_op(valid_ops, op, outputs):
+    valid_ops[op.__name__] = {
+        "op": op,
+        "params": op.__code__.co_varnames,
+        "outputs": opnet.ensure_is_listlike(outputs)
+    }
+    return valid_ops
+
+valid_ops = add_valid_op(valid_ops, convert_data_type, "data")
+valid_ops = add_valid_op(valid_ops, rescale_range, "data")
+valid_ops = add_valid_op(valid_ops, resize_image, "data")
 
 
 # TESTING ONLY
