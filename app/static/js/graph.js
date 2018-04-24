@@ -62,7 +62,14 @@ var output_defaults = {
 var node_props = {
     port_radius: 15,
     port_spacing: 10,
+    text_offset: [0, -10]
 };
+
+var node_name_defaults = {
+    justification: 'left',
+    fillColor: 'black',
+    fontSize: '1em'
+}
  
 var conduit_props = {
     strokeColor: 'black',
@@ -192,8 +199,17 @@ function Node(op, n_params, n_outputs, position, box_props) {
         this.strokeColor = this.previousStrokeColor;
     }; 
 
+    // create display name object
+    var t_off = node_props.text_offset;
+    var text_position = [position[0] + t_off[0], position[1] + t_off[1]];
+    var disp_name_path = new PointText({
+        point: text_position,
+        content: this.display_name  
+    });
+    assignProperties(disp_name_path, node_name_defaults);
+
     // create group for all items
-    this.group = new Group([box]);
+    this.group = new Group([box, disp_name_path]);
     this.group.node = this;
 
     // create ports for params and outputs
