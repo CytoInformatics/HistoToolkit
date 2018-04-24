@@ -1,3 +1,5 @@
+from random import randint
+
 class OpNet:
     """
     Manager class for all created nodes, ports, and conduits.
@@ -7,12 +9,14 @@ class OpNet:
         self.nodes = []
         self.conduits = []
 
-    def add_node(self, op, params, outputs):
+    def add_node(self, op, params, outputs, name=None):
         """
         Add new node to net.
         """
 
-        new_node = Node(op, params, outputs)
+        if name is None:
+            name = op.__name__ + "-{:04}".format(randint(0, 9999))
+        new_node = Node(op, name, params, outputs)
         self.nodes.append(new_node)
         return new_node
 
@@ -155,12 +159,13 @@ class Node:
     Represents an operation and its associated input parameters and outputs.
     """
 
-    def __init__(self, op, params, outputs):
+    def __init__(self, op, name, params, outputs):
         """
         Create new node.
 
         Inputs:
             op: Reference to function.
+            name: Name to identify this Node.
             params: Dictionary of parameters to function defined in 'op'. The key 
                 is the name of the parameter and the value is its assigned value. 
                 Set to None if you intend to connect a conduit to it.
@@ -168,26 +173,26 @@ class Node:
                 function 'op'.
         """
 
-        # init op
         self.op = op
-
-        # init params
+        self.name = name
         self.params = [Param(name, self, value) for (name, value) in params.items()]
-
-        # init outputs
         self.outputs = [Output(name, self) for name in outputs]
-
         self.depth = None
 
     def __repr__(self):
-        return "<Node op:{0} params:{1} outputs:{2} depth:{3}>".format(self.op, self.params, self.outputs, self.depth)
+        return "<Node op:{} name:{} params:{} outputs:{} depth:{}>".format(
+            self.op, self.name, self.params, self.outputs, self.depth
+        )
 
     def __str__(self):
         return "Node: \
-                    \n\top: {0} \
-                    \n\tparams: {1} \
-                    \n\toutputs: {2} \
-                    \n\tdepth: {3}".format(self.op, self.params, self.outputs, self.depth)
+                    \n\top: {} \
+                    \n\tname: {} \
+                    \n\tparams: {} \
+                    \n\toutputs: {} \
+                    \n\tdepth: {}".format(
+            self.op, self.name, self.params, self.outputs, self.depth
+        )
 
     def get_param(self, name):
         """

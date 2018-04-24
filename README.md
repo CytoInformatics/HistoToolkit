@@ -3,7 +3,10 @@
 A graphical user interface for prototyping histology and cytology image processing workflows.
 
 ### To-do
-* set up structured naming convention for nodes, params, outputs
+* Display display_name of nodes
+* Retrieve list of available ops from server at page load
+* Assign param and output names to client side
+* prevent loops from being formed in net (server-side for security and client-side for user-friendliness)
 
 #### Notes
 * Launch server

@@ -82,9 +82,25 @@ function assignProperties(path, properties) {
     }
 }
 
-function Node(position, n_params, n_outputs, box_props) {
+function randInt(min, max) {
+    return Math.floor(Math.random() * (max - min) ) + min;
+}
+
+function strWithLeadingZeros(number, n_zeros) {
+    var numstr = number.toString();
+    while (numstr.length < n_zeros) {
+        numstr = '0' + numstr;
+    }
+    return numstr;
+}
+
+function Node(op, n_params, n_outputs, position, box_props) {
     this.params = [];
     this.outputs = [];
+    this.op_name = op;            // to identify op on server
+    this.display_name = op;       // modifiable name for user
+    var rand_id = strWithLeadingZeros(randInt(0, 10000), 4);
+    this.id = op + '-' + rand_id; // to uniquely identify node
     this.createPorts = function(n_ports, port_type, port_defaults) {
         var box_corner = this.group.firstChild.point;
         for (var i = 0; i < n_ports; i++) {
@@ -279,6 +295,6 @@ function onMouseUp(event) {
 
 
 // create example node
-var node1 = new Node([200, 300], 3, 4, box_defaults);
-var node2 = new Node([700, 200], 2, 2, box_defaults);
-var node2 = new Node([700, 600], 2, 1, box_defaults);
+var node1 = new Node('op1', 3, 4, [200, 300], box_defaults);
+var node2 = new Node('op2', 2, 2, [700, 200], box_defaults);
+var node2 = new Node('0p3', 2, 1, [700, 600], box_defaults);
