@@ -195,6 +195,14 @@ function Conduit(props, output, param) {
         this.output = undefined;
         this.line.remove();
         this.line = undefined;
+
+        // remove from graph
+        for (key in graph.conduits) {
+            var conduit = graph.conduits[key];
+            if (this === conduit) {
+                graph.conduits.splice(key, 1);
+            }
+        }
     }
 
     // add references to link conduit and output
