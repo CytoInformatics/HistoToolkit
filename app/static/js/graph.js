@@ -138,6 +138,41 @@ function Node(op, n_params, n_outputs, position, box_props) {
         }
     }
 
+    this.delete = function() {
+        // remove all ports and their conduits and paper paths
+        for (key in this.params) {
+            var param = this.params[key];
+            if (param.conduit instanceof Conduit) {
+                param.conduit.delete();
+            }
+            param.conduit = undefined;
+            param.remove();
+            this.params[key] = undefined;
+        }
+        for (key in this.outputs) {
+            var output = this.outputs[key];
+            if (output.conduit instanceof Conduit) {
+                output.conduit.delete();
+            }
+            output.conduit = undefined;
+            output.remove();
+            this.outputs[key] = undefined;
+        }
+
+        // remove own group
+        this.group.remove();
+        this.group = undefined;
+
+        // remove self from graph.nodes
+        for (key in graph.nodes) {
+            var node = graph.nodes[key];
+            if (this === node) {
+                graph.nodes.splice(key, 1);
+            }
+        }
+
+    }
+
     // create box for node base
     var n_ports = n_params > n_outputs ? n_params : n_outputs;
     var sp = node_props.port_spacing;
@@ -159,7 +194,7 @@ function Node(op, n_params, n_outputs, position, box_props) {
 
     // create group for all items
     this.group = new Group([box]);
-    this.group.obj_type = "node";
+    this.group.node = this;
 
     // create ports for params and outputs
     this.createPorts(n_params, "param", param_defaults);
@@ -196,7 +231,7 @@ function Conduit(props, output, param) {
         this.line.remove();
         this.line = undefined;
 
-        // remove from graph
+        // remove self from graph.conduits
         for (key in graph.conduits) {
             var conduit = graph.conduits[key];
             if (this === conduit) {
@@ -224,7 +259,7 @@ function Conduit(props, output, param) {
 }
 
 // event handlers
-var draggingNode = undefined;
+var draggingNodeBox = undefined;
 var drawingConduit = undefined;
 function onMouseDown(event) {
     var hit_result = project.hitTest(event.point, hitOptions);
@@ -239,18 +274,18 @@ function onMouseDown(event) {
 
             // // create conduit
             drawingConduit = new Conduit(conduit_props, item.parent);
-        } else if (item.parent.obj_type == "node") {
-            draggingNode = item.parent;
+        } else if (item.parent.node instanceof Node) {
+            draggingNodeBox = item.parent;
         }
     }
 }
 
 function onMouseDrag(event) {
-    if (draggingNode) {
+    if (draggingNodeBox) {
         // move node
-        draggingNode.position += event.delta;
-        for (key in draggingNode.children) {
-            var child = draggingNode.children[key];
+        draggingNodeBox.position += event.delta;
+        for (key in draggingNodeBox.children) {
+            var child = draggingNodeBox.children[key];
             if (!child.obj_type || !child.conduit) {
                 continue;
             }
@@ -296,7 +331,7 @@ function onMouseUp(event) {
     }
 
     drawingConduit = undefined;
-    draggingNode = undefined;
+    draggingNodeBox = undefined;
 
     console.log(graph.jsonify());
 }
