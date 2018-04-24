@@ -4,6 +4,8 @@ A graphical user interface for prototyping histology and cytology image processi
 
 ### To-do
 * Retrieve list of available ops from server at page load
+* Convert valid_ops to a class
+* Make add_valid_op and jsonify methods for valid_ops class
 * Assign param and output names to client side
 * prevent loops from being formed in net (server-side for security and client-side for user-friendliness)
 

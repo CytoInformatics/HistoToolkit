@@ -139,17 +139,31 @@ def resize_image(data, output_shape):
 # Object that lists all valid operations
 valid_ops = {}
 
-def add_valid_op(valid_ops, op, outputs):
+def add_valid_op(valid_ops, op, category, outputs):
+    n_requireds = op.__code__.co_argcount
+    default_vars = op.__defaults__
+    default_vars = [] if isinstance(default_vars, type(None)) else default_vars
+    n_defaults = len(default_vars)
+    varnames = op.__code__.co_varnames
+    param_required = [True] * n_requireds + [False] * n_defaults
+    param_defaults = [None] * n_requireds + default_vars
     valid_ops[op.__name__] = {
         "op": op,
-        "params": op.__code__.co_varnames,
+        "category": category,
+        "params": [
+            {
+                "name": n,
+                "required": r,
+                "defaults": d
+            } for n, r, d in zip(varnames, param_required, param_defaults)
+        ],
         "outputs": opnet.ensure_is_listlike(outputs)
     }
     return valid_ops
 
-valid_ops = add_valid_op(valid_ops, convert_data_type, "data")
-valid_ops = add_valid_op(valid_ops, rescale_range, "data")
-valid_ops = add_valid_op(valid_ops, resize_image, "data")
+valid_ops = add_valid_op(valid_ops, convert_data_type, "Data", "data")
+valid_ops = add_valid_op(valid_ops, rescale_range, "Data", "data")
+valid_ops = add_valid_op(valid_ops, resize_image, "Image", "data")
 
 
 # TESTING ONLY
