@@ -59,7 +59,7 @@ var output_defaults = {
     hoverFillColor: 'red'
 };
 
-var node_props = {
+var node_defaults = {
     port_radius: 15,
     port_spacing: 10,
     text_offset: [0, -10]
@@ -101,7 +101,7 @@ function strWithLeadingZeros(number, n_zeros) {
     return numstr;
 }
 
-function Node(op, n_params, n_outputs, position, box_props) {
+function Node(op, n_params, n_outputs, position, node_props, box_props) {
     this.params = [];
     this.outputs = [];
     this.op_name = op;            // to identify op on server
@@ -110,6 +110,8 @@ function Node(op, n_params, n_outputs, position, box_props) {
     this.id = op + '-' + rand_id; // to uniquely identify node
     this.createPorts = function(n_ports, port_type, port_defaults) {
         var box_corner = this.group.firstChild.point;
+        var sp = node_props.port_spacing;
+        var r = node_props.port_radius;
         for (var i = 0; i < n_ports; i++) {
             // create port group
             var port = new Group();
@@ -190,7 +192,7 @@ function Node(op, n_params, n_outputs, position, box_props) {
         point: position,
         size: [box_w, box_h],
     }); 
-    assignProperties(box, box_defaults);
+    assignProperties(box, box_props);
     box.onMouseEnter = function(event) {
         this.previousStrokeColor = this.strokeColor;
         this.strokeColor = this.hoverStrokeColor;
@@ -354,6 +356,6 @@ function onMouseUp(event) {
 
 
 // create example node
-var node1 = new Node('op1', 3, 4, [200, 300], box_defaults);
-var node2 = new Node('op2', 2, 2, [700, 200], box_defaults);
-var node2 = new Node('0p3', 2, 1, [700, 600], box_defaults);
+var node1 = new Node('op1', 3, 4, [200, 300], node_defaults, box_defaults);
+var node2 = new Node('op2', 2, 2, [700, 200], node_defaults, box_defaults);
+var node2 = new Node('0p3', 2, 1, [700, 600], node_defaults, box_defaults);
