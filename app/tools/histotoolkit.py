@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import warnings
 from PIL import Image
 from imageio import imread, get_reader
 from skimage.transform import resize
@@ -139,31 +140,43 @@ def resize_image(data, output_shape):
 # Object that lists all valid operations
 valid_ops = {}
 
-def add_valid_op(valid_ops, op, category, outputs):
-    n_requireds = op.__code__.co_argcount
-    default_vars = op.__defaults__
-    default_vars = [] if isinstance(default_vars, type(None)) else default_vars
-    n_defaults = len(default_vars)
-    varnames = op.__code__.co_varnames
-    param_required = [True] * n_requireds + [False] * n_defaults
-    param_defaults = [None] * n_requireds + default_vars
-    valid_ops[op.__name__] = {
-        "op": op,
-        "category": category,
-        "params": [
-            {
-                "name": n,
-                "required": r,
-                "defaults": d
-            } for n, r, d in zip(varnames, param_required, param_defaults)
-        ],
-        "outputs": opnet.ensure_is_listlike(outputs)
-    }
-    return valid_ops
+class OperationsManager:
+    def __init__(self, ops=None):
+        self.ops = {}
+        if ops is not None:
+            try:
+                for op_ins in ops:
+                    self.add_valid_op(*op_ins)
+            except IndexError:
+                warnings.warn("input ops is not iterable.")
 
-valid_ops = add_valid_op(valid_ops, convert_data_type, "Data", "data")
-valid_ops = add_valid_op(valid_ops, rescale_range, "Data", "data")
-valid_ops = add_valid_op(valid_ops, resize_image, "Image", "data")
+    def add_valid_op(self, op, category, outputs):
+        n_requireds = op.__code__.co_argcount
+        default_vars = op.__defaults__
+        default_vars = [] if isinstance(default_vars, type(None)) else default_vars
+        n_defaults = len(default_vars)
+        varnames = op.__code__.co_varnames
+        param_required = [True] * n_requireds + [False] * n_defaults
+        param_defaults = [None] * n_requireds + default_vars
+        self.ops[op.__name__] = {
+            "op": op,
+            "category": category,
+            "params": [
+                {
+                    "name": n,
+                    "required": r,
+                    "defaults": d
+                } for n, r, d in zip(varnames, param_required, param_defaults)
+            ],
+            "outputs": opnet.ensure_is_listlike(outputs)
+        }
+
+ops = [
+    [convert_data_type, "Data", "data"],
+    [rescale_range, "Data", "data"],
+    [resize_image, "Image", "data"]
+]
+op_manager = OperationsManager(ops)
 
 
 # TESTING ONLY
