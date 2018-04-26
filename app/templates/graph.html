@@ -6,12 +6,34 @@
     <title>HistoToolKit Graph</title>
 
     <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/graph.css') }}">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
   </head>
 
   <body>
-    <canvas id="graphCanvas" resize></canvas>
+    <div id="master" class="center-items">
+        <div id="options">
+            <div id="dropdown-1" class="dropdown">
+                <div id="header-1" class="dropdown-header">
+                    <div id="button-1" class="dropdown-icon center-items">🠷</div>
+                    <div class="dropdown-name hcenter-items">Operations</div>
+                </div>
+            </div>
+            <div id="options-1" class="dropdown-options"></div>
+        </div>
+        <div id="viewer">
+            <div id="tabs">
+                <div id="tab-1" class="tab center-items">Graph</div>
+                <div id="tab-2" class="tab center-items">Image</div>
+                <div id="tab-3" class="tab center-items">Output</div>
+                <div id="tab-4" class="tab center-items">Settings</div>
+            </div>
+            <div id="content">
+              <canvas id="graphCanvas" resize></canvas>
+            </div>
+        </div>
+    </div>
 
     <!-- Javascript -->
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

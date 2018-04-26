@@ -360,12 +360,19 @@ $(document).ready(function() {
         url: '/available-operations',
         async: true,
         success: function(obj){
-            console.log(obj);
+            // create example nodes
+            var position = [200, 300];
+            for (key in obj) {
+                new Node(
+                    key, 
+                    obj[key].params.length, 
+                    obj[key].outputs.length,
+                    position, 
+                    node_defaults, 
+                    box_defaults
+                );
+                position = [position[0] + 200, position[1] + 200];
+            }
         }
     });
 });
-
-// create example node
-var node1 = new Node('op1', 3, 4, [200, 300], node_defaults, box_defaults);
-var node2 = new Node('op2', 2, 2, [700, 200], node_defaults, box_defaults);
-var node2 = new Node('op3', 2, 1, [700, 600], node_defaults, box_defaults);
