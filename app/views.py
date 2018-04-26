@@ -24,6 +24,9 @@ def graph():
 
 @app.route('/available-operations')
 def available_operations():
+    """
+    Return json object with available operations and parameters.
+    """
     return jsonify(htk.op_manager.ops)
 
 @app.route('/set-folder', methods=['POST'])

@@ -141,6 +141,10 @@ def resize_image(data, output_shape):
 valid_ops = {}
 
 class OperationsManager:
+    """
+    Manager class for available toolkit functions.
+    """
+
     def __init__(self, ops=None):
         self.ops = {}
         if ops is not None:
@@ -151,6 +155,15 @@ class OperationsManager:
                 warnings.warn("input ops is not iterable.")
 
     def add_valid_op(self, op, category, outputs):
+        """
+        Add operation to dict of valid operations.
+
+        Inputs:
+            op: Reference to function.
+            category: Name of category function belongs to.
+            outputs: Name or list of names of output variables.
+        """
+
         n_requireds = op.__code__.co_argcount
         default_vars = op.__defaults__
         default_vars = [] if isinstance(default_vars, type(None)) else default_vars
@@ -170,14 +183,12 @@ class OperationsManager:
             "outputs": opnet.ensure_is_listlike(outputs)
         }
 
-
-
-ops = [
+op_manager = OperationsManager([
     [convert_data_type, "Data", "data"],
     [rescale_range, "Data", "data"],
     [resize_image, "Image", "data"]
-]
-op_manager = OperationsManager(ops)
+])
+
 
 
 # TESTING ONLY

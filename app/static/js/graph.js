@@ -368,4 +368,4 @@ $(document).ready(function() {
 // create example node
 var node1 = new Node('op1', 3, 4, [200, 300], node_defaults, box_defaults);
 var node2 = new Node('op2', 2, 2, [700, 200], node_defaults, box_defaults);
-var node2 = new Node('0p3', 2, 1, [700, 600], node_defaults, box_defaults);
+var node2 = new Node('op3', 2, 1, [700, 600], node_defaults, box_defaults);
