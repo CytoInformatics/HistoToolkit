@@ -79,6 +79,24 @@ html, body {
         background-color: grey;
     }
 
+    .dropdown-options > .folder {
+        margin: 0;
+        background-color: white;
+    }
+
+    .folder > .folder-label {
+        padding: 0 0 0.2em 0.4em;
+        font-size: 1.2em;
+    }
+
+    .folder > .folder-item {
+        padding-left: 1em;
+    }
+
+    .folder > .folder-item:nth-child(odd) {
+        background-color: #dddddd;
+    }
+
     .do-show {
         border-bottom: 1px solid black;
     }

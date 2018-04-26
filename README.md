@@ -3,9 +3,8 @@
 A graphical user interface for prototyping histology and cytology image processing workflows.
 
 ### To-do
-* Retrieve list of available ops from server at page load
-* Make add_valid_op and jsonify methods for valid_ops class
-* Assign param and output names to client side
+* Attach event to collapse folders in menu 
+* Make options menu scrollable if list is too long
 * prevent loops from being formed in net (server-side for security and client-side for user-friendliness)
 
 #### Notes

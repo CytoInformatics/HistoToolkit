@@ -354,15 +354,63 @@ function onMouseUp(event) {
     console.log(graph.jsonify());
 }
 
+Array.prototype.unique = function() {
+    var arr = [];
+    for(var i = 0; i < this.length; i++) {
+        if(!arr.includes(this[i])) {
+            arr.push(this[i]);
+        }
+    }
+    return arr; 
+}
+
+var folder_id_root = "folder-";
 $(document).ready(function() {
     $.ajax({
         type: 'GET',
         url: '/available-operations',
         async: true,
         success: function(obj){
-            // create example nodes
+            var ops_menu = $("#options-1");
+
+            // get unique categories from response
+            var categories = [];
+            for (key in obj) {
+                categories.push(obj[key].category);
+            }
+            categories = categories.unique();
+
+            // create category folders in ops_menu
+            for (var i = 0; i < categories.length; i++) {
+                // create folder element
+                var cat = categories[i];
+                var folder = document.createElement("div");
+                folder.id = folder_id_root + cat;
+                folder.classList.add("folder");
+
+                // create folder label element
+                var folder_label = document.createElement("div");
+                folder_label.innerHTML = cat;
+                folder_label.classList.add("folder-label");
+
+                // attach label to folder and folder to menu
+                folder.append(folder_label)
+                ops_menu.append(folder);
+            }
+
+            // create operation items in folders of ops_menu
             var position = [200, 300];
             for (key in obj) {
+                // create menu item element
+                var newitem = document.createElement("div");
+                newitem.innerHTML = key;
+                newitem.classList.add("folder-item");
+
+                // attach to folder element
+                var folder_id = "#" + folder_id_root + obj[key].category;
+                $(folder_id).append(newitem);
+
+                // add nodes for demonstration
                 new Node(
                     key, 
                     obj[key].params.length, 
