@@ -159,7 +159,6 @@ class OperationsManager:
         param_required = [True] * n_requireds + [False] * n_defaults
         param_defaults = [None] * n_requireds + default_vars
         self.ops[op.__name__] = {
-            "op": op,
             "category": category,
             "params": [
                 {
@@ -170,6 +169,8 @@ class OperationsManager:
             ],
             "outputs": opnet.ensure_is_listlike(outputs)
         }
+
+
 
 ops = [
     [convert_data_type, "Data", "data"],

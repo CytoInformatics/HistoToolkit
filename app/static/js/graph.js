@@ -354,6 +354,16 @@ function onMouseUp(event) {
     console.log(graph.jsonify());
 }
 
+$(document).ready(function() {
+    $.ajax({
+        type: 'GET',
+        url: '/available-operations',
+        async: true,
+        success: function(obj){
+            console.log(obj);
+        }
+    });
+});
 
 // create example node
 var node1 = new Node('op1', 3, 4, [200, 300], node_defaults, box_defaults);

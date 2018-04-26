@@ -1,8 +1,8 @@
+import os
 from app import app
 from flask import request, render_template, jsonify
 from .tools import histotoolkit as htk
 from .tools import opnet
-import os
 
 app.config["DATA_FOLDER"] = './app/test'
 
@@ -19,9 +19,12 @@ def graph():
     """
     Serve the graph application page.
     """
-    print(htk.op_manager.ops)
 
     return render_template('graph.html')
+
+@app.route('/available-operations')
+def available_operations():
+    return jsonify(htk.op_manager.ops)
 
 @app.route('/set-folder', methods=['POST'])
 def set_folder():
