@@ -8,31 +8,31 @@ var graph = {
         obj.conduits = [];
 
         // loop nodes
-        for (key in this.nodes) {
-            var node = this.nodes[key];
+        for (var i = 0; i < this.nodes.length; i++) {
+            var node = this.nodes[i];
             if (node instanceof Node) {
                 var node_obj = new Object();
-                node_obj.name = "node" + key
+                node_obj.name = "node" + i
                 node_obj.params = [];
                 node_obj.outputs = [];
-                for (key in node.params) {
-                    var param_obj = node.params[key];
-                    node_obj.params.push(param_obj.obj_type + key);
+                for (var j = 0; j < node.params.length; j++) {
+                    var param_obj = node.params[j];
+                    node_obj.params.push(param_obj.obj_type + j);
                 }
-                for (key in node.outputs) {
-                    var output_obj = node.outputs[key];
-                    node_obj.outputs.push(param_obj.obj_type + key);
+                for (var j = 0; j < node.outputs.length; j++) {
+                    var output_obj = node.outputs[j];
+                    node_obj.outputs.push(param_obj.obj_type + j);
                 }
                 obj.nodes.push(node_obj);
             }
         }
 
         // loop conduits
-        for (key in this.conduits) {
-            var conduit = this.conduits[key];
+        for (var i = 0; i < this.conduits.length; i++) {
+            var conduit = this.conduits[i];
             if (conduit instanceof Conduit) {
                 var conduit_obj = new Object();
-                conduit_obj.name = "conduit" + key;
+                conduit_obj.name = "conduit" + i;
                 conduit_obj.output = "output";
                 conduit_obj.param = "param";
                 obj.conduits.push(conduit_obj);
@@ -150,37 +150,36 @@ function Node(op, n_params, n_outputs, position, node_props, box_props) {
 
     this.delete = function() {
         // remove all ports and their conduits and paper paths
-        for (key in this.params) {
-            var param = this.params[key];
+        for (var i = 0; i < this.params.length; i++) {
+            var param = this.params[i];
             if (param.conduit instanceof Conduit) {
                 param.conduit.delete();
             }
             param.conduit = undefined;
-            param.remove();
-            this.params[key] = undefined;
+            param.children[0].remove();
         }
-        for (key in this.outputs) {
-            var output = this.outputs[key];
+        this.params = [];
+        for (var i = 0; i < this.outputs.length; i++) {
+            var output = this.outputs[i];
             if (output.conduit instanceof Conduit) {
                 output.conduit.delete();
             }
             output.conduit = undefined;
-            output.remove();
-            this.outputs[key] = undefined;
+            output.children[0].remove();
         }
+        this.outputs = [];
 
         // remove own group
         this.group.remove();
         this.group = undefined;
 
         // remove self from graph.nodes
-        for (key in graph.nodes) {
-            var node = graph.nodes[key];
+        for (var i = 0; i < graph.nodes.length; i++) {
+            var node = graph.nodes[i];
             if (this === node) {
-                graph.nodes.splice(key, 1);
+                graph.nodes.splice(i, 1);
             }
         }
-
     }
 
     // create box for node base
@@ -251,10 +250,10 @@ function Conduit(props, output, param) {
         this.line = undefined;
 
         // remove self from graph.conduits
-        for (key in graph.conduits) {
-            var conduit = graph.conduits[key];
+        for (var i = 0; i < graph.conduits.length; i++) {
+            var conduit = graph.conduits[i];
             if (this === conduit) {
-                graph.conduits.splice(key, 1);
+                graph.conduits.splice(i, 1);
             }
         }
     }
@@ -293,7 +292,7 @@ function onMouseDown(event) {
         ) {
             // delete node
             console.log(hit_result.item.parent.node);
-            // hit_result.item.parent.node.delete();
+            hit_result.item.parent.node.delete();
         }
     } else {
     // SINGLE-CLICK
@@ -320,8 +319,8 @@ function onMouseDrag(event) {
     if (draggingNodeBox) {
         // move node
         draggingNodeBox.position += event.delta;
-        for (key in draggingNodeBox.children) {
-            var child = draggingNodeBox.children[key];
+        for (var i = 0; i < draggingNodeBox.children.length; i++) {
+            var child = draggingNodeBox.children[i];
             if (!child.obj_type || !child.conduit) {
                 continue;
             }
@@ -405,7 +404,7 @@ $("#options-1").click(function(event) {
 
 function newNode(key, position) {
     var obj = graph.valid_ops[key];
-    new Node(
+    return new Node(
         key, 
         obj.params.length, 
         obj.outputs.length,
