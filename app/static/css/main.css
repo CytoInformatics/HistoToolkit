@@ -27,6 +27,8 @@ html, body {
 }
 
 #options {
+    display: flex;
+    flex-direction: column;
     width: 20%;
     height: 95%;
 
@@ -73,10 +75,11 @@ html, body {
     }
 
     .dropdown-options {
-        height: 0%;
+        height: 95%;
         width: 100%;
+        overflow-y: auto;
 
-        background-color: grey;
+        background-color: white;
     }
 
     .dropdown-options > .folder {

@@ -4,7 +4,7 @@ A graphical user interface for prototyping histology and cytology image processi
 
 ### To-do
 * Attach event to collapse folders in menu 
-* Make options menu scrollable if list is too long
+* Enable click-dragging menu item to canvas to create node
 * prevent loops from being formed in net (server-side for security and client-side for user-friendliness)
 
 #### Notes
