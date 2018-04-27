@@ -286,11 +286,7 @@ function onMouseDown(event) {
     var hit_result = project.hitTest(event.point, hitOptions);
     if (Date.now() - lastClickTime < doubleClickDelta) {
     // DOUBLE-CLICK
-        if (hit_result && hit_result.item && hit_result.item.parent.node) {
-            $("#float-menu").removeClass("hidden");
-        } else {
-            $("#float-menu").addClass("hidden");
-        }
+        
     } else {
     // SINGLE-CLICK
         if (hit_result && hit_result.item) {
@@ -335,6 +331,9 @@ function onMouseDrag(event) {
 }
 
 function onMouseUp(event) {
+    // set click time
+    lastClickTime = Date.now();
+
     if (drawingConduit) {    
         var hit_result = project.hitTest(event.point, hitOptions);
         if (
@@ -362,11 +361,14 @@ function onMouseUp(event) {
         }
     }
 
+    if (draggingNodeBox) {
+        $("#float-menu").removeClass("hidden");
+    } else {
+        $("#float-menu").addClass("hidden");
+    }
+
     drawingConduit = undefined;
     draggingNodeBox = undefined;
-
-    // set click time
-    lastClickTime = Date.now();
 }
 
 Array.prototype.unique = function() {
