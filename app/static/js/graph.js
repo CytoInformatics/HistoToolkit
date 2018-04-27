@@ -10,18 +10,19 @@ var graph = {
         // loop nodes
         for (var i = 0; i < this.nodes.length; i++) {
             var node = this.nodes[i];
+
+            var op_info = graph.valid_ops[node.op_name];
             if (node instanceof Node) {
                 var node_obj = new Object();
-                node_obj.name = "node" + i
+                node_obj.name = node.op_id;
+                node_obj.op = node.op_name;
                 node_obj.params = [];
                 node_obj.outputs = [];
                 for (var j = 0; j < node.params.length; j++) {
-                    var param_obj = node.params[j];
-                    node_obj.params.push(param_obj.obj_type + j);
+                    node_obj.params.push(op_info.params[j].name);
                 }
                 for (var j = 0; j < node.outputs.length; j++) {
-                    var output_obj = node.outputs[j];
-                    node_obj.outputs.push(param_obj.obj_type + j);
+                    node_obj.outputs.push(op_info.outputs[j]);
                 }
                 obj.nodes.push(node_obj);
             }
@@ -31,10 +32,18 @@ var graph = {
         for (var i = 0; i < this.conduits.length; i++) {
             var conduit = this.conduits[i];
             if (conduit instanceof Conduit) {
+                var output = conduit.output;
+                var param = conduit.param;
+
+                var output_op = graph.valid_ops[output.node.op_name];
+                var param_op = graph.valid_ops[param.node.op_name];
+
                 var conduit_obj = new Object();
-                conduit_obj.name = "conduit" + i;
-                conduit_obj.output = "output";
-                conduit_obj.param = "param";
+                conduit_obj.name = "conduit-" + i;
+                conduit_obj.output_node = output.node.op_id;
+                conduit_obj.output = output_op.outputs[output.num];
+                conduit_obj.param_node = param.node.op_id;
+                conduit_obj.param = param_op.params[param.num].name;
                 obj.conduits.push(conduit_obj);
             }
         }
@@ -132,7 +141,9 @@ function Node(op, n_params, n_outputs, position, node_props, box_props) {
         for (var i = 0; i < n_ports; i++) {
             // create port group
             var port = new Group();
+            port.num = i;
             port.obj_type = port_type;
+            port.node = this;
 
             // create port path
             var offset = i * (sp + 2 * r) + sp + r;
@@ -307,7 +318,6 @@ function onMouseDown(event) {
             && hit_result.item.parent.node instanceof Node
         ) {
             // delete node
-            console.log(hit_result.item.parent.node);
             hit_result.item.parent.node.delete();
         }
     } else {

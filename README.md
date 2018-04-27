@@ -3,12 +3,13 @@
 A graphical user interface for prototyping histology and cytology image processing workflows.
 
 ### To-do
-* Update jsonify with useful values for node
 * Implement /run-graph route
+* Change "op_id" property to "node_id" for clarity
 * Attach event to collapse folders in menu
 * Prevent loops from being formed in net (server-side for security and client-side for user-friendliness)
 * Create file menu to swap with operations menu
 * Make help message for each operation (based on docstring?)
+* Add node info in float-menu (op_name, op_id, display_name, docstring, param & output names)
 
 #### Notes
 * Launch server
