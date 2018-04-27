@@ -108,7 +108,7 @@ function Node(op, n_params, n_outputs, position, node_props, box_props) {
     this.op_name = op;            // to identify op on server
     this.display_name = op;       // modifiable name for user
     var rand_id = strWithLeadingZeros(randInt(0, 10000), 4);
-    this.id = op + '-' + rand_id; // to uniquely identify node
+    this.op_id = op + '-' + rand_id; // to uniquely identify node
     this.createPorts = function(n_ports, port_type, port_defaults) {
         var box_corner = this.group.firstChild.point;
         var sp = node_props.port_spacing;
@@ -280,23 +280,36 @@ function Conduit(props, output, param) {
 // event handlers
 var draggingNodeBox = undefined;
 var drawingConduit = undefined;
+var lastClickTime = Date.now();
+var doubleClickDelta = 300;
 function onMouseDown(event) {
     var hit_result = project.hitTest(event.point, hitOptions);
-    if (hit_result && hit_result.item) {
-        var item = hit_result.item;
+    if (Date.now() - lastClickTime < doubleClickDelta) {
+    // DOUBLE-CLICK
+        if (hit_result && hit_result.item && hit_result.item.parent.node) {
+            $("#float-menu").removeClass("hidden");
+        } else {
+            $("#float-menu").addClass("hidden");
+        }
+    } else {
+    // SINGLE-CLICK
+        if (hit_result && hit_result.item) {
+            var item = hit_result.item;
 
-        // check group item belongs to
-        if (item.parent.obj_type == "output") {
-            if (item.parent.conduit != undefined) {
-                item.parent.conduit.delete();
+            // check group item belongs to
+            if (item.parent.obj_type == "output") {
+                if (item.parent.conduit != undefined) {
+                    item.parent.conduit.delete();
+                }
+
+                // // create conduit
+                drawingConduit = new Conduit(conduit_props, item.parent);
+            } else if (item.parent.node instanceof Node) {
+                draggingNodeBox = item.parent;
             }
-
-            // // create conduit
-            drawingConduit = new Conduit(conduit_props, item.parent);
-        } else if (item.parent.node instanceof Node) {
-            draggingNodeBox = item.parent;
         }
     }
+
 }
 
 function onMouseDrag(event) {
@@ -351,6 +364,9 @@ function onMouseUp(event) {
 
     drawingConduit = undefined;
     draggingNodeBox = undefined;
+
+    // set click time
+    lastClickTime = Date.now();
 }
 
 Array.prototype.unique = function() {
@@ -363,15 +379,17 @@ Array.prototype.unique = function() {
     return arr; 
 }
 
+// add click handler to options menu
 $("#options-1").click(function(event) {
     event.preventDefault();
 
     if (event.target !== event.currentTarget 
         && $(event.target).hasClass("folder-item")) {
+        event.stopPropagation();
 
         // create node based on name
         var op = $(event.target)[0].value;
-        newNode(op, [500, 500]);
+        newNode(op, [300, 300]);
     }
 })
 

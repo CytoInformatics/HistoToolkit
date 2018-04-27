@@ -134,6 +134,24 @@ html, body {
     }
 
     #content {
+        position: relative;
         height: 95%;
         width: 100%;
     }
+
+#float-menu {
+    position: absolute;
+    width: 30%;
+    min-height: 40%;
+    bottom: 0em;
+    right: 0em;
+
+    border-top: 1px solid black;
+    border-left: 1px solid black;
+    border-top-left-radius: 2em;
+    background-color: yellow;
+}
+
+.hidden {
+    visibility: hidden;
+}

@@ -6,6 +6,8 @@ A graphical user interface for prototyping histology and cytology image processi
 * Attach event to collapse folders in menu 
 * Delete nodes
 * Prevent loops from being formed in net (server-side for security and client-side for user-friendliness)
+* Create file menu to swap with operations menu
+* Select nodes with single click (no dragging, onMouseUp) and open menu
 * Make help message for each operation (based on docstring?)
 
 #### Notes
