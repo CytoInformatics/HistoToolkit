@@ -286,7 +286,15 @@ function onMouseDown(event) {
     var hit_result = project.hitTest(event.point, hitOptions);
     if (Date.now() - lastClickTime < doubleClickDelta) {
     // DOUBLE-CLICK
-        
+        if (
+            hit_result
+            && hit_result.item
+            && hit_result.item.parent.node instanceof Node
+        ) {
+            // delete node
+            console.log(hit_result.item.parent.node);
+            // hit_result.item.parent.node.delete();
+        }
     } else {
     // SINGLE-CLICK
         if (hit_result && hit_result.item) {
