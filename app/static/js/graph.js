@@ -1,6 +1,7 @@
 var graph = {
     nodes: [],
     conduits: [],
+    valid_ops: {},
     jsonify: function() {
         var obj = new Object();
         obj.nodes = [];
@@ -350,8 +351,6 @@ function onMouseUp(event) {
 
     drawingConduit = undefined;
     draggingNodeBox = undefined;
-
-    console.log(graph.jsonify());
 }
 
 Array.prototype.unique = function() {
@@ -364,6 +363,30 @@ Array.prototype.unique = function() {
     return arr; 
 }
 
+$("#options-1").click(function(event) {
+    event.preventDefault();
+
+    if (event.target !== event.currentTarget 
+        && $(event.target).hasClass("folder-item")) {
+
+        // create node based on name
+        var op = $(event.target)[0].value;
+        newNode(op, [500, 500]);
+    }
+})
+
+function newNode(key, position) {
+    var obj = graph.valid_ops[key];
+    new Node(
+        key, 
+        obj.params.length, 
+        obj.outputs.length,
+        position, 
+        node_defaults, 
+        box_defaults
+    );
+}
+
 var folder_id_root = "folder-";
 $(document).ready(function() {
     $.ajax({
@@ -373,10 +396,12 @@ $(document).ready(function() {
         success: function(obj){
             var ops_menu = $("#options-1");
 
-            // get unique categories from response
+            // get unique categories and available operations from response
             var categories = [];
             for (key in obj) {
                 categories.push(obj[key].category);
+
+                graph.valid_ops[key] = obj[key];
             }
             categories = categories.unique();
 
@@ -399,27 +424,16 @@ $(document).ready(function() {
             }
 
             // create operation items in folders of ops_menu
-            var position = [200, 300];
             for (key in obj) {
                 // create menu item element
                 var newitem = document.createElement("div");
                 newitem.innerHTML = key;
+                newitem.value = key;
                 newitem.classList.add("folder-item");
 
                 // attach to folder element
                 var folder_id = "#" + folder_id_root + obj[key].category;
                 $(folder_id).append(newitem);
-
-                // add nodes for demonstration
-                new Node(
-                    key, 
-                    obj[key].params.length, 
-                    obj[key].outputs.length,
-                    position, 
-                    node_defaults, 
-                    box_defaults
-                );
-                position = [position[0] + 200, position[1] + 200];
             }
         }
     });

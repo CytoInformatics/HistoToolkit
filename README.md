@@ -4,8 +4,9 @@ A graphical user interface for prototyping histology and cytology image processi
 
 ### To-do
 * Attach event to collapse folders in menu 
-* Enable click-dragging menu item to canvas to create node
-* prevent loops from being formed in net (server-side for security and client-side for user-friendliness)
+* Delete nodes
+* Prevent loops from being formed in net (server-side for security and client-side for user-friendliness)
+* Make help message for each operation (based on docstring?)
 
 #### Notes
 * Launch server
