@@ -40,6 +40,22 @@ var graph = {
         }
 
         return JSON.stringify(obj);
+    },
+    run: function() {
+        var formdata = {
+          'graph': this.jsonify()
+        };
+        $.ajax({
+            type: 'POST',
+            url: '/run-graph',
+            data: formdata,
+            success: function(response) {
+                console.log(response);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log("ERROR: " + textStatus + " " + errorThrown);
+            }
+        });
     }
 };
 
@@ -388,6 +404,26 @@ Array.prototype.unique = function() {
     return arr; 
 }
 
+// add click handler to viewer tabs
+$("#tabs").click(function(event) {
+
+    event.preventDefault();
+
+    if (event.target !== event.currentTarget) {
+        if (event.target.id == "tab-1") {
+            console.log("tab-1");
+        } else if (event.target.id == "tab-2") {
+            console.log("tab-2");
+        } else if (event.target.id == "tab-3") {
+            console.log("tab-3");
+        } else if (event.target.id == "tab-4") {
+            console.log("tab-4");
+        } else if (event.target.id == "tab-5") {
+            graph.run();
+        }
+    }
+})
+
 // add click handler to options menu
 $("#options-1").click(function(event) {
     event.preventDefault();
@@ -400,7 +436,7 @@ $("#options-1").click(function(event) {
         var op = $(event.target)[0].value;
         newNode(op, [300, 300]);
     }
-})
+});
 
 function newNode(key, position) {
     var obj = graph.valid_ops[key];

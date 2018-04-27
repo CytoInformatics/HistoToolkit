@@ -133,6 +133,11 @@ html, body {
 
     }
 
+    .run-button {
+        color: white;
+        background-color: red;
+    }
+
     #content {
         position: relative;
         height: 95%;

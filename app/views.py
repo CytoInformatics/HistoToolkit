@@ -68,6 +68,12 @@ def count_data_types():
     out = htk.count_data_types(img_names)
     return jsonify(out)
 
+@app.route('/run-graph', methods=['POST'])
+def run_graph():
+    graph_schematic = request.form['graph']
+    print(graph_schematic)
+    return graph_schematic
+
 @app.route('/run-ops', methods=['POST'])
 def run_ops():
     """
