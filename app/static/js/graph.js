@@ -477,6 +477,7 @@ $(document).ready(function() {
                 graph.valid_ops[key] = obj[key];
             }
             categories = categories.unique();
+            graph.op_categories = categories;
 
             // create category folders in ops_menu
             for (var i = 0; i < categories.length; i++) {

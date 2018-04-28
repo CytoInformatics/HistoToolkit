@@ -173,6 +173,7 @@ class OperationsManager:
         param_defaults = [None] * n_requireds + default_vars
         self.ops[op.__name__] = {
             "category": category,
+            "docstring": op.__doc__,
             "params": [
                 {
                     "name": n,
@@ -188,12 +189,3 @@ op_manager = OperationsManager([
     [rescale_range, "Data", "data"],
     [resize_image, "Image", "data"]
 ])
-
-
-
-# TESTING ONLY
-def test_mult(data, arg1):
-    return {'data': data * arg1}
-
-def test_power(data, arg1):
-    return {'data': data**arg1}
