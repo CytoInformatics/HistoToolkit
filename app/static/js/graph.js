@@ -14,7 +14,7 @@ var graph = {
             var op_info = graph.valid_ops[node.op_name];
             if (node instanceof Node) {
                 var node_obj = new Object();
-                node_obj.name = node.op_id;
+                node_obj.name = node.node_id;
                 node_obj.op = node.op_name;
                 node_obj.params = [];
                 node_obj.outputs = [];
@@ -40,9 +40,9 @@ var graph = {
 
                 var conduit_obj = new Object();
                 conduit_obj.name = "conduit-" + i;
-                conduit_obj.output_node = output.node.op_id;
+                conduit_obj.output_node = output.node.node_id;
                 conduit_obj.output = output_op.outputs[output.num];
-                conduit_obj.param_node = param.node.op_id;
+                conduit_obj.param_node = param.node.node_id;
                 conduit_obj.param = param_op.params[param.num].name;
                 obj.conduits.push(conduit_obj);
             }
@@ -133,7 +133,7 @@ function Node(op, n_params, n_outputs, position, node_props, box_props) {
     this.op_name = op;            // to identify op on server
     this.display_name = op;       // modifiable name for user
     var rand_id = strWithLeadingZeros(randInt(0, 10000), 4);
-    this.op_id = op + '-' + rand_id; // to uniquely identify node
+    this.node_id = op + '-' + rand_id; // to uniquely identify node
     this.createPorts = function(n_ports, port_type, port_defaults) {
         var box_corner = this.group.firstChild.point;
         var sp = node_props.port_spacing;
