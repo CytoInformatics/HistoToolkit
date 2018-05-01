@@ -10,6 +10,8 @@ A graphical user interface for prototyping histology and cytology image processi
 * Create file menu to swap with operations menu
 * Make help message for each operation (based on docstring?)
 * Add node info in float-menu (op_name, op_id, display_name, docstring, param & output names)
+* Allow Node constructor to use ordered list for params as input
+* Make output names for nodes optional (option to unpack values if possible?)
 
 #### Notes
 * Launch server
