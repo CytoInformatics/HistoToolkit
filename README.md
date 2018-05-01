@@ -4,10 +4,8 @@ A graphical user interface for prototyping histology and cytology image processi
 
 ### To-do
 ##### Essentials
-* Make help message for each operation (based on docstring?)
-* Add node info in float-menu (op_name, op_id, display_name, docstring, param & output names)
 * Replace 'conduit' on Param with 'value' to match server
-* Create fields for manually entering inputs to params
+* Create fields for manually entering non-conduit inputs to params
 * Create file menu to swap with operations menu
 * Implement /run-graph route
 

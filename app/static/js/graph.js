@@ -389,15 +389,18 @@ function toggleNodeMenu(nodebox) {
         $("#float-menu").addClass("hidden");
     } else {
         $("#float-title").text(nodebox.node.display_name);
-        var docstring = graph.valid_ops[nodebox.node.op_name].docstring;
-        $("#float-description").text(docstring);
+        var op_data = graph.valid_ops[nodebox.node.op_name];
+        $("#float-description").text(op_data.docstring);
 
-        console.log(nodebox.node.params);
         var param_list = document.getElementById("param-list");
         param_list.innerHTML = "";
         for (var i = 0; i < nodebox.node.params.length; i++) {
             var param = nodebox.node.params[i];
-            var newport = createPortItem("param", i.toString(), "hi welcome to chili's");
+            var newport = createPortItem(
+                "param", 
+                op_data.params[i].name, 
+                "hi welcome to chili's"
+            );
             param_list.append(newport);
         }
 
@@ -405,7 +408,11 @@ function toggleNodeMenu(nodebox) {
         output_list.innerHTML = "";
         for (var i = 0; i < nodebox.node.outputs.length; i++) {
             var outputs = nodebox.node.outputs[i];
-            var newport = createPortItem("output", i.toString(), "hi welcome to chili's");
+            var newport = createPortItem(
+                "output", 
+                op_data.outputs[i], 
+                "hi welcome to chili's"
+            );
             output_list.append(newport);
         }
 

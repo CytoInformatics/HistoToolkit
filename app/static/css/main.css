@@ -185,6 +185,8 @@ html, body {
     .port-item > div {
         display: inline-block;
         width: 40%;
+        margin-left: 0.4em;
+        font-size: 0.8em;
     }
 
     .port-item > input {
