@@ -70,36 +70,10 @@ def count_data_types():
 
 @app.route('/run-graph', methods=['POST'])
 def run_graph():
+    """
+    Run all operations and return output to user.
+    """
+
     graph_schematic = request.form['graph']
     print(graph_schematic)
     return graph_schematic
-
-@app.route('/run-ops', methods=['POST'])
-def run_ops():
-    """
-    Run all operations and returns output to user.
-    """
-
-    img_name = request.form['img_name']
-    ops_names = request.form['ops_names']
-    ops_params = request.form['ops_params']
-    img = load_image(os.path.join(app.config["DATA_FOLDER"], img_name))
-
-    img, ops_output = opnet._call_ops(img, ops_names, ops_params)
-    return jsonify(ops_output)
-
-
-
-# TESTING ONLY
-@app.route('/test')
-def test():
-    ops_names = ['test_mult', 'test_power']
-    ops_params = [
-        {'arg1': 3},
-        {'arg1': 2}
-    ]
-
-    val = 2
-    val, ops_output = opnet._call_ops(val, ops_names, ops_params)
-
-    return "Result: {0}<br \>{1}".format(val, ops_output)

@@ -4,7 +4,7 @@ A graphical user interface for prototyping histology and cytology image processi
 
 ### To-do
 * Implement /run-graph route
-* Change "op_id" property to "node_id" for clarity
+* Prevent Run from being triggered again until response is received
 * Attach event to collapse folders in menu
 * Prevent loops from being formed in net (server-side for security and client-side for user-friendliness)
 * Create file menu to swap with operations menu
