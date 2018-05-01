@@ -241,6 +241,7 @@ function Node(op, n_params, n_outputs, position, node_props, box_props) {
     // create group for all items
     this.group = new Group([box, disp_name_path]);
     this.group.node = this;
+    this.group.obj_type = "node";
 
     // create ports for params and outputs
     this.createPorts(n_params, "param", param_defaults);
@@ -334,7 +335,7 @@ function onMouseDown(event) {
 
                 // // create conduit
                 drawingConduit = new Conduit(conduit_props, item.parent);
-            } else if (item.parent.node instanceof Node) {
+            } else if (item.parent.obj_type == "node") {
                 draggingNodeBox = item.parent;
             }
         }
@@ -344,7 +345,6 @@ function onMouseDown(event) {
 
 function onMouseDrag(event) {
     if (draggingNodeBox) {
-        // move node
         draggingNodeBox.position += event.delta;
         for (var i = 0; i < draggingNodeBox.children.length; i++) {
             var child = draggingNodeBox.children[i];
