@@ -4,7 +4,7 @@ A graphical user interface for prototyping histology and cytology image processi
 
 ### To-do
 ##### Essentials
-* Replace 'conduit' on Param with 'value' to match server
+* Fix bug that allows dragging of params
 * Create fields for manually entering non-conduit inputs to params
 * Create file menu to swap with operations menu
 * Implement /run-graph route

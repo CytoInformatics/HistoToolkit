@@ -144,6 +144,7 @@ function Node(op, n_params, n_outputs, position, node_props, box_props) {
             port.num = i;
             port.obj_type = port_type;
             port.node = this;
+            port.value = undefined;
 
             // create port path
             var offset = i * (sp + 2 * r) + sp + r;
@@ -179,19 +180,19 @@ function Node(op, n_params, n_outputs, position, node_props, box_props) {
         // remove all ports and their conduits and paper paths
         for (var i = 0; i < this.params.length; i++) {
             var param = this.params[i];
-            if (param.conduit instanceof Conduit) {
-                param.conduit.delete();
+            if (param.value instanceof Conduit) {
+                param.value.delete();
             }
-            param.conduit = undefined;
+            param.value = undefined;
             param.children[0].remove();
         }
         this.params = [];
         for (var i = 0; i < this.outputs.length; i++) {
             var output = this.outputs[i];
-            if (output.conduit instanceof Conduit) {
-                output.conduit.delete();
+            if (output.value instanceof Conduit) {
+                output.value.delete();
             }
-            output.conduit = undefined;
+            output.value = undefined;
             output.children[0].remove();
         }
         this.outputs = [];
@@ -266,10 +267,10 @@ function Conduit(props, output, param) {
     // function to delete itself
     this.delete = function() {
         if (this.param) {
-            this.param.conduit = undefined;
+            this.param.value = undefined;
         }
         if (this.output) {
-            this.output.conduit = undefined;
+            this.output.value = undefined;
         }
         this.param = undefined;
         this.output = undefined;
@@ -286,12 +287,12 @@ function Conduit(props, output, param) {
     }
 
     // add references to link conduit and output
-    output.conduit = this;
+    output.value = this;
     this.output = output;
 
     // add references to link conduit and param, if given
     if (typeof param !== 'undefined') {
-        param.conduit = this;
+        param.value = this;
         this.param = param;
     } else {
         this.param = undefined;
@@ -327,8 +328,8 @@ function onMouseDown(event) {
 
             // check group item belongs to
             if (item.parent.obj_type == "output") {
-                if (item.parent.conduit != undefined) {
-                    item.parent.conduit.delete();
+                if (item.parent.value != undefined) {
+                    item.parent.value.delete();
                 }
 
                 // // create conduit
@@ -347,14 +348,14 @@ function onMouseDrag(event) {
         draggingNodeBox.position += event.delta;
         for (var i = 0; i < draggingNodeBox.children.length; i++) {
             var child = draggingNodeBox.children[i];
-            if (!child.obj_type || !child.conduit) {
+            if (!child.obj_type || !child.value) {
                 continue;
             }
 
             if (child.obj_type == "param") {
-                child.conduit.line.segments[1].point = child.position;
+                child.value.line.segments[1].point = child.position;
             } else if (child.obj_type == "output") {
-                child.conduit.line.segments[0].point = child.position;
+                child.value.line.segments[0].point = child.position;
             }
         }
     } else if (drawingConduit) {
@@ -434,8 +435,8 @@ function onMouseUp(event) {
             var item = hit_result.item;
 
             // remove existing conduit and references if present
-            if (item.parent.conduit) {
-                item.parent.conduit.delete();
+            if (item.parent.value) {
+                item.parent.value.delete();
             }
 
             // move line endpoint to item position
@@ -445,7 +446,7 @@ function onMouseUp(event) {
             drawingConduit.param = item.parent;
 
             // add reference to conduit as property of param
-            item.parent.conduit = drawingConduit;
+            item.parent.value = drawingConduit;
         } else {
             drawingConduit.delete();
         }
