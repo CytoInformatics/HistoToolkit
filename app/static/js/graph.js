@@ -364,7 +364,7 @@ function onMouseDrag(event) {
     }
 }
 
-function createPortItem(port_type, name, value) {
+function createPortItem(port_type, name, value, disabled) {
     var item = document.createElement("div");
     item.classList.add("port-item");
 
@@ -377,6 +377,7 @@ function createPortItem(port_type, name, value) {
         input_field.type = "text";
         input_field.name = name;
         input_field.value = value;
+        input_field.disabled = disabled;
         item.append(input_field);
     } else if (port_type == "output") {
 
@@ -397,10 +398,19 @@ function toggleNodeMenu(nodebox) {
         param_list.innerHTML = "";
         for (var i = 0; i < nodebox.node.params.length; i++) {
             var param = nodebox.node.params[i];
+
+            if (param.value instanceof Conduit) {
+                var param_val = param.value.output.node.display_name;
+                var disabled = true;
+            } else {
+                var param_val = param.value;
+                var disabled = false;
+            }
             var newport = createPortItem(
                 "param", 
                 op_data.params[i].name, 
-                "hi welcome to chili's"
+                param_val,
+                disabled
             );
             param_list.append(newport);
         }
@@ -408,11 +418,20 @@ function toggleNodeMenu(nodebox) {
         var output_list = document.getElementById("output-list");
         output_list.innerHTML = "";
         for (var i = 0; i < nodebox.node.outputs.length; i++) {
-            var outputs = nodebox.node.outputs[i];
+            var output = nodebox.node.outputs[i];
+
+            if (output.value instanceof Conduit) {
+                var output_val = output.value.param.node.display_name;
+                var disabled = true;
+            } else {
+                var output_val = output.value;
+                var disabled = false;
+            }
             var newport = createPortItem(
                 "output", 
                 op_data.outputs[i], 
-                "hi welcome to chili's"
+                output_val,
+                disabled
             );
             output_list.append(newport);
         }
