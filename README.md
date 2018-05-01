@@ -3,13 +3,18 @@
 A graphical user interface for prototyping histology and cytology image processing workflows.
 
 ### To-do
+##### Essentials
+* Make help message for each operation (based on docstring?)
+* Add node info in float-menu (op_name, op_id, display_name, docstring, param & output names)
+* Replace 'conduit' on Param with 'value' to match server
+* Create fields for manually entering inputs to params
+* Create file menu to swap with operations menu
 * Implement /run-graph route
+
+##### Desirables
 * Prevent Run from being triggered again until response is received
 * Attach event to collapse folders in menu
 * Prevent loops from being formed in net (server-side for security and client-side for user-friendliness)
-* Create file menu to swap with operations menu
-* Make help message for each operation (based on docstring?)
-* Add node info in float-menu (op_name, op_id, display_name, docstring, param & output names)
 * Allow Node constructor to use ordered list for params as input
 * Make output names for nodes optional (option to unpack values if possible?)
 

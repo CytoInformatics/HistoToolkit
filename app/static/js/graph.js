@@ -363,6 +363,56 @@ function onMouseDrag(event) {
     }
 }
 
+function createPortItem(port_type, name, value) {
+    var item = document.createElement("div");
+    item.classList.add("port-item");
+
+    var label = document.createElement("div");
+    label.innerHTML = name;
+    item.append(label)
+
+    if (port_type == "param") {
+        var input_field = document.createElement("input");
+        input_field.type = "text";
+        input_field.name = name;
+        input_field.value = value;
+        item.append(input_field);
+    } else if (port_type == "output") {
+
+    }
+
+    return item;
+}
+
+function toggleNodeMenu(nodebox) {
+    if (typeof nodebox == 'undefined') {
+        $("#float-menu").addClass("hidden");
+    } else {
+        $("#float-title").text(nodebox.node.display_name);
+        var docstring = graph.valid_ops[nodebox.node.op_name].docstring;
+        $("#float-description").text(docstring);
+
+        console.log(nodebox.node.params);
+        var param_list = document.getElementById("param-list");
+        param_list.innerHTML = "";
+        for (var i = 0; i < nodebox.node.params.length; i++) {
+            var param = nodebox.node.params[i];
+            var newport = createPortItem("param", i.toString(), "hi welcome to chili's");
+            param_list.append(newport);
+        }
+
+        var output_list = document.getElementById("output-list");
+        output_list.innerHTML = "";
+        for (var i = 0; i < nodebox.node.outputs.length; i++) {
+            var outputs = nodebox.node.outputs[i];
+            var newport = createPortItem("output", i.toString(), "hi welcome to chili's");
+            output_list.append(newport);
+        }
+
+        $("#float-menu").removeClass("hidden");
+    }
+}
+
 function onMouseUp(event) {
     // set click time
     lastClickTime = Date.now();
@@ -394,11 +444,7 @@ function onMouseUp(event) {
         }
     }
 
-    if (draggingNodeBox) {
-        $("#float-menu").removeClass("hidden");
-    } else {
-        $("#float-menu").addClass("hidden");
-    }
+    toggleNodeMenu(draggingNodeBox);
 
     drawingConduit = undefined;
     draggingNodeBox = undefined;
