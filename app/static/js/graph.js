@@ -364,7 +364,16 @@ function onMouseDrag(event) {
     }
 }
 
-function createPortItem(port_type, name, value, disabled) {
+function createPortItem(port, name) {
+    /* 
+        Create port item (either param or output) with following structure:
+
+        <div class="port-item">
+          <div>name</div>
+          <input type="text" name=name>
+        </div>
+    */
+
     var item = document.createElement("div");
     item.classList.add("port-item");
 
@@ -372,14 +381,31 @@ function createPortItem(port_type, name, value, disabled) {
     label.innerHTML = name;
     item.append(label)
 
-    if (port_type == "param") {
+    if (port.obj_type == "param") {
         var input_field = document.createElement("input");
         input_field.type = "text";
         input_field.name = name;
+
+        if (port.value instanceof Conduit) {
+            if (port.obj_type == "param") {
+                var value = port.value.output.node.display_name;
+            } else {
+                var value = port.value.param.node.display_name;
+            }
+            var disabled = true;
+        } else {
+            var value = port.value;
+            var disabled = false;
+        }
         input_field.value = value;
         input_field.disabled = disabled;
+
+        input_field.addEventListener("focusout", function() {
+            port.value = this.value;
+            console.log(input_field.value);
+        })
         item.append(input_field);
-    } else if (port_type == "output") {
+    } else if (port.obj_type == "output") {
 
     }
 
@@ -388,54 +414,39 @@ function createPortItem(port_type, name, value, disabled) {
 
 function toggleNodeMenu(nodebox) {
     if (typeof nodebox == 'undefined') {
+        // hide menu when deselected
         $("#float-menu").addClass("hidden");
     } else {
+        // update title and description
         $("#float-title").text(nodebox.node.display_name);
         var op_data = graph.valid_ops[nodebox.node.op_name];
         $("#float-description").text(op_data.docstring);
 
+        // update params
         var param_list = document.getElementById("param-list");
         param_list.innerHTML = "";
         for (var i = 0; i < nodebox.node.params.length; i++) {
             var param = nodebox.node.params[i];
-
-            if (param.value instanceof Conduit) {
-                var param_val = param.value.output.node.display_name;
-                var disabled = true;
-            } else {
-                var param_val = param.value;
-                var disabled = false;
-            }
             var newport = createPortItem(
-                "param", 
-                op_data.params[i].name, 
-                param_val,
-                disabled
+                param, 
+                op_data.params[i].name
             );
             param_list.append(newport);
         }
 
+        // update outputs
         var output_list = document.getElementById("output-list");
         output_list.innerHTML = "";
         for (var i = 0; i < nodebox.node.outputs.length; i++) {
             var output = nodebox.node.outputs[i];
-
-            if (output.value instanceof Conduit) {
-                var output_val = output.value.param.node.display_name;
-                var disabled = true;
-            } else {
-                var output_val = output.value;
-                var disabled = false;
-            }
             var newport = createPortItem(
-                "output", 
-                op_data.outputs[i], 
-                output_val,
-                disabled
+                output, 
+                op_data.outputs[i]
             );
             output_list.append(newport);
         }
 
+        // show menu
         $("#float-menu").removeClass("hidden");
     }
 }
