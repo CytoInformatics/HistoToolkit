@@ -402,7 +402,6 @@ function createPortItem(port, name) {
 
         input_field.addEventListener("focusout", function() {
             port.value = this.value;
-            console.log(input_field.value);
         })
         item.append(input_field);
     } else if (port.obj_type == "output") {
