@@ -14,14 +14,6 @@ def home():
 
     return render_template('index.html')
 
-@app.route('/graph')
-def graph():
-    """
-    Serve the graph application page.
-    """
-
-    return render_template('graph.html')
-
 @app.route('/available-operations')
 def available_operations():
     """
