@@ -171,6 +171,7 @@ class OperationsManager:
         varnames = op.__code__.co_varnames
         param_required = [True] * n_requireds + [False] * n_defaults
         param_defaults = [None] * n_requireds + default_vars
+        outputs = [{"name": n} for n in opnet.ensure_is_listlike(outputs)]
         self.ops[op.__name__] = {
             "category": category,
             "docstring": op.__doc__,
@@ -181,7 +182,7 @@ class OperationsManager:
                     "defaults": d
                 } for n, r, d in zip(varnames, param_required, param_defaults)
             ],
-            "outputs": opnet.ensure_is_listlike(outputs)
+            "outputs": outputs
         }
 
 op_manager = OperationsManager([

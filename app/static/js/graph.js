@@ -20,9 +20,9 @@ var graph = {
                 for (var j = 0; j < node.params.length; j++) {
                     if (node.params[j].value instanceof Conduit) {
                         // var value = node.params[j].value.output.node.node_id;
-                        var value = "None";
+                        var value = null;
                     } else if (typeof node.params[j].value === 'undefined') {
-                        var value = "None";
+                        var value = null;
                     } else {
                         var value = node.params[j].value;
                     }
