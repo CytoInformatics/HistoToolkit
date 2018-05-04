@@ -67,12 +67,25 @@ def run_graph():
     """
 
     graph_schematic = json.loads(request.form['graph'])
+    print(graph_schematic)
 
     graph = opnet.OpNet()
     for node in graph_schematic['nodes']:
+        node_params = {}
+        for p in node['params']:
+            if not isinstance(p['value'], str):
+                node_params[p['name']] = p['value']
+            elif p['value'].isdigit():
+                node_params[p['name']] = int(p['value'])
+            elif len(p['value'].split('.')) == 2 \
+                 and all(s.isdigit() for s in p['value'].split('.')):
+                node_params[p['name']] = float(p['value'])
+            else:
+                node_params[p['name']] = p['value']
+
         graph.add_node(
             node['op'], 
-            {p['name']: p['value'] for p in node['params']}, 
+            node_params, 
             node['outputs'], 
             name=node['name']
         )
