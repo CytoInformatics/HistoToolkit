@@ -85,6 +85,11 @@ class OpNet:
         Connect OUTPUT_NAME of NODE1 to PARAM_NAME of NODE2 via a new conduit.
         """
 
+        if isinstance(node1, str):
+            node1 = self.get_node(node1)
+        if isinstance(node2, str):
+            node2 = self.get_node(node2)
+
         node1_output = node1.get_output(node1_output_name)
         node2_param = node2.get_param(node2_param_name)
 
@@ -100,6 +105,22 @@ class OpNet:
         # set conduit to None
         conduit = None
         return conduit
+
+    def get_node(self, name):
+        """
+        Return node in this graph with the name equal to NAME.
+        """
+
+        target = None
+        for node in self.nodes:
+            if node.name == name:
+                target = node
+                break
+
+        if target is None:
+            raise NameError("Node {0} was not found in this graph instance.".format(name))
+
+        return target
 
     def get_root_nodes(self):
         """

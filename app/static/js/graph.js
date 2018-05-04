@@ -54,7 +54,7 @@ var graph = {
                 var rand_id = strWithLeadingZeros(randInt(0, 10000), 4);
                 conduit_obj.name = "conduit-" + rand_id;
                 conduit_obj.output_node = output.node.node_id;
-                conduit_obj.output = output_op.outputs[output.num];
+                conduit_obj.output = output_op.outputs[output.num].name;
                 conduit_obj.param_node = param.node.node_id;
                 conduit_obj.param = param_op.params[param.num].name;
                 obj.conduits.push(conduit_obj);

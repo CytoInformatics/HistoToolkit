@@ -4,7 +4,6 @@ A graphical user interface for prototyping histology and cytology image processi
 
 ### To-do
 ##### Essentials
-* Pass param values to server when "run" is hit
 * Create file menu to swap with operations menu
 * Implement /run-graph route
 

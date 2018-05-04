@@ -78,6 +78,14 @@ def get_metadata(name, mode="i"):
 
 
 # Operations
+def multiply(data, scale):
+    """
+    Multiply DATA by a factor of SCALE.
+    """
+
+    return scale * data
+
+
 def convert_data_type(data, datatype):
     """
     Convert DATA to DATATYPE.
@@ -188,5 +196,6 @@ class OperationsManager:
 op_manager = OperationsManager([
     [convert_data_type, "Data", "data"],
     [rescale_range, "Data", "data"],
+    [multiply, "Math", "data"],
     [resize_image, "Image", "data"]
 ])

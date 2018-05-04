@@ -1,4 +1,4 @@
-import os
+import os, json
 from app import app
 from flask import request, render_template, jsonify
 from .tools import histotoolkit as htk
@@ -66,6 +66,25 @@ def run_graph():
     Run all operations and return output to user.
     """
 
-    graph_schematic = request.form['graph']
-    print(graph_schematic)
-    return graph_schematic
+    graph_schematic = json.loads(request.form['graph'])
+
+    graph = opnet.OpNet()
+    for node in graph_schematic['nodes']:
+        graph.add_node(
+            node['op'], 
+            {p['name']: p['value'] for p in node['params']}, 
+            node['outputs'], 
+            name=node['name']
+        )
+
+    for conduit in graph_schematic['conduits']:
+        print(conduit)
+        graph.bind(
+            conduit['output_node'], 
+            conduit['output'], 
+            conduit['param_node'], 
+            conduit['param']
+        )
+
+    results = graph.run()
+    return jsonify(results)
