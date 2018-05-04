@@ -19,7 +19,8 @@ def available_operations():
     """
     Return json object with available operations and parameters.
     """
-    return jsonify(htk.op_manager.ops)
+
+    return jsonify({key: val['info'] for key, val in htk.op_manager.ops.items()})
 
 @app.route('/set-folder', methods=['POST'])
 def set_folder():
@@ -84,7 +85,7 @@ def run_graph():
                 node_params[p['name']] = p['value']
 
         graph.add_node(
-            node['op'], 
+            htk.op_manager.ops[node['op']]['ref'], 
             node_params, 
             node['outputs'], 
             name=node['name']

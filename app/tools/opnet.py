@@ -354,10 +354,58 @@ class Conduit:
 
 def ensure_is_listlike(thing):
     """
-    Check if THING is list or tuple and, if neither, converts to list.
+    Check if THING is list or tuple and, if neither, convert to list.
     """
 
     if not isinstance(thing, (list, tuple)):
         thing = [thing,]
 
     return thing
+
+class OperationsManager:
+    """
+    Manager class for available functions.
+    """
+
+    def __init__(self, ops=None):
+        self.ops = {}
+        if ops is not None:
+            try:
+                for op_ins in ops:
+                    self.add_valid_op(*op_ins)
+            except IndexError:
+                warnings.warn("input ops is not iterable.")
+
+    def add_valid_op(self, op, category, outputs):
+        """
+        Add operation to dict of valid operations.
+
+        Inputs:
+            op: Reference to function.
+            category: Name of category function belongs to.
+            outputs: Name or list of names of output variables.
+        """
+
+        n_requireds = op.__code__.co_argcount
+        default_vars = op.__defaults__
+        default_vars = [] if isinstance(default_vars, type(None)) else default_vars
+        n_defaults = len(default_vars)
+        varnames = op.__code__.co_varnames
+        param_required = [True] * n_requireds + [False] * n_defaults
+        param_defaults = [None] * n_requireds + default_vars
+        outputs = [{"name": n} for n in ensure_is_listlike(outputs)]
+        self.ops[op.__name__] = {
+            "ref": op,
+            "info": {
+                "category": category,
+                "docstring": op.__doc__,
+                "params": [
+                    {
+                        "name": n,
+                        "required": r,
+                        "defaults": d
+                    } for n, r, d in zip(varnames, param_required, param_defaults)
+                ],
+                "outputs": outputs
+            }
+        }
