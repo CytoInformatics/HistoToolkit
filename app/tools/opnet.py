@@ -168,7 +168,7 @@ class OpNet:
         results = []
         for node in sorted_nodes:
             result = {
-                'node': node,
+                'node': node.name,
                 'outputs': node.execute()
             }
             results.append(result)

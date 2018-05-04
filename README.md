@@ -5,7 +5,6 @@ A graphical user interface for prototyping histology and cytology image processi
 ### To-do
 ##### Essentials
 * Create file menu to swap with operations menu
-* Implement /run-graph route
 
 ##### Desirables
 * Verify if input is valid (assume string only if enclosed in '' or "")
