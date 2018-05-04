@@ -11,7 +11,6 @@ var graph = {
         for (var i = 0; i < this.nodes.length; i++) {
             var node = this.nodes[i];
 
-            var op_info = graph.valid_ops[node.op_name];
             if (node instanceof Node) {
                 var node_obj = new Object();
                 node_obj.name = node.node_id;
@@ -19,10 +18,23 @@ var graph = {
                 node_obj.params = [];
                 node_obj.outputs = [];
                 for (var j = 0; j < node.params.length; j++) {
-                    node_obj.params.push(op_info.params[j].name);
+                    if (node.params[j].value instanceof Conduit) {
+                        // var value = node.params[j].value.output.node.node_id;
+                        var value = "None";
+                    } else if (typeof node.params[j].value === 'undefined') {
+                        var value = "None";
+                    } else {
+                        var value = node.params[j].value;
+                    }
+
+                    param_obj = {
+                        'name': node.params[j].name,
+                        'value': value
+                    }
+                    node_obj.params.push(param_obj);
                 }
                 for (var j = 0; j < node.outputs.length; j++) {
-                    node_obj.outputs.push(op_info.outputs[j]);
+                    node_obj.outputs.push(node.outputs[j].name);
                 }
                 obj.nodes.push(node_obj);
             }
@@ -39,7 +51,8 @@ var graph = {
                 var param_op = graph.valid_ops[param.node.op_name];
 
                 var conduit_obj = new Object();
-                conduit_obj.name = "conduit-" + i;
+                var rand_id = strWithLeadingZeros(randInt(0, 10000), 4);
+                conduit_obj.name = "conduit-" + rand_id;
                 conduit_obj.output_node = output.node.node_id;
                 conduit_obj.output = output_op.outputs[output.num];
                 conduit_obj.param_node = param.node.node_id;
@@ -127,23 +140,24 @@ function strWithLeadingZeros(number, n_zeros) {
     return numstr;
 }
 
-function Node(op, n_params, n_outputs, position, node_props, box_props) {
+function Node(op, params, outputs, position, node_props, box_props) {
     this.params = [];
     this.outputs = [];
     this.op_name = op;            // to identify op on server
     this.display_name = op;       // modifiable name for user
     var rand_id = strWithLeadingZeros(randInt(0, 10000), 4);
     this.node_id = op + '-' + rand_id; // to uniquely identify node
-    this.createPorts = function(n_ports, port_type, port_defaults) {
+    this.createPorts = function(port_names, port_type, port_defaults) {
         var box_corner = this.group.firstChild.point;
         var sp = node_props.port_spacing;
         var r = node_props.port_radius;
-        for (var i = 0; i < n_ports; i++) {
+        for (var i = 0; i < port_names.length; i++) {
             // create port group
             var port = new Group();
             port.num = i;
             port.obj_type = port_type;
             port.node = this;
+            port.name = port_names[i].name
             port.value = undefined;
 
             // create port path
@@ -211,10 +225,10 @@ function Node(op, n_params, n_outputs, position, node_props, box_props) {
     }
 
     // create box for node base
-    var n_ports = n_params > n_outputs ? n_params : n_outputs;
+    var n_ports = params.length > outputs.length ? params.length : outputs.length;
     var sp = node_props.port_spacing;
     var r = node_props.port_radius;
-    var box_w = 200;
+    var box_w = 100;
     var box_h = (n_ports - 1) * (sp + 2 * r) + 2 * (sp + r);
     var box = new Path.Rectangle({
         point: position,
@@ -244,8 +258,8 @@ function Node(op, n_params, n_outputs, position, node_props, box_props) {
     this.group.obj_type = "node";
 
     // create ports for params and outputs
-    this.createPorts(n_params, "param", param_defaults);
-    this.createPorts(n_outputs, "output", output_defaults);
+    this.createPorts(params, "param", param_defaults);
+    this.createPorts(outputs, "output", output_defaults);
 
     // add to graph object
     graph.nodes.push(this);
@@ -535,8 +549,8 @@ function newNode(key, position) {
     var obj = graph.valid_ops[key];
     return new Node(
         key, 
-        obj.params.length, 
-        obj.outputs.length,
+        obj.params, 
+        obj.outputs,
         position, 
         node_defaults, 
         box_defaults
