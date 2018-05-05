@@ -533,10 +533,17 @@ $("#dropdown-menu").click(function(event) {
     event.preventDefault();
 
     if (event.target !== event.currentTarget) {
+        var options = $("#options");
         if (event.target.id == "dropdown-option-1") {
-            console.log(event.target.innerHTML);
+            $(options).children(".option-menu").each(function() {
+                $(this).addClass("inactive");
+            });
+            $("#options-1").removeClass("inactive");
         } else if (event.target.id == "dropdown-option-2") {
-            console.log(event.target.innerHTML);
+            $(options).children(".option-menu").each(function() {
+                $(this).addClass("inactive");
+            });
+            $("#options-2").removeClass("inactive");
         }
         toggleOptionsMenu();
     }
