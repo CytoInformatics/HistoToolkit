@@ -33,6 +33,7 @@ canvas[resize] {
 
 #options {
     display: flex;
+    position: relative;
     flex-direction: column;
     width: 20%;
     height: 95%;
@@ -76,10 +77,28 @@ canvas[resize] {
         height: 100%;
 
         padding-left: 5%;
-        font-size: 20px;
+        font-size: 1.5em;
     }
 
-    .dropdown-options {
+    #dropdown-menu {
+        position: absolute;
+        width: 100%;
+        top: 0em;
+        right: 0em;
+
+        background-color: yellow;
+    }
+
+    .dropdown-item {
+        padding: 0 0 0.2em 0.4em;
+        font-size: 1.2em;
+    }
+
+    .dropdown-placeholder {
+        position: relative;
+    }
+
+    .option-menu {
         height: 95%;
         width: 100%;
         overflow-y: auto;
@@ -87,7 +106,7 @@ canvas[resize] {
         background-color: white;
     }
 
-    .dropdown-options > .folder {
+    .option-menu > .folder {
         margin: 0;
         background-color: white;
     }
@@ -201,4 +220,8 @@ canvas[resize] {
 
 .hidden {
     visibility: hidden;
+}
+
+.inactive {
+    display: none;
 }

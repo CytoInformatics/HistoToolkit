@@ -511,9 +511,39 @@ Array.prototype.unique = function() {
     return arr; 
 }
 
+function toggleOptionsMenu() {
+    var button = $("#button-1");
+    var dropdown_menu = $("#dropdown-menu");
+    if (button.hasClass("di-selected")) {
+        button.removeClass("di-selected");
+
+        dropdown_menu.addClass("inactive");
+    } else {
+        button.addClass("di-selected");
+
+        dropdown_menu.removeClass("inactive");
+    }
+}
+
+// add click handler to dropdown icon
+$("#button-1").click(toggleOptionsMenu);
+
+// add click handler to dropdown menu
+$("#dropdown-menu").click(function(event) {
+    event.preventDefault();
+
+    if (event.target !== event.currentTarget) {
+        if (event.target.id == "dropdown-option-1") {
+            console.log(event.target.innerHTML);
+        } else if (event.target.id == "dropdown-option-2") {
+            console.log(event.target.innerHTML);
+        }
+        toggleOptionsMenu();
+    }
+})
+
 // add click handler to viewer tabs
 $("#tabs").click(function(event) {
-
     event.preventDefault();
 
     if (event.target !== event.currentTarget) {
