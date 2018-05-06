@@ -129,7 +129,7 @@ class OpNet:
 
         rootnodes = []
         for node in self.nodes:
-            if any(not isinstance(p._value, Conduit) for p in node.params):
+            if all(not isinstance(p._value, Conduit) for p in node.params):
                 rootnodes.append(node)
 
         return rootnodes
@@ -145,7 +145,10 @@ class OpNet:
                 dest_node = output._value.output.node
                 new_depth = min(depth, self._walk_conduits_for_depth(dest_node, depth + 1))
             
-        node.depth = new_depth
+        if node.depth is not None:
+            node.depth = max(node.depth, new_depth)
+        else:
+            node.depth = new_depth
         return new_depth
 
     def _compute_depths(self):
