@@ -128,14 +128,41 @@ canvas[resize] {
         border-bottom: 1px solid black;
     }
 
+    .option-menu > .label {
+        padding: 0 0.4em 0 0.4em;
+        font-size: 1.2em;
+    }
+
+    #active-folder {
+        box-sizing: border-box;
+        width: 90%;
+        margin: 0 0.4em 1.0em 0.4em;
+    }
+
+    #file-list {
+        box-sizing: border-box;
+        width: 100%;
+        height: 80%;
+        margin: 0.4em 0 1.0em 0;
+
+        overflow-y: scroll;
+    }
+
+    .h-separator {
+        box-sizing: border-box;
+        width: 90%;
+        height: 0.2em;
+        margin: 0.2em auto 0.2em auto;
+
+        background-color: gray;
+    }
+
 #viewer {
+    flex-direction: column;
     width: 75%;
     height: 95%;
-
     margin-left: 1em;
-
     border: 1px solid black;
-    flex-direction: column;
 }
 
     #tabs {

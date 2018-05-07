@@ -28,7 +28,7 @@ def set_folder():
     Set active folder for data methods. Returns list of all images in folder.
     """
 
-    new_folder = request.form['new_folder']
+    new_folder = request.form['folder']
     try:
         app.config["DATA_FOLDER"] = new_folder
         image_list = htk.list_all_images(app.config["DATA_FOLDER"])

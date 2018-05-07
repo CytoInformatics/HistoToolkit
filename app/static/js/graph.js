@@ -594,13 +594,13 @@ function newNode(key, position) {
     );
 }
 
-var folder_id_root = "folder-";
-$(document).ready(function() {
+function populateOpsMenu() {
     $.ajax({
         type: 'GET',
         url: '/available-operations',
         async: true,
-        success: function(obj){
+        success: function(obj) {
+            
             var ops_menu = $("#options-1");
 
             // get unique categories and available operations from response
@@ -645,4 +645,30 @@ $(document).ready(function() {
             }
         }
     });
+}
+
+function setFolder(folder) {
+    var formdata = {
+      'folder': folder
+    };
+
+    $.ajax({
+        type: 'POST',
+        url: '/set-folder',
+        async: true,
+        data: formdata,
+        success: function(obj) {
+            console.log(obj);
+        }
+    });
+}
+
+var folder_id_root = "folder-";
+$(document).ready(function() {
+    populateOpsMenu();
+
+    var active_folder = document.getElementById("active-folder");
+    active_folder.addEventListener("focusout", function() {
+        setFolder(active_folder.value);
+    })
 });
