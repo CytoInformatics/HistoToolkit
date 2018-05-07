@@ -1,6 +1,6 @@
-import os
-import numpy as np
+import os, hashlib
 import warnings
+import numpy as np
 from PIL import Image
 from imageio import imread, get_reader
 from skimage.transform import resize
@@ -9,15 +9,36 @@ from .PythonHelpers.file_utils import list_files
 
 from . import opnet
 
-VALID_EXTS = ('.jpg', '.jpeg', '.png', '.tif', '.tiff', '.bmp',)
+IMAGE_EXTS = ('.jpg', '.jpeg', '.png', '.tif', '.tiff', '.bmp',)
+
+def hash_file(uri):
+    """
+    Create a hash string for the file stored at uri.
+    """
+
+    file_str = uri + str(os.path.getmtime(uri))
+    hashval = hashlib.md5(file_str.encode('utf-8')).hexdigest()
+    return hashval
 
 def list_all_images(folder):
     """
     Return list of all files in FOLDER with extensions in VALID_EXTS.
     """
 
-    all_images = list_files(folder, valid_exts=VALID_EXTS)
-    return all_images
+    return list_files(folder, valid_exts=IMAGE_EXTS)
+
+def get_image_info(uri, thumbnail_ext='.jpg'):
+    """
+    Return dict containing info for image stored at URI.
+    """
+
+    hash_val = hash_file(uri)
+    image_info = {
+        'uri': uri,
+        'thumbnail': hash_val + thumbnail_ext
+    }
+
+    return image_info
 
 def count_file_types(img_names):
     """

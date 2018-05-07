@@ -5,6 +5,7 @@ from .tools import histotoolkit as htk
 from .tools import opnet
 
 app.config["DATA_FOLDER"] = './app/test'
+THUMBNAIL_EXT = '.jpg'
 
 @app.route('/')
 def home():
@@ -29,12 +30,13 @@ def set_folder():
     """
 
     new_folder = request.form['folder']
-    try:
-        app.config["DATA_FOLDER"] = new_folder
-        image_list = htk.list_all_images(app.config["DATA_FOLDER"])
-        return jsonify(image_list)
-    except:
-        return 'failed'
+    # try:
+    app.config["DATA_FOLDER"] = new_folder
+    image_list = htk.list_all_images(app.config["DATA_FOLDER"])
+    images_info = [htk.get_image_info(uri, thumbnail_ext=THUMBNAIL_EXT) for uri in image_list]
+    return jsonify(images_info)
+    # except:
+    #     return 'failed'
 
 @app.route('/data-summary', methods=['GET', 'POST'])
 def data_summary():

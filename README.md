@@ -5,6 +5,8 @@ A graphical user interface for prototyping histology and cytology image processi
 ### To-do
 ##### Essentials
 * Create file menu to swap with operations menu
+* Generate image thumbnails if does not exist yet (check thumbnail url)
+* Add config info when page is loaded (start with thumbnail_dir)
 
 ##### Desirables
 * Verify if input is valid (assume string only if enclosed in '' or "")
