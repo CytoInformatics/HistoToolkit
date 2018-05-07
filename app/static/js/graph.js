@@ -594,7 +594,7 @@ function newNode(key, position) {
     );
 }
 
-function populateOpsMenu() {
+function populateOperationsMenu() {
     $.ajax({
         type: 'GET',
         url: '/available-operations',
@@ -663,10 +663,21 @@ function setFolder(folder) {
     });
 }
 
-var folder_id_root = "folder-";
-$(document).ready(function() {
-    populateOpsMenu();
+function getConfig() {
+    $.getJSON('/static/config.json', function(obj) {
+        return obj;
+    });
+    return undefined;
+}
 
+var folder_id_root = "folder-";
+var config;
+$(document).ready(function() {
+    config = getConfig();
+
+    populateOperationsMenu();
+
+    // set event listener for active folder input
     var active_folder = document.getElementById("active-folder");
     active_folder.addEventListener("focusout", function() {
         setFolder(active_folder.value);
