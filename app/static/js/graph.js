@@ -663,17 +663,29 @@ function setFolder(folder) {
     });
 }
 
-function getConfig() {
-    $.getJSON('/static/config.json', function(obj) {
-        return obj;
-    });
-    return undefined;
-}
-
 var folder_id_root = "folder-";
 var config;
 $(document).ready(function() {
-    config = getConfig();
+    // initial config
+    $.when(
+        $.ajax({
+            type: 'GET',
+            url: '/get-config',
+            async: true,
+            success: function(obj) {
+                return obj;
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus);
+            }
+        })
+    ).then(function(data, textStatus, jqXHR) {
+        config = data;
+
+        // set folder
+        document.getElementById("active-folder").value = config.FILE_DIR;
+        setFolder(config.FILE_DIR);
+    });
 
     populateOperationsMenu();
 

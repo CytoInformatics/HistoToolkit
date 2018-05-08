@@ -4,7 +4,7 @@ from flask import request, render_template, jsonify
 from .tools import histotoolkit as htk
 from .tools import opnet
 
-app.config["DATA_FOLDER"] = './app/test'
+config = app.config["APPDATA"]
 THUMBNAIL_EXT = '.jpg'
 
 @app.route('/')
@@ -14,6 +14,15 @@ def home():
     """
 
     return render_template('index.html')
+
+@app.route('/get-config')
+def get_config():
+    """
+    Return configuration settings to client.
+    """
+
+    print(config)
+    return jsonify(config)
 
 @app.route('/available-operations')
 def available_operations():
@@ -31,8 +40,8 @@ def set_folder():
 
     new_folder = request.form['folder']
     # try:
-    app.config["DATA_FOLDER"] = new_folder
-    image_list = htk.list_all_images(app.config["DATA_FOLDER"])
+    config["FILE_DIR"] = new_folder
+    image_list = htk.list_all_images(config["FILE_DIR"])
     images_info = [htk.get_image_info(uri, thumbnail_ext=THUMBNAIL_EXT) for uri in image_list]
     return jsonify(images_info)
     # except:
@@ -44,7 +53,7 @@ def data_summary():
     Run all data operations and return output to user.
     """
 
-    img_names = htk.list_all_images(app.config["DATA_FOLDER"])
+    img_names = htk.list_all_images(config["FILE_DIR"])
 
     ops_output = []
     ops_output.append(htk.count_file_types(img_names))
@@ -59,7 +68,7 @@ def count_data_types():
     Count all unique data types in list of images at DATA_FOLDER.
     """
 
-    img_names = htk.list_all_images(app.config["DATA_FOLDER"])
+    img_names = htk.list_all_images(config["FILE_DIR"])
     out = htk.count_data_types(img_names)
     return jsonify(out)
 
