@@ -647,6 +647,31 @@ function populateOperationsMenu() {
     });
 }
 
+function createFileItem(id, img_name) {
+    /* 
+        Create file item with following structure:
+
+        <div id=id class="file-item">
+          <img />
+          <span>img_name</span>
+        </div>
+    */
+
+    var item = document.createElement("div");
+    item.classList.add("file-item");
+
+    var img = document.createElement("img");
+    img.id = id;
+    item.append(img);
+
+    var label = document.createElement("div");
+    label.classList.add('label');
+    label.innerHTML = img_name;
+    item.append(label)
+
+    return item;
+}
+
 var images;
 function setFolder(folder) {
     var formdata = {
@@ -660,17 +685,29 @@ function setFolder(folder) {
         data: formdata,
         success: function(obj) {
             images = obj;
-
+            var file_list = document.getElementById("file-list");
+            file_list.innerHTML = '';
             for (var i = 0; i < images.length; i++) {
                 var image = images[i];
+                var id = 'thumbnail-' + i.toString();
+
+                // rewrite file list
+                var file_item = createFileItem(id, image['filename']);
+                file_list.append(file_item);
+
+                // get thumbnail urls
                 $.ajax({
                     type: 'POST',
                     url: '/get-thumbnail',
                     async: true,
                     data: {'uri': images[i].uri},
+                    success_data: {
+                        'image': image,
+                        'id': id
+                    },
                     success: function(thumbnail) {
-                        image.thumbnail = thumbnail;
-                        $("#testimg").attr('src', thumbnail);
+                        this.success_data['image'].thumbnail = thumbnail;
+                        $("#"+this.success_data['id']).attr('src', thumbnail);
                     }
                 })
             }

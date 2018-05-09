@@ -148,6 +148,28 @@ canvas[resize] {
         overflow-y: scroll;
     }
 
+    .file-item {
+        width: 100%;
+        padding: 0.2em;
+    }
+
+    .file-item:nth-child(odd) {
+        background-color: #dddddd;
+    }
+
+    .file-item > img {
+        width: 2em;
+        height: 2em;
+
+        border: 0.1em solid black;
+        border-radius: 0.4em;
+    }
+
+    .file-item > .label {
+        display: inline-block;
+        padding-left: 0.4em;
+    }
+
     .h-separator {
         box-sizing: border-box;
         width: 90%;

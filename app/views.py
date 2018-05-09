@@ -65,7 +65,7 @@ def get_thumbnail():
 
     # verify thumbnail exists
     if not os.path.exists(fpath_server):
-        htk.create_thumbnail(img_uri, os.path.join('app', fpath_server))
+        htk.create_thumbnail(img_uri, fpath_server)
 
     # return relative path to client
     fpath_client = os.path.join('static', config['THUMBS_DIR'], thumbnail_fname)

@@ -37,7 +37,8 @@ def get_image_info(uri):
     """
 
     image_info = {
-        'uri': uri
+        'uri': uri,
+        'filename': os.path.basename(uri)
     }
 
     return image_info
@@ -57,6 +58,10 @@ def create_thumbnail(img_uri, thumb_uri):
         min_dim = min(img.shape[0:2])
         img_trim = img[:min_dim, :min_dim]
         thumbnail = resize(img_trim, THUMBNAIL_SETTINGS['dims'])
+
+    # discard alpha channel
+    if len(img.shape) > 2 and img.shape[2] > 3:
+        thumbnail = thumbnail[:, :, 0:3]
 
     imwrite(thumb_uri, thumbnail)
     return True
