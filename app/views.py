@@ -5,7 +5,6 @@ from .tools import histotoolkit as htk
 from .tools import opnet
 
 config = app.config["APPDATA"]
-THUMBNAIL_EXT = '.jpg'
 
 @app.route('/')
 def home():
@@ -21,7 +20,6 @@ def get_config():
     Return configuration settings to client.
     """
 
-    print(config)
     return jsonify(config)
 
 @app.route('/available-operations')
@@ -39,13 +37,39 @@ def set_folder():
     """
 
     new_folder = request.form['folder']
-    # try:
-    config["FILE_DIR"] = new_folder
-    image_list = htk.list_all_images(config["FILE_DIR"])
-    images_info = [htk.get_image_info(uri, thumbnail_ext=THUMBNAIL_EXT) for uri in image_list]
-    return jsonify(images_info)
-    # except:
-    #     return 'failed'
+    try:
+        config["FILE_DIR"] = new_folder
+        image_list = htk.list_all_images(config["FILE_DIR"])
+        images_info = [htk.get_image_info(uri) for uri in image_list]
+
+        return jsonify(images_info)
+    except:
+        return 'failed'
+
+@app.route('/get-thumbnail', methods=['POST'])
+def get_thumbnail():
+    """
+    Find and/or create thumbnail for file.
+    """
+
+    img_uri = request.form['uri']
+
+    # create thumbnails folder if does not exist
+    thumbs_dir = os.path.join('app', 'static', config['THUMBS_DIR'])
+    if not os.path.exists(thumbs_dir):
+        os.makedirs(thumbs_dir)
+
+    # get name of thumbnail file
+    thumbnail_fname = htk.hash_file(img_uri) + config['THUMBNAIL_EXT']
+    fpath_server = os.path.join(thumbs_dir, thumbnail_fname)
+
+    # verify thumbnail exists
+    if not os.path.exists(fpath_server):
+        htk.create_thumbnail(img_uri, os.path.join('app', fpath_server))
+
+    # return relative path to client
+    fpath_client = os.path.join('static', config['THUMBS_DIR'], thumbnail_fname)
+    return fpath_client
 
 @app.route('/data-summary', methods=['GET', 'POST'])
 def data_summary():

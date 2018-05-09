@@ -2,7 +2,7 @@ import os, hashlib
 import warnings
 import numpy as np
 from PIL import Image
-from imageio import imread, get_reader
+from imageio import imread, imwrite, get_reader
 from skimage.transform import resize
 from collections import Counter
 from .PythonHelpers.file_utils import list_files
@@ -10,6 +10,10 @@ from .PythonHelpers.file_utils import list_files
 from . import opnet
 
 IMAGE_EXTS = ('.jpg', '.jpeg', '.png', '.tif', '.tiff', '.bmp',)
+THUMBNAIL_SETTINGS = {
+    'dims': [300, 300],
+    'crop_mode': 'top-left'
+}
 
 def hash_file(uri):
     """
@@ -27,18 +31,35 @@ def list_all_images(folder):
 
     return list_files(folder, valid_exts=IMAGE_EXTS)
 
-def get_image_info(uri, thumbnail_ext='.jpg'):
+def get_image_info(uri):
     """
     Return dict containing info for image stored at URI.
     """
 
-    hash_val = hash_file(uri)
     image_info = {
-        'uri': uri,
-        'thumbnail': hash_val + thumbnail_ext
+        'uri': uri
     }
 
     return image_info
+
+def create_thumbnail(img_uri, thumb_uri):
+    """
+    Create thumbnail for image at IMG_URI and save as THUMB_URI.
+    """
+
+    img = imread(img_uri)
+
+    if THUMBNAIL_SETTINGS['crop_mode'] == 'top-left':
+        min_dim = min(img.shape[0:2])
+        img_trim = img[:min_dim, :min_dim]
+        thumbnail = resize(img_trim, THUMBNAIL_SETTINGS['dims'])
+    else:
+        min_dim = min(img.shape[0:2])
+        img_trim = img[:min_dim, :min_dim]
+        thumbnail = resize(img_trim, THUMBNAIL_SETTINGS['dims'])
+
+    imwrite(thumb_uri, thumbnail)
+    return True
 
 def count_file_types(img_names):
     """

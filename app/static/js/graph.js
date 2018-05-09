@@ -647,6 +647,7 @@ function populateOperationsMenu() {
     });
 }
 
+var images;
 function setFolder(folder) {
     var formdata = {
       'folder': folder
@@ -658,7 +659,21 @@ function setFolder(folder) {
         async: true,
         data: formdata,
         success: function(obj) {
-            console.log(obj);
+            images = obj;
+
+            for (var i = 0; i < images.length; i++) {
+                var image = images[i];
+                $.ajax({
+                    type: 'POST',
+                    url: '/get-thumbnail',
+                    async: true,
+                    data: {'uri': images[i].uri},
+                    success: function(thumbnail) {
+                        image.thumbnail = thumbnail;
+                        $("#testimg").attr('src', thumbnail);
+                    }
+                })
+            }
         }
     });
 }
