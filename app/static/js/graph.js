@@ -20,7 +20,7 @@ var graph = {
                 node_obj.params = [];
                 for (var j = 0; j < node.params.length; j++) {
                     if (node.params[j].get_value() instanceof Conduit) {
-                        // var value = node.params[j]._value.output.node.node_id;
+                        // var value = node.params[j].get_value().output.node.node_id;
                         var value = null;
                     } else if (typeof node.params[j].get_value() === 'undefined') {
                         var value = null;
@@ -165,12 +165,18 @@ function Node(op, params, outputs, position, node_props, box_props) {
             port.node = this;
             port.name = port_names[i].name
             port._value = undefined;
-            port.set_value = function(val) {
+            port.set_value = function(val, datatype) {
                 this._value = val;
-                this.datatype = typeof val;
-                // if (typeof val === 'undefined') {
-                //     this._datatype = 'undefined';
-                // }
+
+                if (typeof datatype === 'string') {
+                    this.datatype = datatype;
+                } else if (typeof val === 'undefined') {
+                    this.datatype = 'undefined';
+                } else if (val instanceof Conduit) {
+                    this.datatype = 'Conduit';
+                } else {
+                    this.datatype = 'literal';
+                }
             };
             port.get_value = function() {
                 return this._value;
