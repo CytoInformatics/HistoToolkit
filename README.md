@@ -4,13 +4,15 @@ A graphical user interface for prototyping histology and cytology image processi
 
 ### To-do
 ##### Essentials
-* Create file menu to swap with operations menu
-* Generate image thumbnails if does not exist yet (check thumbnail url)
+* Enable dragging image to set as param for node
+* Add datatype field to parameters so server will know how to handle data
+* Remove thumbnails that are older than a certain date (1 month maybe?)
 
 ##### Desirables
 * Verify if input is valid (assume string only if enclosed in '' or "")
 * Change style of invalid param paths
 * Change style of node when selected
+* Make delete button (or right-click option?) for nodes instead of double-click to delete
 * Prevent Run from being triggered again until response is received
 * Attach event to collapse folders in menu
 * Prevent loops from being formed in net (server-side for security and client-side for user-friendliness)
