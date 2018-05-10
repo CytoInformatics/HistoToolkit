@@ -454,6 +454,20 @@ function createPortItem(port, name) {
         input_field.addEventListener("focusout", function() {
             port.set_value(this.value);
         })
+
+        input_field.ondragover = function(event) {
+            event.preventDefault();
+            this.classList.add("drag-over");
+        }
+        input_field.ondragleave = function(event) {
+            event.preventDefault();
+            this.classList.remove("drag-over");
+        }
+        input_field.ondrop = function(event) {
+            event.preventDefault();
+            this.classList.remove("drag-over");
+        }
+
         item.append(input_field);
     } else if (port.obj_type == "output") {
 
@@ -684,19 +698,19 @@ function createFileItem(id, img_name) {
         </div>
     */
 
-    var item = document.createElement("div");
-    item.classList.add("file-item");
-
-    var img = document.createElement("img");
-    img.id = id;
-    img.draggable = true;
-    img.ondragstart = function(event) {
-        idx = event.target.id.split('-').end();
-        console.log(idx);
+    var item = document.createElement('div');
+    item.classList.add('file-item');
+    item.id = id;
+    item.draggable = true;
+    item.ondragstart = function(event) {
+        var idx = event.currentTarget.id.split('-').end();
+        event.dataTransfer.setData("idx", idx);
     }
+
+    var img = document.createElement('img');
     item.append(img);
 
-    var label = document.createElement("div");
+    var label = document.createElement('div');
     label.classList.add('label');
     label.innerHTML = img_name;
     item.append(label)
@@ -717,11 +731,11 @@ function setFolder(folder) {
         data: formdata,
         success: function(obj) {
             images = obj;
-            var file_list = document.getElementById("file-list");
+            var file_list = document.getElementById('file-list');
             file_list.innerHTML = '';
             for (var i = 0; i < images.length; i++) {
                 var image = images[i];
-                var id = 'thumbnail-' + i.toString();
+                var id = 'file-' + i.toString();
 
                 // rewrite file list
                 var file_item = createFileItem(id, image['filename']);
@@ -739,7 +753,8 @@ function setFolder(folder) {
                     },
                     success: function(thumbnail) {
                         this.success_data['image'].thumbnail = thumbnail;
-                        $("#"+this.success_data['id']).attr('src', thumbnail);
+                        var img_el = $('#'+this.success_data['id']).children('img')[0];
+                        $(img_el).attr('src', thumbnail);
                     }
                 })
             }
@@ -747,7 +762,7 @@ function setFolder(folder) {
     });
 }
 
-var folder_id_root = "folder-";
+var folder_id_root = 'folder-';
 var config;
 $(document).ready(function() {
     // initial config
@@ -767,15 +782,15 @@ $(document).ready(function() {
         config = data;
 
         // set folder
-        document.getElementById("active-folder").value = config.FILE_DIR;
+        document.getElementById('active-folder').value = config.FILE_DIR;
         setFolder(config.FILE_DIR);
     });
 
     populateOperationsMenu();
 
     // set event listener for active folder input
-    var active_folder = document.getElementById("active-folder");
-    active_folder.addEventListener("focusout", function() {
+    var active_folder = document.getElementById('active-folder');
+    active_folder.addEventListener('focusout', function() {
         setFolder(active_folder.value);
     })
 });
