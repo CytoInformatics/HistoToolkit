@@ -459,7 +459,10 @@ function createPortItem(port, name) {
 
         input_field.ondragover = function(event) {
             event.preventDefault();
-            this.classList.add("drag-over");
+
+            if (!this.disabled) {
+                this.classList.add("drag-over");
+            }
         }
         input_field.ondragleave = function(event) {
             event.preventDefault();
@@ -469,9 +472,11 @@ function createPortItem(port, name) {
             event.preventDefault();
             this.classList.remove("drag-over");
 
-            var idx = event.dataTransfer.getData("idx");
-            this.value = images[idx]['uri'];
-            port.set_value(images[idx]['uri'], 'image');
+            if (!this.disabled) {
+                var idx = event.dataTransfer.getData("idx");
+                this.value = images[idx]['uri'];
+                port.set_value(images[idx]['uri'], 'image');
+            }
         }
 
         item.append(input_field);

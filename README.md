@@ -4,11 +4,12 @@ A graphical user interface for prototyping histology and cytology image processi
 
 ### To-do
 ##### Essentials
-* Disable image dragging when conduit is attached
+* Decode response from graph run to display outputs in proper places
 * Implement image inspector tab
 
 ##### Desirables
 * Add Nodes list under dropdown menu options
+* Add default values to operations
 * Remove thumbnails that are older than a certain date (1 month maybe?)
 * Verify if input is valid (assume string only if enclosed in '' or "")
 * Change style of invalid param paths
