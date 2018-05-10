@@ -19,13 +19,13 @@ var graph = {
                 // params
                 node_obj.params = [];
                 for (var j = 0; j < node.params.length; j++) {
-                    if (node.params[j]._value instanceof Conduit) {
+                    if (node.params[j].get_value() instanceof Conduit) {
                         // var value = node.params[j]._value.output.node.node_id;
                         var value = null;
-                    } else if (typeof node.params[j]._value === 'undefined') {
+                    } else if (typeof node.params[j].get_value() === 'undefined') {
                         var value = null;
                     } else {
-                        var value = node.params[j]._value;
+                        var value = node.params[j].get_value();
                     }
                     var type = node.params[j].datatype;
 
@@ -172,6 +172,9 @@ function Node(op, params, outputs, position, node_props, box_props) {
                 //     this._datatype = 'undefined';
                 // }
             };
+            port.get_value = function() {
+                return this._value;
+            }
             port.datatype = 'undefined';
 
             // create port path
@@ -208,8 +211,8 @@ function Node(op, params, outputs, position, node_props, box_props) {
         // remove all ports and their conduits and paper paths
         for (var i = 0; i < this.params.length; i++) {
             var param = this.params[i];
-            if (param._value instanceof Conduit) {
-                param._value.delete();
+            if (param.get_value() instanceof Conduit) {
+                param.get_value().delete();
             }
             param.set_value(undefined);
             param.children[0].remove();
@@ -217,8 +220,8 @@ function Node(op, params, outputs, position, node_props, box_props) {
         this.params = [];
         for (var i = 0; i < this.outputs.length; i++) {
             var output = this.outputs[i];
-            if (output._value instanceof Conduit) {
-                output._value.delete();
+            if (output.get_value() instanceof Conduit) {
+                output.get_value().delete();
             }
             output.set_value(undefined);
             output.children[0].remove();
@@ -357,8 +360,8 @@ function onMouseDown(event) {
 
             // check group item belongs to
             if (item.parent.obj_type == "output") {
-                if (typeof item.parent._value !== 'undefined') {
-                    item.parent._value.delete();
+                if (typeof item.parent.get_value() !== 'undefined') {
+                    item.parent.get_value().delete();
                 }
 
                 // // create conduit
@@ -376,14 +379,14 @@ function onMouseDrag(event) {
         draggingNodeBox.position += event.delta;
         for (var i = 0; i < draggingNodeBox.children.length; i++) {
             var child = draggingNodeBox.children[i];
-            if (!child.obj_type || !child._value) {
+            if (!child.obj_type || !child.get_value()) {
                 continue;
             }
 
             if (child.obj_type == "param") {
-                child._value.line.segments[1].point = child.position;
+                child.get_value().line.segments[1].point = child.position;
             } else if (child.obj_type == "output") {
-                child._value.line.segments[0].point = child.position;
+                child.get_value().line.segments[0].point = child.position;
             }
         }
     } else if (drawingConduit) {
@@ -414,15 +417,15 @@ function createPortItem(port, name) {
         input_field.type = "text";
         input_field.name = name;
 
-        if (port._value instanceof Conduit) {
+        if (port.get_value() instanceof Conduit) {
             if (port.obj_type == "param") {
-                var value = port._value.output.node.display_name;
+                var value = port.get_value().output.node.display_name;
             } else {
-                var value = port._value.param.node.display_name;
+                var value = port.get_value().param.node.display_name;
             }
             var disabled = true;
         } else {
-            var value = port._value;
+            var value = port.get_value();
             var disabled = false;
         }
         input_field.value = value;
@@ -492,8 +495,8 @@ function onMouseUp(event) {
             var item = hit_result.item;
 
             // remove existing conduit and references if present
-            if (item.parent._value) {
-                item.parent._value.delete();
+            if (item.parent.get_value()) {
+                item.parent.get_value().delete();
             }
 
             // move line endpoint to item position
