@@ -5,6 +5,7 @@ A graphical user interface for prototyping histology and cytology image processi
 ### To-do
 ##### Essentials
 * Enable image to be sent as response to client
+* Implement image inspector tab
 
 ##### Desirables
 * Add Nodes list under dropdown menu options

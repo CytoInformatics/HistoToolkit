@@ -1,4 +1,4 @@
-import os, json
+import os, json, base64
 from app import app
 from flask import request, render_template, jsonify
 from .tools import histotoolkit as htk
@@ -129,7 +129,6 @@ def run_graph():
         )
 
     for conduit in graph_schematic['conduits']:
-        print(conduit)
         graph.bind(
             conduit['output_node'], 
             conduit['output'], 
@@ -138,4 +137,10 @@ def run_graph():
         )
 
     results = graph.run()
+    for node in results:
+        for key, val in node['outputs'].items():
+            htk.save_image('app/test/tmp.png', val)
+            with open('app/test/tmp.png', 'rb') as f:
+                node['outputs'][key] = base64.b64encode(f.read()).decode('utf-8')
+
     return jsonify(results)

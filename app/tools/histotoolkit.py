@@ -113,6 +113,13 @@ def load_image(name):
     
     return imread(name)
 
+def save_image(name, img):
+    """
+    Save IMG to uri NAME.
+    """
+
+    return imwrite(name, img)
+
 def get_metadata(name, mode="i"):
     """
     Return metadata for image at uri NAME.
