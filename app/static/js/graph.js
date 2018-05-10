@@ -1,3 +1,17 @@
+Array.prototype.unique = function() {
+    var arr = [];
+    for(var i = 0; i < this.length; i++) {
+        if(!arr.includes(this[i])) {
+            arr.push(this[i]);
+        }
+    }
+    return arr; 
+}
+
+Array.prototype.end = function() {
+    return this.slice(-1)[0];
+}
+
 var graph = {
     nodes: [],
     conduits: [],
@@ -524,16 +538,6 @@ function onMouseUp(event) {
     draggingNodeBox = undefined;
 }
 
-Array.prototype.unique = function() {
-    var arr = [];
-    for(var i = 0; i < this.length; i++) {
-        if(!arr.includes(this[i])) {
-            arr.push(this[i]);
-        }
-    }
-    return arr; 
-}
-
 function toggleOptionsMenu() {
     var button = $("#button-1");
     var dropdown_menu = $("#dropdown-menu");
@@ -685,6 +689,11 @@ function createFileItem(id, img_name) {
 
     var img = document.createElement("img");
     img.id = id;
+    img.draggable = true;
+    img.ondragstart = function(event) {
+        idx = event.target.id.split('-').end();
+        console.log(idx);
+    }
     item.append(img);
 
     var label = document.createElement("div");
