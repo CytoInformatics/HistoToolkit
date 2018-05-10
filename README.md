@@ -4,11 +4,11 @@ A graphical user interface for prototyping histology and cytology image processi
 
 ### To-do
 ##### Essentials
-* Enable dragging image to set as param for node
-* Add datatype field to parameters so server will know how to handle data
-* Remove thumbnails that are older than a certain date (1 month maybe?)
+* Enable image to be sent as response to client
 
 ##### Desirables
+* Add Nodes list under dropdown menu options
+* Remove thumbnails that are older than a certain date (1 month maybe?)
 * Verify if input is valid (assume string only if enclosed in '' or "")
 * Change style of invalid param paths
 * Change style of node when selected

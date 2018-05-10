@@ -451,9 +451,9 @@ function createPortItem(port, name) {
         input_field.value = value;
         input_field.disabled = disabled;
 
-        input_field.addEventListener("focusout", function() {
+        input_field.onchange = function() {
             port.set_value(this.value);
-        })
+        }
 
         input_field.ondragover = function(event) {
             event.preventDefault();
@@ -466,6 +466,10 @@ function createPortItem(port, name) {
         input_field.ondrop = function(event) {
             event.preventDefault();
             this.classList.remove("drag-over");
+
+            var idx = event.dataTransfer.getData("idx");
+            this.value = images[idx]['uri'];
+            port.set_value(images[idx]['uri'], 'image');
         }
 
         item.append(input_field);
