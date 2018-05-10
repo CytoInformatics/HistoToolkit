@@ -1,6 +1,7 @@
 import os, json, base64
 from app import app
 from flask import request, render_template, jsonify
+from imageio.core.util import Image
 from .tools import histotoolkit as htk
 from .tools import opnet
 
@@ -139,8 +140,19 @@ def run_graph():
     results = graph.run()
     for node in results:
         for key, val in node['outputs'].items():
-            htk.save_image('app/test/tmp.png', val)
-            with open('app/test/tmp.png', 'rb') as f:
-                node['outputs'][key] = base64.b64encode(f.read()).decode('utf-8')
+            if isinstance(val, Image):
+                datatype = 'base64-image'
+                htk.save_image('app/test/tmp.png', val)
+                with open('app/test/tmp.png', 'rb') as f:
+                    newval = base64.b64encode(f.read()).decode('utf-8')
+            else:
+                datatype = 'literal'
+                newval = val
+
+            node['outputs'][key] = {
+                'name': key,
+                'value': newval,
+                'datatype': datatype
+            }
 
     return jsonify(results)

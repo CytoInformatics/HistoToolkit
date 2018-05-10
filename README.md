@@ -4,7 +4,7 @@ A graphical user interface for prototyping histology and cytology image processi
 
 ### To-do
 ##### Essentials
-* Enable image to be sent as response to client
+* Disable image dragging when conduit is attached
 * Implement image inspector tab
 
 ##### Desirables

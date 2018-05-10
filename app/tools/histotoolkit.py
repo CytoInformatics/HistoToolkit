@@ -1,7 +1,6 @@
 import os, hashlib
 import warnings
 import numpy as np
-from PIL import Image
 from imageio import imread, imwrite, get_reader
 from skimage.transform import resize
 from collections import Counter
@@ -101,8 +100,8 @@ def get_image_shapes(img_names):
 
     all_shapes = []
     for f in img_names:
-        img = Image.open(f)
-        all_shapes.append(img.size)
+        img = imread(f)
+        all_shapes.append(img.shape)
 
     return all_shapes
 

@@ -93,6 +93,8 @@ var graph = {
             data: formdata,
             success: function(response) {
                 console.log(response);
+                var img_url = 'data:image/png;base64,'+response.end().outputs.data.value;
+                $('#test-output-img').attr('src', img_url);
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log("ERROR: " + textStatus + " " + errorThrown);
