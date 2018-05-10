@@ -109,7 +109,9 @@ def run_graph():
     for node in graph_schematic['nodes']:
         node_params = {}
         for p in node['params']:
-            if not isinstance(p['value'], str):
+            if p['type'] == 'image':
+                node_params[p['name']] = htk.load_image(p['value'])
+            elif not isinstance(p['value'], str):
                 node_params[p['name']] = p['value']
             elif p['value'].isdigit():
                 node_params[p['name']] = int(p['value'])
