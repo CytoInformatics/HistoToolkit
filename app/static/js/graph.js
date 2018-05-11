@@ -601,6 +601,18 @@ $("#dropdown-menu").click(function(event) {
     }
 })
 
+function openTab(num) {
+    if (typeof num !== 'string') {
+        num = num.toString();
+    }
+
+    $('#tabs').children().removeClass('selected');
+    $('#tab-' + num).addClass('selected');
+
+    $(content).children().addClass('inactive');
+    $('#content-' + num).removeClass('inactive');
+}
+
 // add click handler to viewer tabs
 $('#tabs').click(function(event) {
     event.preventDefault();
@@ -609,29 +621,13 @@ $('#tabs').click(function(event) {
         var content = document.getElementById('content');
 
         if (event.target.id == 'tab-1') {
-            $('#tabs').children().removeClass('selected');
-            $('#tab-1').addClass('selected');
-
-            $(content).children().addClass('inactive');
-            $('#content-1').removeClass('inactive');
+            openTab('1');
         } else if (event.target.id == 'tab-2') {
-            $('#tabs').children().removeClass('selected');
-            $('#tab-2').addClass('selected');
-
-            $(content).children().addClass('inactive');
-            $('#content-2').removeClass('inactive');
+            openTab('2');
         } else if (event.target.id == 'tab-3') {
-            $('#tabs').children().removeClass('selected');
-            $('#tab-3').addClass('selected');
-            
-            $(content).children().addClass('inactive');
-            $('#content-3').removeClass('inactive');
+            openTab('3');
         } else if (event.target.id == "tab-4") {
-            $('#tabs').children().removeClass('selected');
-            $('#tab-4').addClass('selected');
-            
-            $(content).children().addClass('inactive');
-            $('#content-4').removeClass('inactive');
+            openTab('4');
         } else if (event.target.id == 'tab-5') {
             graph.run();
         }
@@ -875,6 +871,8 @@ $(document).ready(function() {
     active_folder.addEventListener('focusout', function() {
         setFolder(active_folder.value);
     })
+
+    openTab('1');
 
     // initialize image viewer
     initOpenSeadragon();
