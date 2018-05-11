@@ -9,6 +9,8 @@ A graphical user interface for prototyping histology and cytology image processi
 
 ##### Desirables
 * Add Nodes list under dropdown menu options
+* Shrink large images before sending them to client
+* Replace base64 encoding of images with link to static file
 * Add default values to operations
 * Remove thumbnails that are older than a certain date (1 month maybe?)
 * Verify if input is valid (assume string only if enclosed in '' or "")

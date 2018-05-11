@@ -606,14 +606,20 @@ $("#tabs").click(function(event) {
     event.preventDefault();
 
     if (event.target !== event.currentTarget) {
+        var content = document.getElementById("content");
+        
         if (event.target.id == "tab-1") {
-            console.log("tab-1");
+            $(content).children().addClass("inactive");
+            $("#content-1").removeClass("inactive");
         } else if (event.target.id == "tab-2") {
-            console.log("tab-2");
+            $(content).children().addClass("inactive");
+            $("#content-2").removeClass("inactive");
         } else if (event.target.id == "tab-3") {
-            console.log("tab-3");
+            $(content).children().addClass("inactive");
+            $("#content-3").removeClass("inactive");
         } else if (event.target.id == "tab-4") {
-            console.log("tab-4");
+            $(content).children().addClass("inactive");
+            $("#content-4").removeClass("inactive");
         } else if (event.target.id == "tab-5") {
             graph.run();
         }

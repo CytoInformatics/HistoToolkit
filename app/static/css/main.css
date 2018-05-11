@@ -15,6 +15,14 @@ canvas[resize] {
     height: 100%;
 }
 
+.hidden {
+    visibility: hidden;
+}
+
+.inactive {
+    display: none;
+}
+
 input.drag-over {
     background-color: #44eeff;
 }
@@ -270,11 +278,3 @@ input.drag-over {
         width: 55%;
         right: 0;
     }
-
-.hidden {
-    visibility: hidden;
-}
-
-.inactive {
-    display: none;
-}
