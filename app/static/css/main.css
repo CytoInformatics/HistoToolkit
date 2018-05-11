@@ -223,7 +223,10 @@ input.drag-over {
         border-right: 1px solid black;
         border-bottom: 1px solid black;
         float: left;
+    }
 
+    .tab.selected {
+        background-color: #88f0ff;
     }
 
     .run-button {

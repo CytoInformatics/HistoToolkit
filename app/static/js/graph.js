@@ -602,36 +602,48 @@ $("#dropdown-menu").click(function(event) {
 })
 
 // add click handler to viewer tabs
-$("#tabs").click(function(event) {
+$('#tabs').click(function(event) {
     event.preventDefault();
 
     if (event.target !== event.currentTarget) {
-        var content = document.getElementById("content");
+        var content = document.getElementById('content');
 
-        if (event.target.id == "tab-1") {
-            $(content).children().addClass("inactive");
-            $("#content-1").removeClass("inactive");
-        } else if (event.target.id == "tab-2") {
-            $(content).children().addClass("inactive");
-            $("#content-2").removeClass("inactive");
-        } else if (event.target.id == "tab-3") {
-            $(content).children().addClass("inactive");
-            $("#content-3").removeClass("inactive");
+        if (event.target.id == 'tab-1') {
+            $('#tabs').children().removeClass('selected');
+            $('#tab-1').addClass('selected');
+
+            $(content).children().addClass('inactive');
+            $('#content-1').removeClass('inactive');
+        } else if (event.target.id == 'tab-2') {
+            $('#tabs').children().removeClass('selected');
+            $('#tab-2').addClass('selected');
+
+            $(content).children().addClass('inactive');
+            $('#content-2').removeClass('inactive');
+        } else if (event.target.id == 'tab-3') {
+            $('#tabs').children().removeClass('selected');
+            $('#tab-3').addClass('selected');
+            
+            $(content).children().addClass('inactive');
+            $('#content-3').removeClass('inactive');
         } else if (event.target.id == "tab-4") {
-            $(content).children().addClass("inactive");
-            $("#content-4").removeClass("inactive");
-        } else if (event.target.id == "tab-5") {
+            $('#tabs').children().removeClass('selected');
+            $('#tab-4').addClass('selected');
+            
+            $(content).children().addClass('inactive');
+            $('#content-4').removeClass('inactive');
+        } else if (event.target.id == 'tab-5') {
             graph.run();
         }
     }
 })
 
 // add click handler to options menu
-$("#options-1").click(function(event) {
+$('#options-1').click(function(event) {
     event.preventDefault();
 
     if (event.target !== event.currentTarget 
-        && $(event.target).hasClass("folder-item")) {
+        && $(event.target).hasClass('folder-item')) {
         event.stopPropagation();
 
         // create node based on name
@@ -641,19 +653,19 @@ $("#options-1").click(function(event) {
 });
 
 // add click handler to image 
-$("#file-list").click(function(event) {
+$('#file-list').click(function(event) {
     event.preventDefault();
 
     if (event.target !== event.currentTarget) {
         event.stopPropagation();
-        $("#file-list").children().removeClass("selected");
-        if ($(event.target).hasClass("file-item")) {
-            $(event.target).addClass("selected");
+        $('#file-list').children().removeClass('selected');
+        if ($(event.target).hasClass('file-item')) {
+            $(event.target).addClass('selected');
 
             var idx = event.target.id.split('-').end();
         } else {
             var parent = $(event.target)[0].parentElement
-            $(parent).addClass("selected");
+            $(parent).addClass('selected');
             var idx = $(parent)[0].id.split('-').end();
         }
         var uri = images[idx]['uri'];
