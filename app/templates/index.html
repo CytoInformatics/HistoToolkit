@@ -28,6 +28,7 @@
         </div>
 
         <div id="options-1" class="option-menu"></div>
+        
         <div id="options-2" class="option-menu inactive">
           <div class="label">Active Folder</div>
           <input id="active-folder" type="text" name="active_folder" />
@@ -62,7 +63,9 @@
             </div>
           </div>
 
-          <div id="content-2"></div>
+          <div id="content-2">
+            <div id="image-viewer" style="height:100%; width:100%"></div>
+          </div>
 
           <div id="content-3"></div>
 
@@ -75,5 +78,11 @@
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/paper-full.min.js') }}"></script>
     <script type="text/paperscript" canvas="graphCanvas" src="{{ url_for('static', filename='js/graph.js') }}"></script>
+
+
+    <script src="{{ url_for('static', filename='js/openseadragon/openseadragon.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/openseadragon/openseadragon-viewerinputhook.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/openseadragon/openseadragon-imaginghelper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/openseadragon/openseadragon-scalebar.js') }}"></script>
   </body>
 </html>

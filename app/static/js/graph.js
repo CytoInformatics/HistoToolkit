@@ -607,7 +607,7 @@ $("#tabs").click(function(event) {
 
     if (event.target !== event.currentTarget) {
         var content = document.getElementById("content");
-        
+
         if (event.target.id == "tab-1") {
             $(content).children().addClass("inactive");
             $("#content-1").removeClass("inactive");
@@ -639,6 +639,28 @@ $("#options-1").click(function(event) {
         newNode(op, [300, 300]);
     }
 });
+
+// add click handler to image 
+$("#file-list").click(function(event) {
+    event.preventDefault();
+
+    if (event.target !== event.currentTarget) {
+        event.stopPropagation();
+        $("#file-list").children().removeClass("selected");
+        if ($(event.target).hasClass("file-item")) {
+            $(event.target).addClass("selected");
+
+            var idx = event.target.id.split('-').end();
+        } else {
+            var parent = $(event.target)[0].parentElement
+            $(parent).addClass("selected");
+            var idx = $(parent)[0].id.split('-').end();
+        }
+        var uri = images[idx]['uri'];
+        console.log(uri);
+        // img_viewer.open(currentImageInfo.dzi);
+    }
+})
 
 function newNode(key, position) {
     var obj = graph.valid_ops[key];
@@ -779,6 +801,37 @@ function setFolder(folder) {
     });
 }
 
+var img_viewer;
+function initOpenSeadragon() {
+    img_viewer = OpenSeadragon({
+        id: "image-viewer",
+        prefixUrl: "static/js/openseadragon/images/",
+        tileSources: [],
+        showReferenceStrip: false,
+        referenceStripSizeRatio: 0.2,
+        showNavigator: true,
+        showZoomControl: true,
+        sequenceMode: false,
+        preserveViewport: true,
+        maxZoomLevel: 5
+    });
+
+    // add the scalebar
+    // viewer.scalebar({
+    //     type: OpenSeadragon.ScalebarType.MICROSCOPE,
+    //     minWidth:'150px',
+    //     pixelsPerMeter: config.defaultPixelsPerMeter,
+    //     pixelsPerMeter: 25000000,
+    //     color:'black',
+    //     fontColor:'black',
+    //     backgroundColor:"rgba(255,255,255,0.5)",
+    //     barThickness:4,
+    //     location: OpenSeadragon.ScalebarLocation.TOP_RIGHT,
+    //     xOffset:5,
+    //     yOffset:5
+    // });
+};
+
 var folder_id_root = 'folder-';
 var config;
 $(document).ready(function() {
@@ -810,4 +863,7 @@ $(document).ready(function() {
     active_folder.addEventListener('focusout', function() {
         setFolder(active_folder.value);
     })
+
+    // initialize image viewer
+    initOpenSeadragon();
 });

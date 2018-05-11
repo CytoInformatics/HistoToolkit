@@ -169,6 +169,14 @@ input.drag-over {
         background-color: #dddddd;
     }
 
+    .file-item:hover {
+        background-color: #bbf8ff;
+    }
+
+    .file-item.selected {
+        background-color: #88f0ff;
+    }
+
     .file-item > img {
         width: 2em;
         height: 2em;
