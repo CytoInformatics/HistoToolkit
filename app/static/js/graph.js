@@ -578,24 +578,19 @@ function toggleOptionsMenu() {
 }
 
 // add click handler to dropdown icon
-$("#button-1").click(toggleOptionsMenu);
+$('#button-1').click(toggleOptionsMenu);
 
 // add click handler to dropdown menu
-$("#dropdown-menu").click(function(event) {
+$('#dropdown-menu').click(function(event) {
     event.preventDefault();
 
     if (event.target !== event.currentTarget) {
-        var options = $("#options");
-        if (event.target.id == "dropdown-option-1") {
-            $(options).children(".option-menu").each(function() {
-                $(this).addClass("inactive");
-            });
-            $("#options-1").removeClass("inactive");
-        } else if (event.target.id == "dropdown-option-2") {
-            $(options).children(".option-menu").each(function() {
-                $(this).addClass("inactive");
-            });
-            $("#options-2").removeClass("inactive");
+        var options = $('#options');
+        if ($(event.target).hasClass('dropdown-item')) {
+            var idx = event.target.id.split('-').end();
+            $(options).children('.option-menu').addClass('inactive');
+            
+            $('#options-'+idx).removeClass('inactive');
         }
         toggleOptionsMenu();
     }
