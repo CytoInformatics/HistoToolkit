@@ -5,17 +5,10 @@ from imageio.core.util import Image
 from .tools import histotoolkit as htk
 from .tools import opnet
 
-
 config = app.config["APPDATA"]
 
-# my_bp = None
-# for bp in app.iter_blueprints():
-#     print(bp.name)
-#     if bp.name == 'files':
-#         my_bp = bp
-#         break
-
-# print(my_bp)
+folder_bp = Blueprint('files', __name__, static_folder='current')
+app.register_blueprint(folder_bp, url_prefix='/files')
 
 @app.route('/')
 def home():
@@ -48,30 +41,24 @@ def set_folder():
     """
 
     new_folder = request.form['folder']
+    config["FILE_DIR"] = new_folder
 
     # set blueprint static folder
-    my_bp.static_folder = new_folder
+    folder_bp.static_folder = new_folder
 
     try:
-        config["FILE_DIR"] = new_folder
         image_list = htk.list_all_images(config["FILE_DIR"])
         images_info = [htk.get_image_info(uri) for uri in image_list]
+
+        for img in images_info:
+            img['route'] = url_for(
+                'files.static', 
+                filename=img['filename']
+            )
 
         return jsonify(images_info)
     except:
         return 'failed'
-
-
-
-my_bp = Blueprint('files', __name__, static_folder='test')
-
-@my_bp.route('/get-img-url')
-def get_img_url():
-    print(my_bp.static_folder)
-    return url_for('files.static', filename='ec2_security.png')
-
-app.register_blueprint(my_bp, url_prefix='/files')
-
 
 @app.route('/get-thumbnail', methods=['POST'])
 def get_thumbnail():

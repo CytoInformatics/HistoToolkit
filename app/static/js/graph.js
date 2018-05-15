@@ -659,19 +659,9 @@ $('#file-list').click(function(event) {
             $(parent).addClass('selected');
             var idx = $(parent)[0].id.split('-').end();
         }
-        var uri = images[idx]['uri'];
-
-        $.ajax({
-            type: 'GET',
-            url: 'files/get-img-url',
-            async: true,
-            success: function(resp) {
-                // img_viewer.open('files/test/cleaning_clean.jpg');
-                console.log(resp);
-                img_viewer.open(resp);
-            }
-        })
-
+        var route = images[idx]['route'];
+        console.log(route);
+        img_viewer.open(route);
     }
 })
 
