@@ -250,6 +250,10 @@ input.drag-over {
         width: 100%;
     }
 
+    #content-3 {
+        overflow-y: auto;
+    }
+
     .output-item {
         display: flex; 
         flex-direction: row; 

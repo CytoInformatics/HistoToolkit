@@ -4,7 +4,7 @@ A graphical user interface for prototyping histology and cytology image processi
 
 ### To-do
 ##### Essentials
-* Display output as image if type is image
+* 
 
 ##### Desirables
 * Fix slow response time when processing images (likely due to base64 encoding)
