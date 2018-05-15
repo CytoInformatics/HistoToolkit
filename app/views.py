@@ -1,11 +1,21 @@
 import os, json, base64
 from app import app
-from flask import request, render_template, jsonify
+from flask import request, render_template, jsonify, url_for, Blueprint
 from imageio.core.util import Image
 from .tools import histotoolkit as htk
 from .tools import opnet
 
+
 config = app.config["APPDATA"]
+
+# my_bp = None
+# for bp in app.iter_blueprints():
+#     print(bp.name)
+#     if bp.name == 'files':
+#         my_bp = bp
+#         break
+
+# print(my_bp)
 
 @app.route('/')
 def home():
@@ -38,6 +48,10 @@ def set_folder():
     """
 
     new_folder = request.form['folder']
+
+    # set blueprint static folder
+    my_bp.static_folder = new_folder
+
     try:
         config["FILE_DIR"] = new_folder
         image_list = htk.list_all_images(config["FILE_DIR"])
@@ -46,6 +60,18 @@ def set_folder():
         return jsonify(images_info)
     except:
         return 'failed'
+
+
+
+my_bp = Blueprint('files', __name__, static_folder='test')
+
+@my_bp.route('/get-img-url')
+def get_img_url():
+    print(my_bp.static_folder)
+    return url_for('files.static', filename='ec2_security.png')
+
+app.register_blueprint(my_bp, url_prefix='/files')
+
 
 @app.route('/get-thumbnail', methods=['POST'])
 def get_thumbnail():

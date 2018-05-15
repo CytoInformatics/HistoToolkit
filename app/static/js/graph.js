@@ -660,8 +660,18 @@ $('#file-list').click(function(event) {
             var idx = $(parent)[0].id.split('-').end();
         }
         var uri = images[idx]['uri'];
-        
-        img_viewer.open('static/images/cleaning_clean.jpg');
+
+        $.ajax({
+            type: 'GET',
+            url: 'files/get-img-url',
+            async: true,
+            success: function(resp) {
+                // img_viewer.open('files/test/cleaning_clean.jpg');
+                console.log(resp);
+                img_viewer.open(resp);
+            }
+        })
+
     }
 })
 
