@@ -5,7 +5,6 @@ A graphical user interface for prototyping histology and cytology image processi
 ### To-do
 ##### Essentials
 * Decode response from graph run to display outputs in proper places
-* Implement image inspector tab
 
 ##### Desirables
 * Add Nodes list under dropdown menu options

@@ -245,6 +245,39 @@ input.drag-over {
         width: 100%;
     }
 
+    .output-item {
+        display: flex; 
+        flex-direction: row; 
+        flex-wrap: nowrap; 
+        justify-content: space-around; 
+        
+        box-sizing: border-box; 
+        height: 300px; 
+        margin-bottom: 1em;
+    }
+
+    .output-item-node {
+        display: inline-block; 
+        
+        box-sizing: border-box; 
+        width: 28%; 
+        height: 100%; 
+
+        background-color: #dddddd;
+    }
+
+    .output-item-data {
+        display: inline-flex; 
+        flex-direction: row; 
+        flex-wrap: wrap; 
+
+        box-sizing: border-box; 
+        width: 68%; 
+        height: 100%; 
+
+        background-color: #dddddd;
+    }
+
     #float-menu {
         position: absolute;
         width: 30%;
