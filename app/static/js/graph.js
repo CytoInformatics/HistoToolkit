@@ -643,7 +643,7 @@ $('#options-1').click(function(event) {
     }
 });
 
-// add click handler to image 
+// add click handler to file list 
 $('#file-list').click(function(event) {
     event.preventDefault();
 
@@ -660,8 +660,8 @@ $('#file-list').click(function(event) {
             var idx = $(parent)[0].id.split('-').end();
         }
         var uri = images[idx]['uri'];
-        console.log(uri);
-        // img_viewer.open(currentImageInfo.dzi);
+        
+        img_viewer.open('static/images/cleaning_clean.jpg');
     }
 })
 
@@ -804,18 +804,15 @@ function setFolder(folder) {
     });
 }
 
-var img_viewer;
 function initOpenSeadragon() {
-    img_viewer = OpenSeadragon({
+    viewer = OpenSeadragon({
         id: "image-viewer",
         prefixUrl: "static/js/openseadragon/images/",
-        tileSources: [],
-        showReferenceStrip: false,
-        referenceStripSizeRatio: 0.2,
-        showNavigator: true,
-        showZoomControl: true,
-        sequenceMode: false,
-        preserveViewport: true,
+        tileSources: {
+            type: 'image',
+            url:  'static/images/no-image-available.png',
+            buildPyramid: false
+        },
         maxZoomLevel: 5
     });
 
@@ -833,10 +830,22 @@ function initOpenSeadragon() {
     //     xOffset:5,
     //     yOffset:5
     // });
+
+    viewer._open = viewer.open;
+    viewer.open = function(url) {
+        this._open({
+            type: 'image',
+            url:  url,
+            buildPyramid: false
+        });
+    }
+
+    return viewer;
 };
 
 var folder_id_root = 'folder-';
 var config;
+var img_viewer;
 $(document).ready(function() {
     // initial config
     $.when(
@@ -870,5 +879,5 @@ $(document).ready(function() {
     openTab('1');
 
     // initialize image viewer
-    initOpenSeadragon();
+    img_viewer = initOpenSeadragon();
 });
