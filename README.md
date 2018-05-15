@@ -5,7 +5,6 @@ A graphical user interface for prototyping histology and cytology image processi
 ### To-do
 ##### Essentials
 * Decode response from graph run to display outputs in proper places
-* Change name of image viewer id to support more than 1
 
 ##### Desirables
 * Add Nodes list under dropdown menu options

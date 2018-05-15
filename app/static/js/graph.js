@@ -830,10 +830,10 @@ function setFolder(folder) {
     });
 }
 
-function initOpenSeadragon() {
+function initOpenSeadragon(id) {
     viewer = OpenSeadragon({
-        id: "image-viewer",
-        prefixUrl: "static/js/openseadragon/images/",
+        id: id,
+        prefixUrl: 'static/js/openseadragon/images/',
         tileSources: {
             type: 'image',
             url:  'static/images/no-image-available.png',
@@ -905,5 +905,5 @@ $(document).ready(function() {
     openTab('1');
 
     // initialize image viewer
-    img_viewer = initOpenSeadragon();
+    img_viewer = initOpenSeadragon('osd-image-viewer-1');
 });

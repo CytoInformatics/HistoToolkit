@@ -199,6 +199,11 @@ input.drag-over {
         background-color: gray;
     }
 
+.osd-image-viewer {
+    height: 100%;
+    width: 100%;
+}
+
 #viewer {
     flex-direction: column;
     width: 75%;
