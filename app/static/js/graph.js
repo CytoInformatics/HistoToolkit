@@ -111,10 +111,31 @@ function populateOutputTab(obj) {
 
         var item_node = document.createElement('div');
         item_node.classList.add('output-item-node');
+        var label = document.createElement('div');
+        label.classList.add('label');
+        label.innerHTML = data.node;
+        item_node.append(label)
         item.append(item_node);
 
         var item_data = document.createElement('div');
         item_data.classList.add('output-item-data');
+        for (var key in data.outputs) {
+            var out_obj = data.outputs[key];
+            var output = document.createElement('div');
+            output.classList.add('output');
+
+            var label = document.createElement('div');
+            label.classList.add('label');
+            label.innerHTML = out_obj.name;
+            output.append(label);
+
+            var value = document.createElement('div');
+            value.classList.add('value');
+            value.innerHTML = out_obj.value;
+            output.append(value);
+
+            item_data.append(output);
+        }
         item.append(item_data);
 
         return item;
@@ -125,6 +146,7 @@ function populateOutputTab(obj) {
     for (var i = 0; i < obj.length; i++) {
         var row_data = obj[i];
         var element = createOutputElement(row_data);
+        console.log(element);
         output_content.append(element);
     }
 }

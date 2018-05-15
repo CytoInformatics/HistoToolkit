@@ -258,29 +258,57 @@ input.drag-over {
         
         box-sizing: border-box; 
         height: 300px; 
+        padding: 0.5em;
         margin-bottom: 1em;
+
+        background-color: #eeeeee;
     }
 
     .output-item-node {
         display: inline-block; 
         
         box-sizing: border-box; 
-        width: 28%; 
+        width: 25%; 
         height: 100%; 
 
         background-color: #dddddd;
+    }
+
+    .output-item-node > .label {
+        font-size: 1em;
     }
 
     .output-item-data {
         display: inline-flex; 
         flex-direction: row; 
         flex-wrap: wrap; 
+        justify-content: flex-start;
 
         box-sizing: border-box; 
-        width: 68%; 
-        height: 100%; 
+        width: 72%; 
 
         background-color: #dddddd;
+    }
+
+    .output-item-data > .output {
+        display: inline-block;
+
+        box-sizing: border-box;
+        width: 30%; 
+        margin: 0.5em;
+
+        background-color: #ff8888;
+    }
+
+    .output > .label {
+        height: 2em;
+
+        background-color: #88ff88;
+    }
+
+    .output > .value {
+        height: 90%;
+        background-color: #8888ff;
     }
 
     #float-menu {
