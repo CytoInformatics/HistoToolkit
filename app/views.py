@@ -157,7 +157,7 @@ def run_graph():
                 datatype = 'base64-image'
                 htk.save_image('./app/test/tmp.png', val)
                 with open('./app/test/tmp.png', 'rb') as f:
-                    newval = base64.b64encode(f.read()).decode('utf-8')
+                    newval = 'data:image/png;base64,' + base64.b64encode(f.read()).decode('utf-8')
             else:
                 datatype = 'literal'
                 newval = val

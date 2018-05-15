@@ -92,9 +92,6 @@ var graph = {
             url: '/run-graph',
             data: formdata,
             success: function(response) {
-                console.log(response);
-                // var img_url = 'data:image/png;base64,'+response.end().outputs.data.value;
-                // $('#test-output-img').attr('src', img_url);
                 populateOutputTab(response);
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -129,9 +126,14 @@ function populateOutputTab(obj) {
             label.innerHTML = out_obj.name;
             output.append(label);
 
-            var value = document.createElement('div');
+            if (out_obj.datatype === 'base64-image') {
+                var value = document.createElement('img');
+                value.src = out_obj.value;
+            } else {
+                var value = document.createElement('div');
+                value.innerHTML = out_obj.value;
+            }
             value.classList.add('value');
-            value.innerHTML = out_obj.value;
             output.append(value);
 
             item_data.append(output);
@@ -146,7 +148,6 @@ function populateOutputTab(obj) {
     for (var i = 0; i < obj.length; i++) {
         var row_data = obj[i];
         var element = createOutputElement(row_data);
-        console.log(element);
         output_content.append(element);
     }
 }

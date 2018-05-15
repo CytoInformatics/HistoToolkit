@@ -311,6 +311,10 @@ input.drag-over {
         background-color: #8888ff;
     }
 
+    .output > img.value {
+        width: 100%;
+    }
+
     #float-menu {
         position: absolute;
         width: 30%;

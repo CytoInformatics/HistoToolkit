@@ -7,6 +7,7 @@ A graphical user interface for prototyping histology and cytology image processi
 * Display output as image if type is image
 
 ##### Desirables
+* Fix slow response time when processing images (likely due to base64 encoding)
 * Add Nodes list under dropdown menu options
 * Shrink large images before sending them to client
 * Replace base64 encoding of images with link to static file
