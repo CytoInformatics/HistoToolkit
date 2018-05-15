@@ -93,8 +93,9 @@ var graph = {
             data: formdata,
             success: function(response) {
                 console.log(response);
-                var img_url = 'data:image/png;base64,'+response.end().outputs.data.value;
-                $('#test-output-img').attr('src', img_url);
+                // var img_url = 'data:image/png;base64,'+response.end().outputs.data.value;
+                // $('#test-output-img').attr('src', img_url);
+                populateOutputTab(response);
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log("ERROR: " + textStatus + " " + errorThrown);
@@ -102,6 +103,31 @@ var graph = {
         });
     }
 };
+
+function populateOutputTab(obj) {
+    function createOutputElement(data) {
+        var item = document.createElement('div');
+        item.classList.add('output-item');
+
+        var item_node = document.createElement('div');
+        item_node.classList.add('output-item-node');
+        item.append(item_node);
+
+        var item_data = document.createElement('div');
+        item_data.classList.add('output-item-data');
+        item.append(item_data);
+
+        return item;
+    }
+
+    var output_content = document.getElementById('content-3');
+    output_content.innerHTML = '';
+    for (var i = 0; i < obj.length; i++) {
+        var row_data = obj[i];
+        var element = createOutputElement(row_data);
+        output_content.append(element);
+    }
+}
 
 var box_defaults = {
     strokeColor: 'black',
