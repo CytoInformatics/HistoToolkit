@@ -136,7 +136,10 @@ def multiply(data, scale):
     Multiply DATA by a factor of SCALE.
     """
 
-    return scale * data
+    op_output = {
+        'data': scale * data
+    }
+    return op_output
 
 
 def convert_data_type(data, datatype):
@@ -144,7 +147,10 @@ def convert_data_type(data, datatype):
     Convert DATA to DATATYPE.
     """
 
-    return data.astype(datatype)
+    op_output = {
+        'data': data.astype(datatype)
+    }
+    return op_output
 
 def rescale_range(data, out_min, out_max):
     """
@@ -191,7 +197,7 @@ def resize_image(data, output_shape):
     Resize DATA to OUTPUT_SHAPE.
     """
 
-    data = resize(data, output_shape, anti_aliasing=True)
+    data = resize(data, output_shape)
 
     op_output = {
         'data': data
@@ -200,8 +206,8 @@ def resize_image(data, output_shape):
 
 
 op_manager = opnet.OperationsManager([
-    [convert_data_type, "Data", "data"],
-    [rescale_range, "Data", "data"],
-    [multiply, "Math", "data"],
-    [resize_image, "Image", "data"]
+    [convert_data_type, 'Data', 'data'],
+    [rescale_range, 'Data', 'data'],
+    [multiply, 'Math', 'data'],
+    [resize_image, 'Image', 'data']
 ])

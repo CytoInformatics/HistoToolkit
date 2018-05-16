@@ -282,16 +282,15 @@ class Node:
         """
         Run operation stored at node. 
         """
-
+        
         outs = self.op(**self.unpack_params())
-        outs = ensure_is_listlike(outs)
 
         # store outputs as value
         for (s_out, out) in zip(self.outputs, outs):
-            s_out.set_value(out)
+            s_out.set_value(outs[out])
 
         # convert to dict for output
-        outs = {name: out for (name, out) in zip(self.list_outputs(), outs)}
+        outs = {name: outs[out] for (name, out) in zip(self.list_outputs(), outs)}
         return outs
 
 class Port:

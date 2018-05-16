@@ -1,4 +1,5 @@
 import os, json, base64
+import numpy as np
 from app import app
 from flask import request, render_template, jsonify, url_for, Blueprint
 from imageio.core.util import Image
@@ -132,6 +133,8 @@ def run_graph():
             elif len(p['value'].split('.')) == 2 \
                  and all(s.isdigit() for s in p['value'].split('.')):
                 node_params[p['name']] = float(p['value'])
+            elif p['value'][0] == '[' and p['value'][-1] == ']':
+                node_params[p['name']] = json.loads(p['value'])
             else:
                 node_params[p['name']] = p['value']
 
@@ -153,7 +156,7 @@ def run_graph():
     results = graph.run()
     for node in results:
         for key, val in node['outputs'].items():
-            if isinstance(val, Image):
+            if isinstance(val, Image) or isinstance(val, np.ndarray):
                 datatype = 'base64-image'
                 htk.save_image('./app/test/tmp.png', val)
                 with open('./app/test/tmp.png', 'rb') as f:
