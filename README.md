@@ -7,7 +7,6 @@ A graphical user interface for prototyping histology and cytology image processi
 * Implement Nodes list
 * Change style of node when selected
 * Change style of invalid param paths
-* Display unique node names over node
 
 ##### Desirables
 * Fix slow response time when processing images (likely due to base64 encoding)

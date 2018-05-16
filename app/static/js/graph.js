@@ -421,6 +421,43 @@ function onMouseDrag(event) {
     }
 }
 
+function onMouseUp(event) {
+    // set click time
+    lastClickTime = Date.now();
+
+    if (drawingConduit) {    
+        var hit_result = project.hitTest(event.point, hitOptions);
+        if (
+            hit_result.item
+            && hit_result.item.parent.obj_type == "param"
+            && hit_result.item.parent.parent !== drawingConduit.output.parent
+        ) {
+            var item = hit_result.item;
+
+            // remove existing conduit and references if present
+            if (item.parent.get_value()) {
+                item.parent.get_value().delete();
+            }
+
+            // move line endpoint to item position
+            drawingConduit.line.segments[1].point = item.position;
+
+            // add reference to param as property of conduit
+            drawingConduit.param = item.parent;
+
+            // add reference to conduit as property of param
+            item.parent.set_value(drawingConduit);
+        } else {
+            drawingConduit.delete();
+        }
+    }
+
+    toggleNodeMenu(draggingNodeBox);
+
+    drawingConduit = undefined;
+    draggingNodeBox = undefined;
+}
+
 function createPortItem(port, name) {
     /* 
         Create port item (either param or output) with following structure:
@@ -528,43 +565,6 @@ function toggleNodeMenu(nodebox) {
         // show menu
         $("#float-menu").removeClass("hidden");
     }
-}
-
-function onMouseUp(event) {
-    // set click time
-    lastClickTime = Date.now();
-
-    if (drawingConduit) {    
-        var hit_result = project.hitTest(event.point, hitOptions);
-        if (
-            hit_result.item
-            && hit_result.item.parent.obj_type == "param"
-            && hit_result.item.parent.parent !== drawingConduit.output.parent
-        ) {
-            var item = hit_result.item;
-
-            // remove existing conduit and references if present
-            if (item.parent.get_value()) {
-                item.parent.get_value().delete();
-            }
-
-            // move line endpoint to item position
-            drawingConduit.line.segments[1].point = item.position;
-
-            // add reference to param as property of conduit
-            drawingConduit.param = item.parent;
-
-            // add reference to conduit as property of param
-            item.parent.set_value(drawingConduit);
-        } else {
-            drawingConduit.delete();
-        }
-    }
-
-    toggleNodeMenu(draggingNodeBox);
-
-    drawingConduit = undefined;
-    draggingNodeBox = undefined;
 }
 
 function toggleOptionsMenu() {
