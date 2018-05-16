@@ -206,8 +206,8 @@ def resize_image(data, output_shape):
 
 
 op_manager = opnet.OperationsManager([
-    [convert_data_type, 'Data', 'data'],
-    [rescale_range, 'Data', 'data'],
     [multiply, 'Math', 'data'],
+    [convert_data_type, 'Data', 'data'],
+    [rescale_range, 'Data', ['data', 'out_min', 'out_max']],
     [resize_image, 'Image', 'data']
 ])
