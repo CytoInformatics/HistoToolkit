@@ -14,7 +14,7 @@ Array.prototype.end = function() {
 
 var graph = {
     nodes: {},
-    conduits: [],
+    conduits: {},
     valid_ops: {},
     jsonify: function() {
         var obj = new Object();
@@ -61,7 +61,7 @@ var graph = {
         }
 
         // loop conduits
-        for (var i = 0; i < this.conduits.length; i++) {
+        for (var i in this.conduits) {
             var conduit = this.conduits[i];
             if (conduit instanceof Conduit) {
                 var output = conduit.output;
@@ -71,8 +71,7 @@ var graph = {
                 var param_op = graph.valid_ops[param.node.op_name];
 
                 var conduit_obj = new Object();
-                var rand_id = strWithLeadingZeros(randInt(0, 10000), 4);
-                conduit_obj.name = "conduit-" + rand_id;
+                conduit_obj.name = conduit.conduit_id;
                 conduit_obj.output_node = output.node.node_id;
                 conduit_obj.output = output_op.outputs[output.num].name;
                 conduit_obj.param_node = param.node.node_id;
@@ -217,7 +216,7 @@ function Node(op, params, outputs, position, node_props, box_props) {
     this.outputs = [];
     this.op_name = op;            // to identify op on server
     this.display_name = op;       // modifiable name for user
-    var rand_id = strWithLeadingZeros(randInt(0, 10000), 4);
+    var rand_id = strWithLeadingZeros(randInt(0, 1000000), 4);
     this.node_id = op + '-' + rand_id; // to uniquely identify node
     this.createPorts = function(port_names, port_type, port_defaults) {
         var box_corner = this.group.firstChild.point;
@@ -305,12 +304,7 @@ function Node(op, params, outputs, position, node_props, box_props) {
         this.group = undefined;
 
         // remove self from graph.nodes
-        for (var i in graph.nodes) {
-            var node = graph.nodes[i];
-            if (this === node) {
-                delete graph.nodes[i];
-            }
-        }
+        delete graph.nodes[this.node_id];
     }
 
     // create box for node base
@@ -357,6 +351,8 @@ function Node(op, params, outputs, position, node_props, box_props) {
 }
 
 function Conduit(props, output, param) {
+    var rand_id = strWithLeadingZeros(randInt(0, 1000000), 4);
+    this.conduit_id = 'conduit-' + rand_id; // to uniquely identify conduit
     // create line to add as conduit
     // line is added as property of group but is NOT child of group
     if (typeof param !== 'undefined') {
@@ -382,12 +378,7 @@ function Conduit(props, output, param) {
         this.line = undefined;
 
         // remove self from graph.conduits
-        for (var i = 0; i < graph.conduits.length; i++) {
-            var conduit = graph.conduits[i];
-            if (this === conduit) {
-                graph.conduits.splice(i, 1);
-            }
-        }
+        delete graph.conduits[this.conduit_id];
     }
 
     // add references to link conduit and output
@@ -403,7 +394,7 @@ function Conduit(props, output, param) {
     }
 
     // add to graph object
-    graph.conduits.push(this);
+    graph.conduits[this.conduit_id] = this;
 
     return this;
 }
