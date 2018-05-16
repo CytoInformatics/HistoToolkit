@@ -2,12 +2,15 @@
     "FILE_DIR": "/home/masonmcgough/Pictures",
     "THUMBS_DIR": "thumbs",
     "THUMBNAIL_EXT": ".jpg",
-    
+    "ID_NDIGITS": 6,
+    "DEFAULT_TAB": "1",
+
     "BOX_DEFAULTS": {
         "strokeColor": "black",
         "fillColor": "blue",
         "strokeWidth": 6,
-        "hoverStrokeColor": "green"
+        "hoverStrokeColor": "green",
+        "width": 100
     },
     "NODE_DEFAULTS": {
         "port_radius": 15,
@@ -36,5 +39,7 @@
         "stroke": true,
         "fill": true,
         "tolerance": 5
-    }
+    },
+
+    "DBLCLICK_DELTA": 300
 }

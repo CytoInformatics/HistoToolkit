@@ -170,11 +170,15 @@ function strWithLeadingZeros(number, n_zeros) {
     return numstr;
 }
 
+function idString(n_digits) {
+    return strWithLeadingZeros(randInt(0, Math.pow(10, n_digits)), n_digits);
+}
+
 function Node(op, params, outputs, position, node_props, box_props) {
     this.params = [];
     this.outputs = [];
     this.op_name = op;            // to identify op on server
-    var rand_id = strWithLeadingZeros(randInt(0, 1000000), 4);
+    var rand_id = idString(config.ID_NDIGITS);
     this.node_id = op + '-' + rand_id; // to uniquely identify node
     this.display_name = this.node_id;  // modifiable name for user
 
@@ -271,7 +275,7 @@ function Node(op, params, outputs, position, node_props, box_props) {
     var n_ports = params.length > outputs.length ? params.length : outputs.length;
     var sp = node_props.port_spacing;
     var r = node_props.port_radius;
-    var box_w = 100;
+    var box_w = box_props.width;
     var box_h = (n_ports - 1) * (sp + 2 * r) + 2 * (sp + r);
     var box = new Path.Rectangle({
         point: position,
@@ -311,7 +315,7 @@ function Node(op, params, outputs, position, node_props, box_props) {
 }
 
 function Conduit(props, output, param) {
-    var rand_id = strWithLeadingZeros(randInt(0, 1000000), 4);
+    var rand_id = idString(config.ID_NDIGITS);
     this.conduit_id = 'conduit-' + rand_id; // to uniquely identify conduit
     // create line to add as conduit
     // line is added as property of group but is NOT child of group
@@ -363,10 +367,9 @@ function Conduit(props, output, param) {
 var draggingNodeBox = undefined;
 var drawingConduit = undefined;
 var lastClickTime = Date.now();
-var doubleClickDelta = 300;
 function onMouseDown(event) {
     var hit_result = project.hitTest(event.point, config.HIT_OPTIONS);
-    if (Date.now() - lastClickTime < doubleClickDelta) {
+    if (Date.now() - lastClickTime < config.DBLCLICK_DELTA) {
     // DOUBLE-CLICK
         if (
             hit_result
@@ -877,7 +880,7 @@ $(document).ready(function() {
             setFolder(active_folder.value);
         })
 
-        openTab('1');
+        openTab(config.DEFAULT_TAB);
 
         // initialize image viewer
         img_viewer = initOpenSeadragon('osd-image-viewer-1');
