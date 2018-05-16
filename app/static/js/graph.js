@@ -16,6 +16,12 @@ var graph = {
     nodes: {},
     conduits: {},
     valid_ops: {},
+    deselectNodes: function() {
+        for (var i in this.nodes) {
+            var node = this.nodes[i];
+            node.deselect();
+        }
+    },
     jsonify: function() {
         var obj = new Object();
         obj.nodes = [];
@@ -242,6 +248,14 @@ function Node(op, params, outputs, position, node_props, box_props) {
         }
     }
 
+    this.select = function() {
+        this.box.fillColor = config.BOX_DEFAULTS.selectedFillColor;
+    }
+
+    this.deselect = function() {
+        this.box.fillColor = config.BOX_DEFAULTS.fillColor;
+    }
+
     this.delete = function() {
         // remove all ports and their conduits and paper paths
         for (var i = 0; i < this.params.length; i++) {
@@ -289,6 +303,7 @@ function Node(op, params, outputs, position, node_props, box_props) {
     box.onMouseLeave = function(event) {
         this.strokeColor = this.previousStrokeColor;
     }; 
+    this.box = box;
 
     // create display name object
     var t_off = node_props.text_offset;
@@ -426,7 +441,7 @@ function onMouseUp(event) {
     lastClickTime = Date.now();
 
     if (drawingConduit) {    
-        var hit_result = project.hitTest(event.point, hitOptions);
+        var hit_result = project.hitTest(event.point, config.HIT_OPTIONS);
         if (
             hit_result.item
             && hit_result.item.parent.obj_type == "param"
@@ -452,7 +467,13 @@ function onMouseUp(event) {
         }
     }
 
-    toggleNodeMenu(draggingNodeBox);
+    graph.deselectNodes();
+    if (draggingNodeBox) {
+        draggingNodeBox.node.select();
+        toggleNodeMenu(draggingNodeBox.node);
+    } else {
+        toggleNodeMenu(draggingNodeBox);
+    }
 
     drawingConduit = undefined;
     draggingNodeBox = undefined;
@@ -528,21 +549,21 @@ function createPortItem(port, name) {
     return item;
 }
 
-function toggleNodeMenu(nodebox) {
-    if (typeof nodebox == 'undefined') {
+function toggleNodeMenu(node) {
+    if (typeof node == 'undefined') {
         // hide menu when deselected
         $("#float-menu").addClass("hidden");
     } else {
         // update title and description
-        $("#float-title").text(nodebox.node.display_name);
-        var op_data = graph.valid_ops[nodebox.node.op_name];
+        $("#float-title").text(node.display_name);
+        var op_data = graph.valid_ops[node.op_name];
         $("#float-description").text(op_data.docstring);
 
         // update params
         var param_list = document.getElementById("param-list");
         param_list.innerHTML = "";
-        for (var i = 0; i < nodebox.node.params.length; i++) {
-            var param = nodebox.node.params[i];
+        for (var i = 0; i < node.params.length; i++) {
+            var param = node.params[i];
             var newport = createPortItem(
                 param, 
                 op_data.params[i].name
@@ -553,8 +574,8 @@ function toggleNodeMenu(nodebox) {
         // update outputs
         var output_list = document.getElementById("output-list");
         output_list.innerHTML = "";
-        for (var i = 0; i < nodebox.node.outputs.length; i++) {
-            var output = nodebox.node.outputs[i];
+        for (var i = 0; i < node.outputs.length; i++) {
+            var output = node.outputs[i];
             var newport = createPortItem(
                 output, 
                 op_data.outputs[i]
@@ -866,7 +887,6 @@ $(document).ready(function() {
         })
     ).then(function(data, textStatus, jqXHR) {
         config = data;
-        console.log(config);
 
         // set folder
         document.getElementById('active-folder').value = config.FILE_DIR;

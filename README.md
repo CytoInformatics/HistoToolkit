@@ -5,7 +5,6 @@ A graphical user interface for prototyping histology and cytology image processi
 ### To-do
 ##### Essentials
 * Implement Nodes list
-* Change style of node when selected
 * Change style of invalid param paths
 
 ##### Desirables

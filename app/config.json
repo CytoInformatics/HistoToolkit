@@ -10,7 +10,8 @@
         "fillColor": "blue",
         "strokeWidth": 6,
         "hoverStrokeColor": "green",
-        "width": 100
+        "width": 100,
+        "selectedFillColor": "#88f0ff"
     },
     "NODE_DEFAULTS": {
         "port_radius": 15,
