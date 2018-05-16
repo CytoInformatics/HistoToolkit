@@ -152,47 +152,6 @@ function populateOutputTab(obj) {
     }
 }
 
-var box_defaults = {
-    strokeColor: 'black',
-    fillColor: 'blue',
-    strokeWidth: 6,
-    hoverStrokeColor: 'green'
-};
-
-var param_defaults = {
-    fillColor: 'black',
-    hoverFillColor: 'green'
-};
-
-var output_defaults = {
-    fillColor: 'black',
-    hoverFillColor: 'red'
-};
-
-var node_defaults = {
-    port_radius: 15,
-    port_spacing: 10,
-    text_offset: [0, -10]
-};
-
-var node_name_defaults = {
-    justification: 'left',
-    fillColor: 'black',
-    fontSize: '1em'
-}
- 
-var conduit_props = {
-    strokeColor: 'black',
-    strokeWidth: 6
-}
-
-var hitOptions = {
-    segments: true,
-    stroke: true,
-    fill: true,
-    tolerance: 5
-};
-
 function assignProperties(path, properties) {
     for (key in properties) {
         path[key] = properties[key];
@@ -215,9 +174,10 @@ function Node(op, params, outputs, position, node_props, box_props) {
     this.params = [];
     this.outputs = [];
     this.op_name = op;            // to identify op on server
-    this.display_name = op;       // modifiable name for user
     var rand_id = strWithLeadingZeros(randInt(0, 1000000), 4);
     this.node_id = op + '-' + rand_id; // to uniquely identify node
+    this.display_name = this.node_id;  // modifiable name for user
+
     this.createPorts = function(port_names, port_type, port_defaults) {
         var box_corner = this.group.firstChild.point;
         var sp = node_props.port_spacing;
@@ -333,7 +293,7 @@ function Node(op, params, outputs, position, node_props, box_props) {
         point: text_position,
         content: this.display_name  
     });
-    assignProperties(disp_name_path, node_name_defaults);
+    assignProperties(disp_name_path, config.NODE_NAME_DEFAULTS);
 
     // create group for all items
     this.group = new Group([box, disp_name_path]);
@@ -341,8 +301,8 @@ function Node(op, params, outputs, position, node_props, box_props) {
     this.group.obj_type = "node";
 
     // create ports for params and outputs
-    this.createPorts(params, "param", param_defaults);
-    this.createPorts(outputs, "output", output_defaults);
+    this.createPorts(params, "param", config.PARAM_DEFAULTS);
+    this.createPorts(outputs, "output", config.OUTPUT_DEFAULTS);
 
     // add to graph object
     graph.nodes[this.node_id] = this;
@@ -405,7 +365,7 @@ var drawingConduit = undefined;
 var lastClickTime = Date.now();
 var doubleClickDelta = 300;
 function onMouseDown(event) {
-    var hit_result = project.hitTest(event.point, hitOptions);
+    var hit_result = project.hitTest(event.point, config.HIT_OPTIONS);
     if (Date.now() - lastClickTime < doubleClickDelta) {
     // DOUBLE-CLICK
         if (
@@ -428,7 +388,7 @@ function onMouseDown(event) {
                 }
 
                 // // create conduit
-                drawingConduit = new Conduit(conduit_props, item.parent);
+                drawingConduit = new Conduit(config.CONDUIT_PROPS, item.parent);
             } else if (item.parent.obj_type == "node") {
                 draggingNodeBox = item.parent;
             }
@@ -713,8 +673,8 @@ function newNode(key, position) {
         obj.params, 
         obj.outputs,
         position, 
-        node_defaults, 
-        box_defaults
+        config.NODE_DEFAULTS, 
+        config.BOX_DEFAULTS
     );
 }
 
@@ -903,22 +863,23 @@ $(document).ready(function() {
         })
     ).then(function(data, textStatus, jqXHR) {
         config = data;
+        console.log(config);
 
         // set folder
         document.getElementById('active-folder').value = config.FILE_DIR;
         setFolder(config.FILE_DIR);
+
+        populateOperationsMenu();
+
+        // set event listener for active folder input
+        var active_folder = document.getElementById('active-folder');
+        active_folder.addEventListener('focusout', function() {
+            setFolder(active_folder.value);
+        })
+
+        openTab('1');
+
+        // initialize image viewer
+        img_viewer = initOpenSeadragon('osd-image-viewer-1');
     });
-
-    populateOperationsMenu();
-
-    // set event listener for active folder input
-    var active_folder = document.getElementById('active-folder');
-    active_folder.addEventListener('focusout', function() {
-        setFolder(active_folder.value);
-    })
-
-    openTab('1');
-
-    // initialize image viewer
-    img_viewer = initOpenSeadragon('osd-image-viewer-1');
 });
