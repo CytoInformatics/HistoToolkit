@@ -13,7 +13,7 @@ Array.prototype.end = function() {
 }
 
 var graph = {
-    nodes: [],
+    nodes: {},
     conduits: [],
     valid_ops: {},
     jsonify: function() {
@@ -22,7 +22,7 @@ var graph = {
         obj.conduits = [];
 
         // loop nodes
-        for (var i = 0; i < this.nodes.length; i++) {
+        for (var i in this.nodes) {
             var node = this.nodes[i];
 
             if (node instanceof Node) {
@@ -92,6 +92,7 @@ var graph = {
             url: '/run-graph',
             data: formdata,
             success: function(response) {
+                console.log(response);
                 populateOutputTab(response);
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -304,10 +305,10 @@ function Node(op, params, outputs, position, node_props, box_props) {
         this.group = undefined;
 
         // remove self from graph.nodes
-        for (var i = 0; i < graph.nodes.length; i++) {
+        for (var i in graph.nodes) {
             var node = graph.nodes[i];
             if (this === node) {
-                graph.nodes.splice(i, 1);
+                delete graph.nodes[i];
             }
         }
     }
@@ -350,7 +351,7 @@ function Node(op, params, outputs, position, node_props, box_props) {
     this.createPorts(outputs, "output", output_defaults);
 
     // add to graph object
-    graph.nodes.push(this);
+    graph.nodes[this.node_id] = this;
 
     return this;
 }

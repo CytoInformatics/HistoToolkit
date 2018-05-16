@@ -4,18 +4,18 @@ A graphical user interface for prototyping histology and cytology image processi
 
 ### To-do
 ##### Essentials
-* 
+* Implement Nodes list
+* Change style of node when selected
+* Change style of invalid param paths
+* Display unique node names over node
 
 ##### Desirables
 * Fix slow response time when processing images (likely due to base64 encoding)
-* Add Nodes list under dropdown menu options
 * Shrink large images before sending them to client
 * Replace base64 encoding of images with link to static file
 * Add default values to operations
 * Remove thumbnails that are older than a certain date (1 month maybe?)
 * Verify if input is valid (assume string only if enclosed in '' or "")
-* Change style of invalid param paths
-* Change style of node when selected
 * Make delete button (or right-click option?) for nodes instead of double-click to delete
 * Prevent Run from being triggered again until response is received
 * Attach event to collapse folders in menu
