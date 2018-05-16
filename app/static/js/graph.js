@@ -578,7 +578,7 @@ function toggleNodeMenu(node) {
             var output = node.outputs[i];
             var newport = createPortItem(
                 output, 
-                op_data.outputs[i]
+                op_data.outputs[i].name
             );
             output_list.append(newport);
         }

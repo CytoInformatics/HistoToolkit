@@ -282,7 +282,7 @@ class Node:
         """
         Run operation stored at node. 
         """
-        
+
         outs = self.op(**self.unpack_params())
 
         # store outputs as value
