@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
-
   <head>
     <meta charset="UTF-8">
-    <title>HistoToolKit</title>
+    <title>HistoToolKit Graph</title>
 
     <!-- Stylesheets -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
@@ -11,29 +10,77 @@
   </head>
 
   <body>
-      <div id="master" class="center-items">
-          <div id="options">
-              <div id="dropdown-1" class="dropdown">
-                  <div id="header-1" class="dropdown-header">
-                      <div id="button-1" class="dropdown-icon center-items">🠷</div>
-                      <div class="dropdown-name hcenter-items">Preprocessing</div>
-                  </div>
-              </div>
-              <div id="options-1" class="dropdown-options"></div>
+    <div id="master" class="center-items">
+      <div id="options">
+        <div id="dropdown-1" class="dropdown">
+          <div id="header-1" class="dropdown-header">
+            <div id="button-1" class="dropdown-icon center-items">🠷</div>
+            <div class="dropdown-name hcenter-items">Operations</div>
           </div>
-          <div id="viewer">
-              <div id="tabs">
-                  <div id="tab-1" class="tab center-items">Info</div>
-                  <div id="tab-2" class="tab center-items">Image</div>
-                  <div id="tab-3" class="tab center-items">Output</div>
-                  <div id="tab-4" class="tab center-items">Settings</div>
-              </div>
-              <div id="content"></div>
-          </div>
-      </div>
+        </div>
 
-      <!-- Javascript -->
-      <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-      <script type="text/javascript" src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+        <div class="dropdown-placeholder">
+          <div id="dropdown-menu" class="inactive">
+            <div id="dropdown-option-1" class="dropdown-item">Operations</div>
+            <div id="dropdown-option-2" class="dropdown-item">Files</div>
+            <div id="dropdown-option-3" class="dropdown-item">Nodes</div>
+          </div>
+        </div>
+
+        <div id="options-1" class="option-menu"></div>
+
+        <div id="options-2" class="option-menu inactive">
+          <div class="label">Active Folder</div>
+          <input id="active-folder" type="text" name="active_folder" />
+
+          <div class="h-separator"></div>
+
+          <div id="file-list"></div>
+        </div>
+      </div>
+      <div id="viewer">
+        <div id="tabs">
+          <div id="tab-1" class="tab center-items">Graph</div>
+          <div id="tab-2" class="tab center-items">Image</div>
+          <div id="tab-3" class="tab center-items">Output</div>
+          <div id="tab-4" class="tab center-items">Settings</div>
+          <div id="tab-5" class="tab center-items run-button">Run</div>
+        </div>
+
+        <div id="content">
+          <div id="content-1">
+            <canvas id="graphCanvas" resize></canvas>
+            <div id="float-menu" class="hidden">
+              <div id="float-title"></div>
+              <div id="float-description"></div>
+              
+              <div class="port-title">Params</div>
+              <div id="param-list" class="port-list"></div>
+              <div class="port-title">Outputs</div>
+              <div id="output-list" class="port-list"></div>
+            </div>
+          </div>
+
+          <div id="content-2">
+            <div id="osd-image-viewer-1" class="osd-image-viewer"></div>
+          </div>
+
+          <div id="content-3"></div>
+
+          <div id="content-4"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Javascript -->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/paper-full.min.js') }}"></script>
+    <script type="text/paperscript" canvas="graphCanvas" src="{{ url_for('static', filename='js/graph.js') }}"></script>
+
+
+    <script src="{{ url_for('static', filename='js/openseadragon/openseadragon.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/openseadragon/openseadragon-viewerinputhook.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/openseadragon/openseadragon-imaginghelper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/openseadragon/openseadragon-scalebar.js') }}"></script>
   </body>
 </html>

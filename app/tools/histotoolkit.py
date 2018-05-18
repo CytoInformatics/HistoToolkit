@@ -1,20 +1,69 @@
-import os
+import os, hashlib
+import warnings
 import numpy as np
-from PIL import Image
-from imageio import imread, get_reader
+from imageio import imread, imwrite, get_reader
 from skimage.transform import resize
 from collections import Counter
 from .PythonHelpers.file_utils import list_files
 
-VALID_EXTS = ('.jpg', '.jpeg', '.png', '.tif', '.tiff', '.bmp',)
+from . import opnet
+
+IMAGE_EXTS = ('.jpg', '.jpeg', '.png', '.tif', '.tiff', '.bmp',)
+THUMBNAIL_SETTINGS = {
+    'dims': [300, 300],
+    'crop_mode': 'top-left'
+}
+
+def hash_file(uri):
+    """
+    Create a hash string for the file stored at uri.
+    """
+
+    file_str = uri + str(os.path.getmtime(uri))
+    hashval = hashlib.md5(file_str.encode('utf-8')).hexdigest()
+    return hashval
 
 def list_all_images(folder):
     """
     Return list of all files in FOLDER with extensions in VALID_EXTS.
     """
 
-    all_images = list_files(folder, valid_exts=VALID_EXTS)
-    return all_images
+    return list_files(folder, valid_exts=IMAGE_EXTS)
+
+def get_image_info(uri):
+    """
+    Return dict containing info for image stored at URI.
+    """
+
+    image_info = {
+        'uri': uri,
+        'filename': os.path.basename(uri)
+    }
+
+    return image_info
+
+def create_thumbnail(img_uri, thumb_uri):
+    """
+    Create thumbnail for image at IMG_URI and save as THUMB_URI.
+    """
+
+    img = imread(img_uri)
+
+    if THUMBNAIL_SETTINGS['crop_mode'] == 'top-left':
+        min_dim = min(img.shape[0:2])
+        img_trim = img[:min_dim, :min_dim]
+        thumbnail = resize(img_trim, THUMBNAIL_SETTINGS['dims'])
+    else:
+        min_dim = min(img.shape[0:2])
+        img_trim = img[:min_dim, :min_dim]
+        thumbnail = resize(img_trim, THUMBNAIL_SETTINGS['dims'])
+
+    # discard alpha channel
+    if len(img.shape) > 2 and img.shape[2] > 3:
+        thumbnail = thumbnail[:, :, 0:3]
+
+    imwrite(thumb_uri, thumbnail)
+    return True
 
 def count_file_types(img_names):
     """
@@ -51,8 +100,8 @@ def get_image_shapes(img_names):
 
     all_shapes = []
     for f in img_names:
-        img = Image.open(f)
-        all_shapes.append(img.size)
+        img = imread(f)
+        all_shapes.append(img.shape)
 
     return all_shapes
 
@@ -62,6 +111,13 @@ def load_image(name):
     """
     
     return imread(name)
+
+def save_image(name, img):
+    """
+    Save IMG to uri NAME.
+    """
+
+    return imwrite(name, img)
 
 def get_metadata(name, mode="i"):
     """
@@ -73,12 +129,28 @@ def get_metadata(name, mode="i"):
     reader.close()
     return metadata
 
+
+# Operations
+def multiply(data, scale):
+    """
+    Multiply DATA by a factor of SCALE.
+    """
+
+    op_output = {
+        'data': scale * data
+    }
+    return op_output
+
+
 def convert_data_type(data, datatype):
     """
     Convert DATA to DATATYPE.
     """
 
-    return data.astype(datatype)
+    op_output = {
+        'data': data.astype(datatype)
+    }
+    return op_output
 
 def rescale_range(data, out_min, out_max):
     """
@@ -125,7 +197,7 @@ def resize_image(data, output_shape):
     Resize DATA to OUTPUT_SHAPE.
     """
 
-    data = resize(data, output_shape, anti_aliasing=True)
+    data = resize(data, output_shape)
 
     op_output = {
         'data': data
@@ -133,9 +205,9 @@ def resize_image(data, output_shape):
     return op_output
 
 
-# TESTING ONLY
-def test_mult(data, arg1):
-    return {'data': data * arg1}
-
-def test_power(data, arg1):
-    return {'data': data**arg1}
+op_manager = opnet.OperationsManager([
+    [multiply, 'Math', 'data'],
+    [convert_data_type, 'Data', 'data'],
+    [rescale_range, 'Data', ['data', 'out_min', 'out_max']],
+    [resize_image, 'Image', 'data']
+])

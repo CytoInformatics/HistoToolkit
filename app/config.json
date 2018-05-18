@@ -1,0 +1,46 @@
+{
+    "FILE_DIR": "/home/masonmcgough/Pictures",
+    "THUMBS_DIR": "thumbs",
+    "THUMBNAIL_EXT": ".jpg",
+    "ID_NDIGITS": 6,
+    "DEFAULT_TAB": "1",
+
+    "BOX_DEFAULTS": {
+        "strokeColor": "black",
+        "fillColor": "blue",
+        "strokeWidth": 6,
+        "hoverStrokeColor": "green",
+        "width": 100,
+        "selectedFillColor": "#88f0ff"
+    },
+    "NODE_DEFAULTS": {
+        "port_radius": 15,
+        "port_spacing": 10,
+        "text_offset": [0, -10]
+    },
+    "NODE_NAME_DEFAULTS": {
+        "justification": "left",
+        "fillColor": "black",
+        "fontSize": "1em"
+    },
+    "PARAM_DEFAULTS": {
+        "fillColor": "black",
+        "hoverFillColor": "green"
+    },
+    "OUTPUT_DEFAULTS": {
+        "fillColor": "black",
+        "hoverFillColor": "red"
+    },
+    "CONDUIT_PROPS": {
+        "strokeColor": "black",
+        "strokeWidth": 6
+    },
+    "HIT_OPTIONS": {
+        "segments": true,
+        "stroke": true,
+        "fill": true,
+        "tolerance": 5
+    },
+
+    "DBLCLICK_DELTA": 300
+}
