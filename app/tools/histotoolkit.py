@@ -1,6 +1,7 @@
-import os, hashlib
+import os, hashlib, base64
 import warnings
 import numpy as np
+from imageio.core.util import Image
 from imageio import imread, imwrite, get_reader
 from skimage.transform import resize
 from collections import Counter
@@ -187,8 +188,8 @@ def rescale_range(data, out_min, out_max):
 
     op_output = {
         'data': data, 
-        'out_min': data.min().item(), 
-        'out_max': data.max().item()
+        'out_min': data.min(), 
+        'out_max': data.max()
     }
     return op_output
 
@@ -204,6 +205,24 @@ def resize_image(data, output_shape):
     }
     return op_output
 
+def json_sanitize(val):
+    """
+    Convert VAL to a type that is serializable using jsonify.
+    """
+
+    if isinstance(val, Image) or isinstance(val, np.ndarray):
+        datatype = 'base64-image'
+        save_image('./app/test/tmp.png', val)
+        with open('./app/test/tmp.png', 'rb') as f:
+            newval = 'data:image/png;base64,' + base64.b64encode(f.read()).decode('utf-8')
+    elif isinstance(val, np.generic):
+        datatype = 'literal'
+        newval = val.item()
+    else:
+        datatype = 'literal'
+        newval = val
+
+    return newval, datatype
 
 op_manager = opnet.OperationsManager([
     [multiply, 'Math', 'data'],
