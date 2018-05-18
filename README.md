@@ -2,6 +2,16 @@
 
 A graphical user interface for prototyping histology and cytology image processing workflows.
 
+## Installation
+#### Install horsetools
+git clone https://github.com/JimBoonie/PythonHelpers.git
+cd PythonHelpers
+pip install .
+
+#### Launch server
+cd HistoToolkit
+python run.py
+
 ### To-do
 ##### Essentials
 * Implement Nodes list
@@ -22,7 +32,7 @@ A graphical user interface for prototyping histology and cytology image processi
 * Allow Node constructor to use ordered list for params as input
 * Make output names for nodes optional (option to unpack values if possible?)
 
-#### Notes
+### Notes
 * Launch server
 ```
 python run.py
