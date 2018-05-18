@@ -187,8 +187,8 @@ def rescale_range(data, out_min, out_max):
 
     op_output = {
         'data': data, 
-        'out_min': data.min(), 
-        'out_max': data.max()
+        'out_min': data.min().item(), 
+        'out_max': data.max().item()
     }
     return op_output
 
