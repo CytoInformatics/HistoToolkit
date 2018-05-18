@@ -130,8 +130,27 @@ def get_metadata(name, mode="i"):
     reader.close()
     return metadata
 
+def json_sanitize(val):
+    """
+    Convert VAL to a type that is serializable using jsonify.
+    """
 
-# Operations
+    if isinstance(val, Image) or isinstance(val, np.ndarray):
+        datatype = 'base64-image'
+        save_image('./app/test/tmp.png', val)
+        with open('./app/test/tmp.png', 'rb') as f:
+            newval = 'data:image/png;base64,' + base64.b64encode(f.read()).decode('utf-8')
+    elif isinstance(val, np.generic):
+        datatype = 'literal'
+        newval = val.item()
+    else:
+        datatype = 'literal'
+        newval = val
+
+    return newval, datatype
+
+
+# *- OPERATIONS -*
 def multiply(data, scale):
     """
     Multiply DATA by a factor of SCALE.
@@ -205,24 +224,6 @@ def resize_image(data, output_shape):
     }
     return op_output
 
-def json_sanitize(val):
-    """
-    Convert VAL to a type that is serializable using jsonify.
-    """
-
-    if isinstance(val, Image) or isinstance(val, np.ndarray):
-        datatype = 'base64-image'
-        save_image('./app/test/tmp.png', val)
-        with open('./app/test/tmp.png', 'rb') as f:
-            newval = 'data:image/png;base64,' + base64.b64encode(f.read()).decode('utf-8')
-    elif isinstance(val, np.generic):
-        datatype = 'literal'
-        newval = val.item()
-    else:
-        datatype = 'literal'
-        newval = val
-
-    return newval, datatype
 
 op_manager = opnet.OperationsManager([
     [multiply, 'Math', 'data'],
