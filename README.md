@@ -4,13 +4,17 @@ A graphical user interface for prototyping histology and cytology image processi
 
 ## Installation
 #### Install horsetools
+```
 git clone https://github.com/JimBoonie/PythonHelpers.git
 cd PythonHelpers
 pip install .
+```
 
 #### Launch server
+```
 cd HistoToolkit
 python run.py
+```
 
 ### To-do
 ##### Essentials
