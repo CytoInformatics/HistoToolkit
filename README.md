@@ -18,11 +18,11 @@ python run.py
 
 ### To-do
 ##### Essentials
-* Select and delete nodes from node list
 * Change style of invalid param paths
 
 ##### Desirables
 * Fix slow response time when processing images (likely due to base64 encoding)
+* Change all uses of document methods to JQuery where possible
 * Double click node display name to change it
 * Shrink large images before sending them to client
 * Replace base64 encoding of images with link to static file

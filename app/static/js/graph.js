@@ -21,6 +21,13 @@ var graph = {
             var node = this.nodes[i];
             node.deselect();
         }
+
+        // remove selection from node list
+        var ops_menu = $('#options-3');
+        for (var i = 0; i < ops_menu[0].children.length; i++) {
+            ops_menu[0].children[i].classList.remove('selected');
+        }
+
         toggleNodeMenu();
     },
     selectNodes: function(nodes) {
@@ -32,10 +39,13 @@ var graph = {
         }
 
         this.deselectNodes();
+
         var node;
         for (var i = 0; i < nodes.length; i++) {
             node = nodes[i];
             node.select();
+
+            document.getElementById(node.node_id).classList.add('selected');
         }
         toggleNodeMenu(node);
     },
@@ -735,11 +745,6 @@ function addNodeToList(node) {
         // select node in canvas
         if (event.target !== event.currentTarget) {
             event.stopPropagation();
-
-            for (var i = 0; i < ops_menu[0].children.length; i++) {
-                ops_menu[0].children[i].classList.remove('selected');
-            }
-            this.classList.add('selected');
 
             graph.selectNodes(graph.nodes[this.id]);
         }
