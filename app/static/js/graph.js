@@ -16,10 +16,26 @@ var graph = {
     nodes: {},
     conduits: {},
     valid_ops: {},
-    deselectNodes: function() {
+    _deselectNodes: function() {
         for (var i in this.nodes) {
             var node = this.nodes[i];
             node.deselect();
+        }
+    },
+    selectNodes: function(nodes) {
+        // convert to array if only one
+        if (typeof nodes === 'undefined') {
+            nodes = [];
+        } else if (typeof nodes.length === 'undefined') {
+            nodes = [nodes];
+        }
+
+        this._deselectNodes();
+        toggleNodeMenu();
+        for (var i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+            node.select();
+            toggleNodeMenu(node);
         }
     },
     jsonify: function() {
@@ -473,12 +489,17 @@ function onMouseUp(event) {
         }
     }
 
-    graph.deselectNodes();
+    // graph.deselectNodes();
+    // if (draggingNodeBox) {
+    //     draggingNodeBox.node.select();
+    //     toggleNodeMenu(draggingNodeBox.node);
+    // } else {
+    //     toggleNodeMenu(draggingNodeBox);
+    // }
     if (draggingNodeBox) {
-        draggingNodeBox.node.select();
-        toggleNodeMenu(draggingNodeBox.node);
+        graph.selectNodes([draggingNodeBox.node]);
     } else {
-        toggleNodeMenu(draggingNodeBox);
+        graph.selectNodes();
     }
 
     drawingConduit = undefined;
@@ -715,6 +736,9 @@ function addNodeToList(node) {
     var node_item = document.createElement("div");
     node_item.id = node.node_id;
     node_item.classList.add("node-item");
+    node_item.onclick = function(event) {
+        console.log(this.id);
+    }
 
     // create folder label element
     var node_label = document.createElement("div");

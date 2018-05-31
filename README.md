@@ -18,7 +18,7 @@ python run.py
 
 ### To-do
 ##### Essentials
-* Implement Nodes list
+* Select and delete nodes from node list
 * Change style of invalid param paths
 
 ##### Desirables
