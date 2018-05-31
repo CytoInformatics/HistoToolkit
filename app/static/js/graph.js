@@ -490,13 +490,6 @@ function onMouseUp(event) {
         }
     }
 
-    // graph.deselectNodes();
-    // if (draggingNodeBox) {
-    //     draggingNodeBox.node.select();
-    //     toggleNodeMenu(draggingNodeBox.node);
-    // } else {
-    //     toggleNodeMenu(draggingNodeBox);
-    // }
     if (draggingNodeBox) {
         graph.selectNodes([draggingNodeBox.node]);
     } else {
@@ -713,7 +706,6 @@ $('#file-list').click(function(event) {
             var idx = $(parent)[0].id.split('-').end();
         }
         var route = images[idx]['route'];
-        console.log(route);
         img_viewer.open(route);
     }
 })
@@ -738,7 +730,12 @@ function addNodeToList(node) {
     node_item.id = node.node_id;
     node_item.classList.add("node-item");
     node_item.onclick = function(event) {
-        console.log(this.id);
+        event.preventDefault();
+
+        if (event.target !== event.currentTarget) {
+            event.stopPropagation();
+            graph.selectNodes(graph.nodes[this.id]);
+        }
     }
 
     // create folder label element
