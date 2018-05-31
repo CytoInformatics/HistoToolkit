@@ -16,11 +16,12 @@ var graph = {
     nodes: {},
     conduits: {},
     valid_ops: {},
-    _deselectNodes: function() {
+    deselectNodes: function() {
         for (var i in this.nodes) {
             var node = this.nodes[i];
             node.deselect();
         }
+        toggleNodeMenu();
     },
     selectNodes: function(nodes) {
         // convert to array if only one
@@ -30,13 +31,13 @@ var graph = {
             nodes = [nodes];
         }
 
-        this._deselectNodes();
-        toggleNodeMenu();
+        this.deselectNodes();
+        var node;
         for (var i = 0; i < nodes.length; i++) {
-            var node = nodes[i];
+            node = nodes[i];
             node.select();
-            toggleNodeMenu(node);
         }
+        toggleNodeMenu(node);
     },
     jsonify: function() {
         var obj = new Object();
