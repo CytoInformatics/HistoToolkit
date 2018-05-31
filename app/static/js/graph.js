@@ -281,9 +281,15 @@ function Node(op, params, outputs, position, node_props, box_props) {
         this.group.remove();
         this.group = undefined;
 
+        // remove from node list
+        removeNodeFromList(this);
+
         // remove self from graph.nodes
         delete graph.nodes[this.node_id];
     }
+
+    // create element in node list
+    addNodeToList(this);
 
     // create box for node base
     var n_ports = params.length > outputs.length ? params.length : outputs.length;
@@ -700,6 +706,28 @@ function newNode(key, position) {
         config.NODE_DEFAULTS, 
         config.BOX_DEFAULTS
     );
+}
+
+function addNodeToList(node) {
+    var ops_menu = $("#options-3");
+
+    // create folder element
+    var node_item = document.createElement("div");
+    node_item.id = node.node_id;
+    node_item.classList.add("node-item");
+
+    // create folder label element
+    var node_label = document.createElement("div");
+    node_label.innerHTML = node.node_id;
+    node_label.classList.add("label");
+
+    node_item.append(node_label)
+    ops_menu.append(node_item);
+}
+
+function removeNodeFromList(node) {
+    var element = document.getElementById(node.node_id);
+    element.parentNode.removeChild(element);
 }
 
 function populateOperationsMenu() {

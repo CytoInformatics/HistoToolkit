@@ -136,6 +136,18 @@ input.drag-over {
         background-color: #dddddd;
     }
 
+    .node-item {
+        padding: 0 0 0.2em 0.4em;
+    }
+
+    .node-item:nth-child(odd) {
+        background-color: #dddddd;
+    }
+
+    .node-item > .label {
+        font-size: 1.2em;
+    }
+
     .do-show {
         border-bottom: 1px solid black;
     }
