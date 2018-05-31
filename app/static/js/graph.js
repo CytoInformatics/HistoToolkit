@@ -732,8 +732,15 @@ function addNodeToList(node) {
     node_item.onclick = function(event) {
         event.preventDefault();
 
+        // select node in canvas
         if (event.target !== event.currentTarget) {
             event.stopPropagation();
+
+            for (var i = 0; i < ops_menu[0].children.length; i++) {
+                ops_menu[0].children[i].classList.remove('selected');
+            }
+            this.classList.add('selected');
+
             graph.selectNodes(graph.nodes[this.id]);
         }
     }
