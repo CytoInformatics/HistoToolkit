@@ -21,6 +21,33 @@ var graph = {
             var node = this.nodes[i];
             node.deselect();
         }
+
+        // remove selection from node list
+        var ops_menu = $('#options-3');
+        for (var i = 0; i < ops_menu[0].children.length; i++) {
+            ops_menu[0].children[i].classList.remove('selected');
+        }
+
+        toggleNodeMenu();
+    },
+    selectNodes: function(nodes) {
+        // convert to array if only one
+        if (typeof nodes === 'undefined') {
+            nodes = [];
+        } else if (typeof nodes.length === 'undefined') {
+            nodes = [nodes];
+        }
+
+        this.deselectNodes();
+
+        var node;
+        for (var i = 0; i < nodes.length; i++) {
+            node = nodes[i];
+            node.select();
+
+            document.getElementById(node.node_id).classList.add('selected');
+        }
+        toggleNodeMenu(node);
     },
     jsonify: function() {
         var obj = new Object();
@@ -281,9 +308,15 @@ function Node(op, params, outputs, position, node_props, box_props) {
         this.group.remove();
         this.group = undefined;
 
+        // remove from node list
+        removeNodeFromList(this);
+
         // remove self from graph.nodes
         delete graph.nodes[this.node_id];
     }
+
+    // create element in node list
+    addNodeToList(this);
 
     // create box for node base
     var n_ports = params.length > outputs.length ? params.length : outputs.length;
@@ -467,12 +500,10 @@ function onMouseUp(event) {
         }
     }
 
-    graph.deselectNodes();
     if (draggingNodeBox) {
-        draggingNodeBox.node.select();
-        toggleNodeMenu(draggingNodeBox.node);
+        graph.selectNodes([draggingNodeBox.node]);
     } else {
-        toggleNodeMenu(draggingNodeBox);
+        graph.selectNodes();
     }
 
     drawingConduit = undefined;
@@ -685,7 +716,6 @@ $('#file-list').click(function(event) {
             var idx = $(parent)[0].id.split('-').end();
         }
         var route = images[idx]['route'];
-        console.log(route);
         img_viewer.open(route);
     }
 })
@@ -700,6 +730,38 @@ function newNode(key, position) {
         config.NODE_DEFAULTS, 
         config.BOX_DEFAULTS
     );
+}
+
+function addNodeToList(node) {
+    var ops_menu = $("#options-3");
+
+    // create folder element
+    var node_item = document.createElement("div");
+    node_item.id = node.node_id;
+    node_item.classList.add("node-item");
+    node_item.onclick = function(event) {
+        event.preventDefault();
+
+        // select node in canvas
+        if (event.target !== event.currentTarget) {
+            event.stopPropagation();
+
+            graph.selectNodes(graph.nodes[this.id]);
+        }
+    }
+
+    // create folder label element
+    var node_label = document.createElement("div");
+    node_label.innerHTML = node.node_id;
+    node_label.classList.add("label");
+
+    node_item.append(node_label)
+    ops_menu.append(node_item);
+}
+
+function removeNodeFromList(node) {
+    var element = document.getElementById(node.node_id);
+    element.parentNode.removeChild(element);
 }
 
 function populateOperationsMenu() {

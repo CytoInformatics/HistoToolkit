@@ -2,13 +2,27 @@
 
 A graphical user interface for prototyping data and image processing workflows.
 
+## Installation
+#### Install horsetools
+```
+git clone https://github.com/JimBoonie/PythonHelpers.git
+cd PythonHelpers
+pip install .
+```
+
+#### Launch server
+```
+cd HistoToolkit
+python run.py
+```
+
 ### To-do
 ##### Essentials
-* Implement Nodes list
 * Change style of invalid param paths
 
 ##### Desirables
 * Fix slow response time when processing images (likely due to base64 encoding)
+* Change all uses of document methods to JQuery where possible
 * Double click node display name to change it
 * Shrink large images before sending them to client
 * Replace base64 encoding of images with link to static file
@@ -22,7 +36,7 @@ A graphical user interface for prototyping data and image processing workflows.
 * Allow Node constructor to use ordered list for params as input
 * Make output names for nodes optional (option to unpack values if possible?)
 
-#### Notes
+### Notes
 * Launch server
 ```
 python run.py
