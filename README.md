@@ -1,6 +1,6 @@
-# HistoToolkit
+# CompuToolkit
 
-A graphical user interface for prototyping histology and cytology image processing workflows.
+A graphical user interface for prototyping data and image processing workflows.
 
 ### To-do
 ##### Essentials
