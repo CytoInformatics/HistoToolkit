@@ -1,3 +1,11 @@
+html {
+    box-sizing: border-box;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
 html, body {
     width: 100%;
     height: 100%;
@@ -43,12 +51,12 @@ input.drag-over {
     align-items: center;
 }
 
-#options {
+#menu {
     display: flex;
     position: relative;
     flex-direction: column;
     width: 20%;
-    height: 95%;
+    height: 100%;
 
     border: 1px solid black;
 
@@ -162,13 +170,11 @@ input.drag-over {
     }
 
     #active-folder {
-        box-sizing: border-box;
         width: 90%;
         margin: 0 0.4em 1.0em 0.4em;
     }
 
     #file-list {
-        box-sizing: border-box;
         width: 100%;
         height: 80%;
         margin: 0.4em 0 1.0em 0;
@@ -207,7 +213,6 @@ input.drag-over {
     }
 
     .h-separator {
-        box-sizing: border-box;
         width: 90%;
         height: 0.2em;
         margin: 0.2em auto 0.2em auto;
@@ -223,7 +228,7 @@ input.drag-over {
 #viewer {
     flex-direction: column;
     width: 75%;
-    height: 95%;
+    height: 100%;
     margin-left: 1em;
     border: 1px solid black;
 }
@@ -236,10 +241,6 @@ input.drag-over {
     .tab {
         width: 10%;
         height: 100%;
-
-        box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        -webkit-box-sizing: border-box;
 
         border-right: 1px solid black;
         border-bottom: 1px solid black;
@@ -276,7 +277,6 @@ input.drag-over {
         flex-wrap: nowrap; 
         justify-content: space-around; 
         
-        box-sizing: border-box; 
         height: 300px; 
         padding: 0.5em;
         margin-bottom: 1em;
@@ -287,7 +287,6 @@ input.drag-over {
     .output-item-node {
         display: inline-block; 
         
-        box-sizing: border-box; 
         width: 25%; 
         height: 100%; 
 
@@ -304,7 +303,6 @@ input.drag-over {
         flex-wrap: wrap; 
         justify-content: flex-start;
 
-        box-sizing: border-box; 
         width: 72%; 
 
         background-color: #dddddd;
@@ -313,7 +311,6 @@ input.drag-over {
     .output-item-data > .output {
         display: inline-block;
 
-        box-sizing: border-box;
         width: 30%; 
         margin: 0.5em;
 

@@ -641,10 +641,10 @@ $('#dropdown-menu').click(function(event) {
     event.preventDefault();
 
     if (event.target !== event.currentTarget) {
-        var options = $('#options');
+        var menu = $('#menu');
         if ($(event.target).hasClass('dropdown-item')) {
             var idx = event.target.id.split('-').end();
-            $(options).children('.option-menu').addClass('inactive');
+            $(menu).children('.option-menu').addClass('inactive');
             
             $('#options-'+idx).removeClass('inactive');
         }
