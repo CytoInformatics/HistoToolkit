@@ -18,9 +18,14 @@ python run.py
 
 ### To-do
 ##### Essentials
-* Change style of invalid param paths
+* Redesign interface to make less ugly
+* Overlay input-output images option in image viewer
+* Split Output tab into images and data sections
+* Output tab cycle through output images
+* Info panel in image viewer
 
 ##### Desirables
+* Change style of invalid param paths
 * Fix slow response time when processing images (likely due to base64 encoding)
 * Change all uses of document methods to JQuery where possible
 * Double click node display name to change it
