@@ -11,22 +11,13 @@
 
   <body>
     <div id="master" class="center-items">
+      <div id="sidebar">
+        <img id="dropdown-option-1" class="dropdown-item" src="{{ url_for('static', filename='images/iconmonstr-globe-thin.svg') }}" alt="Operations" />
+        <img id="dropdown-option-2" class="dropdown-item" src="{{ url_for('static', filename='images/iconmonstr-folder-thin.svg') }}" alt="Files" />
+        <img id="dropdown-option-3" class="dropdown-item" src="{{ url_for('static', filename='images/iconmonstr-chart-22.svg') }}" alt="Nodes" />
+      </div>
+
       <div id="menu">
-        <div id="dropdown-1" class="dropdown">
-          <div id="header-1" class="dropdown-header">
-            <div id="button-1" class="dropdown-icon center-items">🠷</div>
-            <div class="dropdown-name hcenter-items">Operations</div>
-          </div>
-        </div>
-
-        <div class="dropdown-placeholder">
-          <div id="dropdown-menu" class="inactive">
-            <div id="dropdown-option-1" class="dropdown-item">Operations</div>
-            <div id="dropdown-option-2" class="dropdown-item">Files</div>
-            <div id="dropdown-option-3" class="dropdown-item">Nodes</div>
-          </div>
-        </div>
-
         <div id="options-1" class="option-menu"></div>
 
         <div id="options-2" class="option-menu inactive">

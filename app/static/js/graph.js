@@ -619,25 +619,8 @@ function toggleNodeMenu(node) {
     }
 }
 
-function toggleOptionsMenu() {
-    var button = $("#button-1");
-    var dropdown_menu = $("#dropdown-menu");
-    if (button.hasClass("di-selected")) {
-        button.removeClass("di-selected");
-
-        dropdown_menu.addClass("inactive");
-    } else {
-        button.addClass("di-selected");
-
-        dropdown_menu.removeClass("inactive");
-    }
-}
-
-// add click handler to dropdown icon
-$('#button-1').click(toggleOptionsMenu);
-
 // add click handler to dropdown menu
-$('#dropdown-menu').click(function(event) {
+$('#sidebar').click(function(event) {
     event.preventDefault();
 
     if (event.target !== event.currentTarget) {
@@ -648,7 +631,6 @@ $('#dropdown-menu').click(function(event) {
             
             $('#options-'+idx).removeClass('inactive');
         }
-        toggleOptionsMenu();
     }
 })
 
