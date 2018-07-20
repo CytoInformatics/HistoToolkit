@@ -106,7 +106,7 @@ input.drag-over {
     }
 
     .folder > .folder-item:nth-child(odd) {
-        background-color: #dddddd;
+        background-color: #eeeeee;
     }
 
     .node-item {
@@ -114,7 +114,7 @@ input.drag-over {
     }
 
     .node-item:nth-child(odd) {
-        background-color: #dddddd;
+        background-color: #eeeeee;
     }
 
     .node-item.selected {
@@ -153,7 +153,7 @@ input.drag-over {
     }
 
     .file-item:nth-child(odd) {
-        background-color: #dddddd;
+        background-color: #eeeeee;
     }
 
     .file-item:hover {
@@ -200,24 +200,31 @@ input.drag-over {
     #tabs {
         height: 5%;
         width: 100%;
+        border-bottom: 1px solid black;
     }
 
     .tab {
         width: 10%;
         height: 100%;
-
-        border-right: 1px solid black;
-        border-bottom: 1px solid black;
         float: left;
+
+        background-color: #ffffff
+    }
+
+    .tab:nth-child(odd) {
+        background-color: #eeeeee;
     }
 
     .tab.selected {
-        background-color: #88f0ff;
+        height: 120%;
+        border-bottom: 3px solid black;
+        border-bottom-left-radius: 0.5em;
+        border-bottom-right-radius: 0.5em;
     }
 
     .run-button {
         color: white;
-        background-color: red;
+        background-color: red !important;
     }
 
     #content {
@@ -254,7 +261,7 @@ input.drag-over {
         width: 25%; 
         height: 100%; 
 
-        background-color: #dddddd;
+        background-color: #eeeeee;
     }
 
     .output-item-node > .label {
@@ -269,7 +276,7 @@ input.drag-over {
 
         width: 72%; 
 
-        background-color: #dddddd;
+        background-color: #eeeeee;
     }
 
     .output-item-data > .output {
@@ -299,8 +306,7 @@ input.drag-over {
     #float-menu {
         position: absolute;
         width: 30%;
-        min-height: 40%;
-        max-height: 80%;
+        height: 100%;
         bottom: 0em;
         right: 0em;
 
@@ -309,7 +315,6 @@ input.drag-over {
         border-top: 1px solid black;
         border-left: 1px solid black;
         border-top-left-radius: 1em;
-        background-color: yellow;
     }
 
     #float-title {
@@ -327,11 +332,11 @@ input.drag-over {
     }
 
     #param-list > .port-item {
-        background-color: white;
+        background-color: #eeeeee;
     }
 
     #output-list > .port-item {
-        background-color: gray;
+        background-color: #eeeeee;
     }
 
     .port-item > div {
