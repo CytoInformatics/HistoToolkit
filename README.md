@@ -23,6 +23,8 @@ python run.py
 * Split Output tab into images and data sections
 * Output tab cycle through output images
 * Info panel in image viewer
+* Suggested color scheme: #19212D, #252E39, #324170, #8B92A2, #BAC2CE
+* Suggested color scheme: #192D2A, #233833, #327070, #8CA2A3, #B9CECB
 
 ##### Desirables
 * Change style of invalid param paths
