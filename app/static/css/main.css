@@ -303,7 +303,7 @@ input.drag-over {
         width: 100%;
     }
 
-    #float-menu {
+    #info-menu {
         position: absolute;
         width: 30%;
         height: 100%;
@@ -314,15 +314,14 @@ input.drag-over {
         padding: 0.2em 0.2em 0.1em 0.4em;
         border-top: 1px solid black;
         border-left: 1px solid black;
-        border-top-left-radius: 1em;
     }
 
-    #float-title {
+    #node-title {
         font-size: 1.2em;
         margin-bottom: 0.2em;
     }
 
-    #float-description {
+    #node-description {
         font-size: 0.8em;
         margin-bottom: 0.4em;
     }

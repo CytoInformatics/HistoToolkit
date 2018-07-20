@@ -581,14 +581,14 @@ function createPortItem(port, name) {
 }
 
 function toggleNodeMenu(node) {
-    if (typeof node == 'undefined') {
-        // hide menu when deselected
-        $("#float-menu").addClass("hidden");
-    } else {
+    // hide any visible menu within #info-menu
+    $("#info-menu").children().addClass("hidden");
+
+    if (typeof node !== 'undefined') {
         // update title and description
-        $("#float-title").text(node.display_name);
+        $("#node-title").text(node.display_name);
         var op_data = graph.valid_ops[node.op_name];
-        $("#float-description").text(op_data.docstring);
+        $("#node-description").text(op_data.docstring);
 
         // update params
         var param_list = document.getElementById("param-list");
@@ -615,7 +615,7 @@ function toggleNodeMenu(node) {
         }
 
         // show menu
-        $("#float-menu").removeClass("hidden");
+        $("#node-info").removeClass("hidden");
     }
 }
 
