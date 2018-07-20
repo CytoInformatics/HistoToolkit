@@ -661,10 +661,12 @@ $('#tabs').click(function(event) {
             openTab('3');
         } else if (event.target.id == "tab-4") {
             openTab('4');
-        } else if (event.target.id == 'tab-5') {
-            graph.run();
         }
     }
+})
+
+$('#run-button').click(function(event) {
+    graph.run();
 })
 
 // add click handler to options menu

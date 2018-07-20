@@ -222,11 +222,6 @@ input.drag-over {
         border-bottom-right-radius: 0.5em;
     }
 
-    .run-button {
-        color: white;
-        background-color: red !important;
-    }
-
     #content {
         position: relative;
         height: 95%;
@@ -303,7 +298,7 @@ input.drag-over {
         width: 100%;
     }
 
-    #info-menu {
+    #side-menu {
         position: absolute;
         width: 30%;
         height: 100%;
@@ -314,6 +309,26 @@ input.drag-over {
         padding: 0.2em 0.2em 0.1em 0.4em;
         border-top: 1px solid black;
         border-left: 1px solid black;
+    }
+
+    #run-button {
+        height: 60px;
+        width: 60px;
+
+        font-size: 1.2em;
+
+        background-color: black;
+        border-radius: 0.4em;
+    }
+
+    #run-button:hover {
+        background-color: #444444;
+    }
+
+    #run-button svg {
+        height: 100%;
+        width: 100%;
+        fill: white;
     }
 
     #node-title {
