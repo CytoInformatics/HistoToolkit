@@ -44,7 +44,7 @@ input.drag-over {
 
 #master {
     display: grid;
-    grid-template-columns: 40px 20% 1fr;
+    grid-template-columns: 40px 20% 1fr 30%;
     width: 100%;
     height: 100%;
 }
@@ -299,7 +299,6 @@ input.drag-over {
 
     .output-item-data > .output {
         display: inline-block;
-
         width: 30%; 
         margin: 0.5em;
 
@@ -322,14 +321,10 @@ input.drag-over {
     }
 
     #side-menu {
-        position: absolute;
-        width: 30%;
         height: 100%;
-        bottom: 0em;
-        right: 0em;
+        padding: 0.2em 0.2em 0.1em 0.4em;
 
         overflow-y: auto;
-        padding: 0.2em 0.2em 0.1em 0.4em;
         border-top: 1px solid black;
         border-left: 1px solid black;
     }
