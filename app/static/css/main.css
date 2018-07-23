@@ -234,6 +234,10 @@ input.drag-over {
         background-color: #233833;
     }
 
+    .tab:nth-last-child(1) {
+        border-right: 1px solid black;
+    }
+
     .tab.selected {
         height: 120%;
         border-bottom: 3px solid black;
