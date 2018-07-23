@@ -7,14 +7,14 @@
 
     "BOX_DEFAULTS": {
         "strokeColor": "black",
-        "fillColor": "blue",
+        "fillColor": "#2c6363",
         "strokeWidth": 6,
-        "hoverStrokeColor": "green",
+        "hoverStrokeColor": "#111f1d",
         "width": 100,
-        "selectedFillColor": "#88f0ff"
+        "selectedFillColor": "#8ca2a3"
     },
     "NODE_DEFAULTS": {
-        "port_radius": 15,
+        "port_radius": 10,
         "port_spacing": 10,
         "text_offset": [0, -10]
     },
