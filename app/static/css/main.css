@@ -91,6 +91,11 @@ input.drag-over {
         background-color: white;
     }
 
+    .options-label {
+        padding: 0 0 0.2em 0.4em;
+        font-size: 1.4em;
+    }
+
     .option-menu > .folder {
         margin: 0;
         background-color: white;
@@ -129,7 +134,7 @@ input.drag-over {
         border-bottom: 1px solid black;
     }
 
-    .option-menu > .label {
+    .active-folder-label {
         padding: 0 0.4em 0 0.4em;
         font-size: 1.2em;
     }

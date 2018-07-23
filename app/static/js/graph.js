@@ -23,7 +23,7 @@ var graph = {
         }
 
         // remove selection from node list
-        var ops_menu = $('#options-3');
+        var ops_menu = $('#node-list');
         for (var i = 0; i < ops_menu[0].children.length; i++) {
             ops_menu[0].children[i].classList.remove('selected');
         }
@@ -670,7 +670,7 @@ $('#run-button').click(function(event) {
 })
 
 // add click handler to options menu
-$('#options-1').click(function(event) {
+$('#operations-list').click(function(event) {
     event.preventDefault();
 
     if (event.target !== event.currentTarget 
@@ -717,7 +717,7 @@ function newNode(key, position) {
 }
 
 function addNodeToList(node) {
-    var ops_menu = $("#options-3");
+    var ops_menu = $("#node-list");
 
     // create folder element
     var node_item = document.createElement("div");
@@ -755,7 +755,7 @@ function populateOperationsMenu() {
         async: true,
         success: function(obj) {
             
-            var ops_menu = $("#options-1");
+            var ops_menu = $("#operations-list");
 
             // get unique categories and available operations from response
             var categories = [];

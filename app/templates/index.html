@@ -18,18 +18,27 @@
       </div>
 
       <div id="menu">
-        <div id="options-1" class="option-menu"></div>
-
-        <div id="options-2" class="option-menu inactive">
-          <div class="label">Active Folder</div>
-          <input id="active-folder" type="text" name="active_folder" />
-
-          <div class="h-separator"></div>
-
-          <div id="file-list"></div>
+        <div id="options-1" class="option-menu">
+          <div class="options-label">Operations</div>
+          <div id="operations-list" class="options-content"></div>
         </div>
 
-        <div id="options-3" class="option-menu inactive"></div>
+        <div id="options-2" class="option-menu inactive">
+          <div class="options-label">Files</div>
+          <div class="options-content">
+            <div class="active-folder-label">Active Folder</div>
+            <input id="active-folder" type="text" name="active_folder" />
+
+            <div class="h-separator"></div>
+
+            <div id="file-list"></div>
+          </div>
+        </div>
+
+        <div id="options-3" class="option-menu inactive">
+          <div class="options-label">Nodes</div>
+          <div id="node-list" class="options-content"></div>
+        </div>
       </div>
 
       <div id="viewer">
