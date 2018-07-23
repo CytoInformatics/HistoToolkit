@@ -176,7 +176,7 @@ function populateOutputTab(obj) {
         return item;
     }
 
-    var output_content = document.getElementById('content-3');
+    var output_content = document.getElementById('response-list');
     output_content.innerHTML = '';
     for (var i = 0; i < obj.length; i++) {
         var row_data = obj[i];
@@ -582,7 +582,7 @@ function createPortItem(port, name) {
 
 function toggleNodeMenu(node) {
     // hide any visible menu within #info-menu
-    $("#info-menu").children().addClass("hidden");
+    $("#node-info").addClass("hidden");
 
     if (typeof node !== 'undefined') {
         // update title and description
@@ -666,8 +666,6 @@ $('#tabs').click(function(event) {
             openTab('2');
         } else if (event.target.id == 'tab-3') {
             openTab('3');
-        } else if (event.target.id == "tab-4") {
-            openTab('4');
         }
     }
 })
