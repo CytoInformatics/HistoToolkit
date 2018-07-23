@@ -20,7 +20,7 @@
     },
     "NODE_NAME_DEFAULTS": {
         "justification": "left",
-        "fillColor": "black",
+        "fillColor": "#e0faf6",
         "fontSize": "1em"
     },
     "PARAM_DEFAULTS": {
