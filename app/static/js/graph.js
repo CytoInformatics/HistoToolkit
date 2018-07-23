@@ -581,7 +581,7 @@ function createPortItem(port, name) {
 }
 
 function toggleNodeMenu(node) {
-    // hide any visible menu within #info-menu
+    // hide any visible menu within div
     $("#node-info").addClass("hidden");
 
     if (typeof node !== 'undefined') {
@@ -646,11 +646,17 @@ function openTab(num) {
         num = num.toString();
     }
 
+    // style tab
     $('#tabs').children().removeClass('selected');
     $('#tab-' + num).addClass('selected');
 
-    $(content).children().addClass('inactive');
+    // activate content div
+    $('#content').children().addClass('inactive');
     $('#content-' + num).removeClass('inactive');
+
+    // activate side menu div
+    $('#side-menu').children().addClass('inactive');
+    $('#info-menu-' + num).removeClass('inactive');
 }
 
 // add click handler to viewer tabs
@@ -658,8 +664,6 @@ $('#tabs').click(function(event) {
     event.preventDefault();
 
     if (event.target !== event.currentTarget) {
-        var content = document.getElementById('content');
-
         if (event.target.id == 'tab-1') {
             openTab('1');
         } else if (event.target.id == 'tab-2') {
