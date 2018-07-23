@@ -624,10 +624,14 @@ $('#sidebar').click(function(event) {
     event.preventDefault();
 
     if (event.target !== event.currentTarget) {
-        var menu = $('#menu');
         if ($(event.target).hasClass('dropdown-item')) {
             var idx = event.target.id.split('-').end();
-            $(menu).children('.option-menu').addClass('inactive');
+            $('#menu').children('.option-menu').addClass('inactive');
+            
+            $('#options-'+idx).removeClass('inactive');
+        } else if ($($(event.target).parent()[0]).hasClass('dropdown-item')) {
+            var idx = $(event.target).parent()[0].id.split('-').end();
+            $('#menu').children('.option-menu').addClass('inactive');
             
             $('#options-'+idx).removeClass('inactive');
         }

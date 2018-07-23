@@ -59,6 +59,7 @@ input.drag-over {
 }
 
     .dropdown-item {
+        box-sizing: content-box;
         width: 75%;
         padding: 0.3em 0 0.3em 0;
         font-size: 1.2em;
