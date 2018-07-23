@@ -76,6 +76,10 @@ input.drag-over {
         border-radius: 0.4em;
     }
 
+    .dropdown-option.selected {
+        opacity: 0.5;
+    }
+
     .dropdown-option svg {
         width: 100%;
         height: 100%;

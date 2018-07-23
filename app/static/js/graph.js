@@ -624,17 +624,20 @@ $('#sidebar').click(function(event) {
     event.preventDefault();
 
     if (event.target !== event.currentTarget) {
+        var dropdown;
         if ($(event.target).hasClass('dropdown-option')) {
-            var idx = event.target.id.split('-').end();
-            $('#menu').children('.option-menu').addClass('inactive');
-            
-            $('#options-'+idx).removeClass('inactive');
-        } else if ($($(event.target).parent()[0]).hasClass('dropdown-option')) {
-            var idx = $(event.target).parent()[0].id.split('-').end();
-            $('#menu').children('.option-menu').addClass('inactive');
-            
-            $('#options-'+idx).removeClass('inactive');
+            dropdown = event.target;
+        } else if ($(event.target).parents('.dropdown-option')[0]) {
+            dropdown = $(event.target).parents('.dropdown-option')[0];
+        } else {
+            return;
         }
+        var idx = dropdown.id.split('-').end();
+
+        $('#sidebar').children().removeClass('selected');
+        $(dropdown).addClass('selected');
+        $('#menu').children('.option-menu').addClass('inactive');
+        $('#options-'+idx).removeClass('inactive');
     }
 })
 
