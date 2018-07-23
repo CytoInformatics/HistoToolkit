@@ -624,12 +624,12 @@ $('#sidebar').click(function(event) {
     event.preventDefault();
 
     if (event.target !== event.currentTarget) {
-        if ($(event.target).hasClass('dropdown-item')) {
+        if ($(event.target).hasClass('dropdown-option')) {
             var idx = event.target.id.split('-').end();
             $('#menu').children('.option-menu').addClass('inactive');
             
             $('#options-'+idx).removeClass('inactive');
-        } else if ($($(event.target).parent()[0]).hasClass('dropdown-item')) {
+        } else if ($($(event.target).parent()[0]).hasClass('dropdown-option')) {
             var idx = $(event.target).parent()[0].id.split('-').end();
             $('#menu').children('.option-menu').addClass('inactive');
             
