@@ -18,16 +18,13 @@ python run.py
 
 ### To-do
 ##### Essentials
-* Redesign interface to make less ugly
 * Overlay input-output images option in image viewer
-* Split Output tab into images and data sections
-* Output tab cycle through output images
-* Info panel in image viewer
-* Suggested color scheme: #19212D, #252E39, #324170, #8B92A2, #BAC2CE
-* Suggested color scheme: #192D2A, #233833, #327070, #8CA2A3, #B9CECB
+* Display outputs in side-menu when graph tab is selected (remove Output tab)
+* Protect against arbitrary code execution in input fields
 
 ##### Desirables
 * Change style of invalid param paths
+* Replace outer double quotes with single quotes
 * Fix slow response time when processing images (likely due to base64 encoding)
 * Change all uses of document methods to JQuery where possible
 * Double click node display name to change it
