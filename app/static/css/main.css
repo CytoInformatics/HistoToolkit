@@ -443,7 +443,6 @@ input.drag-over {
 
         overflow: hidden;
         padding: 6px;
-        margin-top: 20px;
     }
 
     .output-image-div:nth-child(odd) {

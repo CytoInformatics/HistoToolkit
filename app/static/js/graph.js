@@ -181,8 +181,46 @@ function displayResponse(resp) {
         return item;
     }
 
+    function createOutputImage(src, name) {
+        var item = document.createElement('div');
+        item.classList.add('output-image-div');
+
+        var item_thumb = document.createElement('div');
+        item_thumb.classList.add('output-image-thumbnail');
+        var img = document.createElement('img');
+        img.src = src;
+        item_thumb.append(img);
+        item.append(item_thumb);
+
+        var img_panel = document.createElement('div');
+        img_panel.classList.add('output-image-panel');
+        var img_title = document.createElement('div');
+        img_title.classList.add('output-image-title');
+        img_title.innerHTML = name;
+        img_panel.append(img_title);
+
+        var img_buttons = document.createElement('div');
+        img_buttons.classList.add('output-image-buttons');
+        var view_button = document.createElement('div');
+        view_button.classList.add('output-image-view-button', 'center-items');
+        view_button.innerHTML = 'View';
+        var overlay_button = document.createElement('div');
+        overlay_button.classList.add('output-image-overlay-button', 'center-items');
+        overlay_button.innerHTML = 'Overlay';
+        img_buttons.append(view_button);
+        img_buttons.append(overlay_button);
+
+        img_panel.append(img_buttons);
+        item.append(img_panel);
+
+        return item;
+    }
+
     var output_content = document.getElementById('response-list');
     output_content.innerHTML = '';
+
+    var output_img_list = document.getElementById('output-image-list');
+    output_img_list.innerHTML = '';
 
     if (resp !== null) {
         if (typeof resp === 'object') {
@@ -190,6 +228,18 @@ function displayResponse(resp) {
                 var row_data = resp[i];
                 var element = createOutputElement(row_data);
                 output_content.append(element);
+
+                // update output image
+                for (var key in row_data.outputs) {
+                    var output_data = row_data.outputs[key];
+                    if (output_data.datatype === 'base64-image') {
+                        var img_div = createOutputImage(
+                            output_data.value,
+                            row_data.node + ': ' + output_data.name
+                        );
+                        output_img_list.append(img_div);
+                    }
+                }
             }
         } else {
             var element = document.createElement('textarea');
