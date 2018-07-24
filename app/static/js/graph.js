@@ -937,6 +937,18 @@ function initOpenSeadragon(id) {
     return viewer;
 };
 
+$('#overlay-button').click(function(event) {
+    viewer.removeOverlay('overlay');
+
+    var overlay = document.createElement('div');
+    overlay.id = 'overlay';
+    overlay.src = '';
+    viewer.addOverlay({
+        element: overlay, 
+        location: new OpenSeadragon.Rect(0.0, 0.0, 1.0, 1.0)
+    });
+})
+
 var folder_id_root = 'folder-';
 var config;
 var img_viewer;

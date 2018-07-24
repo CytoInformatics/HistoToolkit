@@ -416,3 +416,82 @@ input.drag-over {
         color: #e0faf6;
         background-color: #111f1d;
     }
+
+    #output-image-list-menu {
+        width: 100%;
+        height: 100%;
+        display: grid;
+        grid-template-rows: 10vh 90vh;
+    }
+
+    #output-image-list-label {
+        font-size: 1.5em;
+        margin-bottom: 0.2em;
+    }
+
+    #output-image-list {
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+    .output-image-div {
+        width: 100%;
+        height: 152px;
+        display: grid;
+        grid-template-columns: 50% 1fr;
+
+        overflow: hidden;
+        padding: 6px;
+        margin-top: 20px;
+    }
+
+    .output-image-div:nth-child(odd) {
+        background-color: #233833;
+    }
+
+    .output-image-thumbnail {
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+    }
+
+    .output-image-thumbnail > img {
+        max-width: 100%;
+        max-height: 100%;
+        border: 6px solid #111f1d;
+        border-radius: 6px;
+    }
+
+    .output-image-panel {
+        width: 100%;
+        height: 100%;
+        display: grid;
+        grid-template-rows: 50% 1fr;
+    }
+
+    .output-image-title {
+        width: 100%;
+        height: 100%;
+    }
+
+    .output-image-buttons {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    .output-image-buttons > div {
+        width: 40%;
+        height: 80%;
+
+        border: 6px solid #111f1d;
+        border-radius: 6px;
+        background-color: #236363;
+    }
+
+    .output-image-buttons > div:hover {
+        background-color: #8ca2a3;
+    }
