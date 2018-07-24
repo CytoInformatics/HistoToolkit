@@ -131,7 +131,7 @@ var graph = {
                 console.log("ERROR: " + textStatus + " " + errorThrown);
                 var txt = jqXHR.responseText.split('Traceback').end()
                 txt = txt.replace('-->', '');
-                txt = txt.replace(/(?:\r\n|\r|\n)/g, '<br /><br />')
+                txt = txt.replace(/(?:\r\n|\r|\n)/g, '\n\n')
                 console.log(txt);
                 displayResponse(txt);
             }
@@ -192,7 +192,9 @@ function displayResponse(resp) {
                 output_content.append(element);
             }
         } else {
-            output_content.innerHTML = resp;
+            var element = document.createElement('textarea');
+            element.value = resp;
+            output_content.append(element);
         }
     }
 }

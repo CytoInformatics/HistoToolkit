@@ -19,7 +19,6 @@ python run.py
 ### To-do
 ##### Essentials
 * Overlay input-output images option in image viewer
-* Display outputs in side-menu when graph tab is selected (remove Output tab)
 * Protect against arbitrary code execution in input fields
 
 ##### Desirables
