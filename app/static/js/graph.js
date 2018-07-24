@@ -125,16 +125,21 @@ var graph = {
             data: formdata,
             success: function(response) {
                 console.log(response);
-                populateOutputTab(response);
+                displayResponse(response);
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log("ERROR: " + textStatus + " " + errorThrown);
+                var txt = jqXHR.responseText.split('Traceback').end()
+                txt = txt.replace('-->', '');
+                txt = txt.replace(/(?:\r\n|\r|\n)/g, '<br /><br />')
+                console.log(txt);
+                displayResponse(txt);
             }
         });
     }
 };
 
-function populateOutputTab(obj) {
+function displayResponse(resp) {
     function createOutputElement(data) {
         var item = document.createElement('div');
         item.classList.add('output-item');
@@ -178,10 +183,17 @@ function populateOutputTab(obj) {
 
     var output_content = document.getElementById('response-list');
     output_content.innerHTML = '';
-    for (var i = 0; i < obj.length; i++) {
-        var row_data = obj[i];
-        var element = createOutputElement(row_data);
-        output_content.append(element);
+
+    if (resp !== null) {
+        if (typeof resp === 'object') {
+            for (var i = 0; i < resp.length; i++) {
+                var row_data = resp[i];
+                var element = createOutputElement(row_data);
+                output_content.append(element);
+            }
+        } else {
+            output_content.innerHTML = resp;
+        }
     }
 }
 
