@@ -204,9 +204,11 @@ function displayResponse(resp) {
         var view_button = document.createElement('div');
         view_button.classList.add('output-image-view-button', 'center-items');
         view_button.innerHTML = 'View';
+        view_button.value = src;
         var overlay_button = document.createElement('div');
         overlay_button.classList.add('output-image-overlay-button', 'center-items');
         overlay_button.innerHTML = 'Overlay';
+        overlay_button.value = src;
         img_buttons.append(view_button);
         img_buttons.append(overlay_button);
 
@@ -987,16 +989,27 @@ function initOpenSeadragon(id) {
     return viewer;
 };
 
-$('#overlay-button').click(function(event) {
-    viewer.removeOverlay('overlay');
+$('#output-image-list').click(function(event) {
+    event.preventDefault();
 
-    var overlay = document.createElement('div');
-    overlay.id = 'overlay';
-    overlay.src = '';
-    viewer.addOverlay({
-        element: overlay, 
-        location: new OpenSeadragon.Rect(0.0, 0.0, 1.0, 1.0)
-    });
+    if (event.target !== event.currentTarget) {
+        if ($(event.target).hasClass('output-image-view-button')) {
+            img_viewer.open(event.target.getAttribute('value'));
+        } else if ($(event.target).hasClass('output-image-overlay-button')) {
+            var overlay_src = event.target.getAttribute('value');
+
+            viewer.removeOverlay('overlay');
+
+            var overlay = document.createElement('img');
+            overlay.id = 'output-overlay';
+            overlay.src = overlay_src;
+            overlay.style = 'opacity: 0.5;';
+            viewer.addOverlay({
+                element: overlay, 
+                location: new OpenSeadragon.Rect(0.0, 0.0, 1.0, 1.0)
+            });
+        }
+    }
 })
 
 var folder_id_root = 'folder-';
