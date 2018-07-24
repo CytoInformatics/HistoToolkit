@@ -205,11 +205,11 @@ function displayResponse(resp) {
         var view_button = document.createElement('div');
         view_button.classList.add('output-image-view-button', 'center-items');
         view_button.innerHTML = 'View';
-        view_button.value = src;
+        view_button.setAttribute('value', src);
         var overlay_button = document.createElement('div');
         overlay_button.classList.add('output-image-overlay-button', 'center-items');
         overlay_button.innerHTML = 'Overlay';
-        overlay_button.value = src;
+        overlay_button.setAttribute('value', src);
         img_buttons.append(view_button);
         img_buttons.append(overlay_button);
 
