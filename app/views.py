@@ -16,6 +16,16 @@ def home():
     Serve the application home page.
     """
 
+    # clear contents of temp folder
+    temp_folder = './app/static/temp'
+    for f in os.listdir(temp_folder):
+        f_path = os.path.join(temp_folder, f)
+        try:
+            if os.path.isfile(f_path):
+                os.unlink(f_path)
+        except Exception as e:
+            print(e)
+
     return render_template('index.html')
 
 @app.route('/get-config')

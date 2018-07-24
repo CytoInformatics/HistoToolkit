@@ -1,4 +1,4 @@
-import os, hashlib, base64
+import os, hashlib, base64, random, string
 import warnings
 import numpy as np
 from imageio.core.util import Image
@@ -15,13 +15,19 @@ THUMBNAIL_SETTINGS = {
     'crop_mode': 'top-left'
 }
 
+def hash_str(my_str):
+    return hashlib.md5(my_str.encode('utf-8')).hexdigest()
+
+def random_str(n):
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=n))
+
 def hash_file(uri):
     """
     Create a hash string for the file stored at uri.
     """
 
     file_str = uri + str(os.path.getmtime(uri))
-    hashval = hashlib.md5(file_str.encode('utf-8')).hexdigest()
+    hashval = hash_str(file_str)
     return hashval
 
 def list_all_images(folder):
@@ -130,16 +136,23 @@ def get_metadata(name, mode="i"):
     reader.close()
     return metadata
 
-def json_sanitize(val):
+def json_sanitize(val, base64_images=False):
     """
     Convert VAL to a type that is serializable using jsonify.
     """
 
     if isinstance(val, Image) or isinstance(val, np.ndarray):
-        datatype = 'base64-image'
-        save_image('./app/test/tmp.png', val)
-        with open('./app/test/tmp.png', 'rb') as f:
-            newval = 'data:image/png;base64,' + base64.b64encode(f.read()).decode('utf-8')
+        if base64_images:
+            datatype = 'base64-image'
+            save_image('./app/test/tmp.png', val)
+            with open('./app/test/tmp.png', 'rb') as f:
+                newval = 'data:image/png;base64,' + base64.b64encode(f.read()).decode('utf-8')
+        else:
+            datatype = 'image'
+            code = random_str(6)
+            path = './app/static/temp/' + code + '.png'
+            save_image(path, val)
+            newval = '/static/temp/' + code + '.png'
     elif isinstance(val, np.generic):
         datatype = 'literal'
         newval = val.item()

@@ -164,7 +164,8 @@ function displayResponse(resp) {
             label.innerHTML = out_obj.name;
             output.append(label);
 
-            if (out_obj.datatype === 'base64-image') {
+            if (out_obj.datatype === 'base64-image'
+                || out_obj.datatype === 'image') {
                 var value = document.createElement('img');
                 value.src = out_obj.value;
             } else {
@@ -234,7 +235,8 @@ function displayResponse(resp) {
                 // update output image
                 for (var key in row_data.outputs) {
                     var output_data = row_data.outputs[key];
-                    if (output_data.datatype === 'base64-image') {
+                    if (output_data.datatype === 'base64-image'
+                        || output_data.datatype === 'image') {
                         var img_div = createOutputImage(
                             output_data.value,
                             row_data.node + ': ' + output_data.name
