@@ -1,3 +1,5 @@
+from skimage.transform import resize
+
 def resize_image(data, output_shape):
     """
     Resize DATA to OUTPUT_SHAPE.

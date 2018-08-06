@@ -1,3 +1,5 @@
+import numpy as np
+
 def convert_data_type(data, datatype):
     """
     Convert DATA to DATATYPE.
