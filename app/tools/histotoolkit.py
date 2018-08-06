@@ -167,5 +167,6 @@ op_manager = opnet.OperationsManager([
     [ops.multiply, 'Math', 'data'],
     [ops.convert_data_type, 'Data', 'data'],
     [ops.rescale_range, 'Data', ['data', 'out_min', 'out_max']],
-    [ops.resize_image, 'Image', 'data']
+    [ops.resize_image, 'Image', 'data'],
+    [ops.adjust_contrast, 'Image', 'data']
 ])

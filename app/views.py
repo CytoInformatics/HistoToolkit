@@ -1,4 +1,4 @@
-import os, json
+import re, os, json
 import numpy as np
 from app import app
 from flask import request, render_template, jsonify, url_for, Blueprint
@@ -9,6 +9,9 @@ config = app.config["APPDATA"]
 
 folder_bp = Blueprint('files', __name__, static_folder='current')
 app.register_blueprint(folder_bp, url_prefix='/files')
+
+def _s_abs(s):
+    return re.sub('-', '', s)
 
 @app.route('/')
 def home():
@@ -137,10 +140,10 @@ def run_graph():
                 node_params[p['name']] = htk.load_image(p['value'])
             elif not isinstance(p['value'], str):
                 node_params[p['name']] = p['value']
-            elif p['value'].isdigit():
+            elif _s_abs(p['value']).isdigit():
                 node_params[p['name']] = int(p['value'])
             elif len(p['value'].split('.')) == 2 \
-                 and all(s.isdigit() for s in p['value'].split('.')):
+                 and all(_s_abs(s).isdigit() for s in p['value'].split('.')):
                 node_params[p['name']] = float(p['value'])
             elif p['value'][0] == '[' and p['value'][-1] == ']':
                 node_params[p['name']] = json.loads(p['value'])

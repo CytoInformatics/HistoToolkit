@@ -18,6 +18,7 @@ python run.py
 
 ### To-do
 ##### Essentials
+* Fix default_vars issue in opnet.py
 * Protect against arbitrary code execution in input fields
 
 ##### Desirables
