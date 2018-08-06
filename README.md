@@ -18,7 +18,6 @@ python run.py
 
 ### To-do
 ##### Essentials
-* Overlay input-output images option in image viewer
 * Protect against arbitrary code execution in input fields
 
 ##### Desirables
