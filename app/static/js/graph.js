@@ -248,6 +248,7 @@ function displayResponse(resp) {
         } else {
             var element = document.createElement('textarea');
             element.value = resp;
+            element.readOnly = true;
             output_content.append(element);
         }
     }
