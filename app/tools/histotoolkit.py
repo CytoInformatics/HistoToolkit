@@ -9,6 +9,8 @@ from horsetools.file_utils import list_files
 from . import opnet
 from . import ops
 
+import skimage
+
 IMAGE_EXTS = ('.jpg', '.jpeg', '.png', '.tif', '.tiff', '.bmp',)
 THUMBNAIL_SETTINGS = {
     'dims': [300, 300],
@@ -164,11 +166,19 @@ def json_sanitize(val, base64_images=False):
     return newval, datatype
 
 
-op_manager = opnet.OperationsManager([
-    [ops.multiply, 'Math', 'data'],
-    [ops.convert_data_type, 'Data', 'data'],
-    [ops.rescale_range, 'Data', ['data', 'out_min', 'out_max']],
-    [ops.resize_image, 'Image', 'data'],
-    [ops.adjust_brightness, 'Image', 'data'],
-    [ops.adjust_contrast, 'Image', 'data']
-])
+# op_manager = opnet.OperationsManager([
+#     [ops.multiply, 'Math', 'data'],
+#     [ops.convert_data_type, 'Data', 'data'],
+#     [ops.rescale_range, 'Data', ['data', 'out_min', 'out_max']],
+#     [ops.resize_image, 'Image', 'data'],
+#     [ops.adjust_brightness, 'Image', 'data'],
+#     [ops.adjust_contrast, 'Image', 'data']
+# ])
+
+pkg = 'skimage.util'
+# print(dir(eval(pkg)))
+lis = [
+    [eval(pkg + '.' + f), 'Skimage', 'data'] for f in dir(eval(pkg)) if not f[0] == '_'
+]
+# print(lis)
+op_manager = opnet.OperationsManager(lis)

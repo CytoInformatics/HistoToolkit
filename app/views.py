@@ -44,7 +44,7 @@ def available_operations():
     """
     Return json object with available operations and parameters.
     """
-
+    
     return jsonify({key: val['info'] for key, val in htk.op_manager.ops.items()})
 
 @app.route('/set-folder', methods=['POST'])
