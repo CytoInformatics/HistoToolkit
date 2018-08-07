@@ -18,6 +18,7 @@ def adjust_brightness(data, b):
     """
     Adjust brightness of DATA by factor B.
     """
+
     b = float(b)
     if not isinstance(data, np.ndarray):
         raise ValueError('data must be a numpy array')
@@ -33,7 +34,7 @@ def adjust_brightness(data, b):
     }
     return op_output
 
-def adjust_contrast(data, c):
+def adjust_contrast(data, c=20.0):
     """
     Adjust contrast of DATA by contrast factor C.
     """

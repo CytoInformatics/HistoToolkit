@@ -19,6 +19,7 @@ python run.py
 ### To-do
 ##### Essentials
 * Fix default_vars issue in opnet.py
+* Import functions from external packages automatically
 * Protect against arbitrary code execution in input fields
 
 ##### Desirables

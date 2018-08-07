@@ -295,7 +295,7 @@ function Node(op, params, outputs, position, node_props, box_props) {
             port.obj_type = port_type;
             port.node = this;
             port.name = port_names[i].name
-            port._value = undefined;
+            port._value = graph.valid_ops[this.op_name].params[i].defaults;
             port.set_value = function(val, datatype) {
                 this._value = val;
 

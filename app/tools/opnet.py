@@ -388,13 +388,13 @@ class OperationsManager:
             outputs: Name or list of names of output variables.
         """
 
-        n_requireds = op.__code__.co_argcount
         default_vars = op.__defaults__
         default_vars = [] if isinstance(default_vars, type(None)) else default_vars
         n_defaults = len(default_vars)
-        varnames = op.__code__.co_varnames
+        n_requireds = op.__code__.co_argcount - n_defaults
         param_required = [True] * n_requireds + [False] * n_defaults
-        param_defaults = [None] * n_requireds + default_vars
+        param_defaults = [None] * n_requireds + list(default_vars)
+        varnames = op.__code__.co_varnames
         outputs = [{"name": n} for n in ensure_is_listlike(outputs)]
         self.ops[op.__name__] = {
             "ref": op,
