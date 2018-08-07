@@ -124,7 +124,8 @@ def save_image(name, img):
     Save IMG to uri NAME.
     """
 
-    return imwrite(name, img)
+    name = os.path.splitext(name)[0]
+    return imwrite(name, img, format='PNG', compress_level=0)
 
 def get_metadata(name, mode="i"):
     """
@@ -144,15 +145,15 @@ def json_sanitize(val, base64_images=False):
     if isinstance(val, Image) or isinstance(val, np.ndarray):
         if base64_images:
             datatype = 'base64-image'
-            save_image('./app/test/tmp.png', val)
-            with open('./app/test/tmp.png', 'rb') as f:
+            save_image('./app/test/tmp', val)
+            with open('./app/test/tmp', 'rb') as f:
                 newval = 'data:image/png;base64,' + base64.b64encode(f.read()).decode('utf-8')
         else:
             datatype = 'image'
             code = random_str(6)
-            path = './app/static/temp/' + code + '.png'
+            path = './app/static/temp/' + code
             save_image(path, val)
-            newval = '/static/temp/' + code + '.png'
+            newval = '/static/temp/' + code
     elif isinstance(val, np.generic):
         datatype = 'literal'
         newval = val.item()
