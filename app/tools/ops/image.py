@@ -20,7 +20,7 @@ def adjust_contrast(data, c):
     """
 
     if c < -255.0 or c > 255.0:
-        raise ValueError('c must be in the range [-255, 255] (entered: {})'.format(c))
+        raise ValueError('c must be in range [-255, 255] (entered: {})'.format(c))
 
     if not data.dtype == 'uint8':
         warnings.warn('Type of data is not uint8.')
@@ -29,6 +29,6 @@ def adjust_contrast(data, c):
     out_data = np.clip(correction * (data - 128.0) + 128.0, 0, 255.0)
 
     op_output = {
-        'data': out_data
+        'data': out_data.astype('uint8')
     }
     return op_output
