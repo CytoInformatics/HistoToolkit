@@ -832,6 +832,7 @@ function populateOperationsMenu() {
         url: '/available-operations',
         async: true,
         success: function(obj) {
+            console.log(obj);
             
             var ops_menu = $("#operations-list");
 

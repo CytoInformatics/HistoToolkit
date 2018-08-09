@@ -372,12 +372,13 @@ class OperationsManager:
 
     def __init__(self, ops=None):
         self.ops = {}
+
         if ops is not None:
-            try:
-                for op_ins in ops:
-                    self.add_valid_op(*op_ins)
-            except IndexError:
-                warnings.warn("input ops is not iterable.")
+            for op in ops:
+                try:
+                    self.add_valid_op(*op)
+                except IndexError:
+                    warnings.warn('input op ({}) is not iterable.'.format(op))
 
     def add_valid_op(self, op, category, outputs):
         """

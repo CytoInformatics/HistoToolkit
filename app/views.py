@@ -12,24 +12,28 @@ config = app.config["APPDATA"]
 folder_bp = Blueprint('files', __name__, static_folder='current')
 app.register_blueprint(folder_bp, url_prefix='/files')
 
-# op_manager = opnet.OperationsManager([
-#     [ops.multiply, 'Math', 'data'],
-#     [ops.convert_data_type, 'Data', 'data'],
-#     [ops.rescale_range, 'Data', ['data', 'out_min', 'out_max']],
-#     [ops.resize_image, 'Image', 'data'],
-#     [ops.adjust_brightness, 'Image', 'data'],
-#     [ops.adjust_contrast, 'Image', 'data']
-# ])
-
-pkg = 'skimage.util'
-# print(dir(eval(pkg)))
-op_manager = opnet.OperationsManager([
-    [eval(pkg + '.' + f), pkg, 'data'] for f in dir(eval(pkg)) if not f[0] == '_'
-])
-
-
-def _s_abs(s):
-    return re.sub('-', '', s)
+def list_ops(ops_to_add):
+    ops_together = []
+    for op in ops_to_add:
+        if isinstance(op, list):
+            ops_together.append(op)
+        elif isinstance(op, str):
+            ops_set = [[eval(op + '.' + f), op, 'data'] 
+                      for f in dir(eval(op)) if not f[0] == '_']
+            ops_together.extend(ops_set)
+        else:
+            raise ValueError('Invalid list element: {}'.format(op))
+    return ops_together
+    
+op_manager = opnet.OperationsManager(list_ops([
+    'skimage.util',
+    [ops.multiply, 'Math', 'data'],
+    [ops.convert_data_type, 'Data', 'data'],
+    [ops.rescale_range, 'Data', ['data', 'out_min', 'out_max']],
+    [ops.resize_image, 'Image', 'data'],
+    [ops.adjust_brightness, 'Image', 'data'],
+    [ops.adjust_contrast, 'Image', 'data']
+]))
 
 @app.route('/')
 def home():
@@ -195,3 +199,6 @@ def run_graph():
             }
 
     return jsonify(results)
+
+def _s_abs(s):
+    return re.sub('-', '', s)
