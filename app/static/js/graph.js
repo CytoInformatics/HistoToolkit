@@ -850,7 +850,7 @@ function populateOperationsMenu() {
                 // create folder element
                 var cat = categories[i];
                 var folder = document.createElement("div");
-                folder.id = folder_id_root + cat;
+                folder.id = folder_id_root + cat.replace('.', '_');
                 folder.classList.add("folder");
 
                 // create folder label element
@@ -872,7 +872,8 @@ function populateOperationsMenu() {
                 newitem.classList.add("folder-item");
 
                 // attach to folder element
-                var folder_id = "#" + folder_id_root + obj[key].category;
+                var folder_id = "#" + folder_id_root 
+                                + obj[key].category.replace('.', '_');
                 $(folder_id).append(newitem);
             }
         }

@@ -3,12 +3,30 @@ import numpy as np
 from app import app
 from flask import request, render_template, jsonify, url_for, Blueprint
 from .tools import histotoolkit as htk
-from .tools import opnet
+from .tools import opnet, ops
+
+import skimage
 
 config = app.config["APPDATA"]
 
 folder_bp = Blueprint('files', __name__, static_folder='current')
 app.register_blueprint(folder_bp, url_prefix='/files')
+
+# op_manager = opnet.OperationsManager([
+#     [ops.multiply, 'Math', 'data'],
+#     [ops.convert_data_type, 'Data', 'data'],
+#     [ops.rescale_range, 'Data', ['data', 'out_min', 'out_max']],
+#     [ops.resize_image, 'Image', 'data'],
+#     [ops.adjust_brightness, 'Image', 'data'],
+#     [ops.adjust_contrast, 'Image', 'data']
+# ])
+
+pkg = 'skimage.util'
+# print(dir(eval(pkg)))
+op_manager = opnet.OperationsManager([
+    [eval(pkg + '.' + f), pkg, 'data'] for f in dir(eval(pkg)) if not f[0] == '_'
+])
+
 
 def _s_abs(s):
     return re.sub('-', '', s)
@@ -44,8 +62,8 @@ def available_operations():
     """
     Return json object with available operations and parameters.
     """
-    
-    return jsonify({key: val['info'] for key, val in htk.op_manager.ops.items()})
+
+    return jsonify({key: val['info'] for key, val in op_manager.ops.items()})
 
 @app.route('/set-folder', methods=['POST'])
 def set_folder():
@@ -151,7 +169,7 @@ def run_graph():
                 node_params[p['name']] = p['value']
 
         graph.add_node(
-            htk.op_manager.ops[node['op']]['ref'], 
+            op_manager.ops[node['op']]['ref'], 
             node_params, 
             node['outputs'], 
             name=node['name']
