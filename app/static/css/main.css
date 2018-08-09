@@ -133,6 +133,10 @@ input.drag-over {
         background-color: #233833;
     }
 
+    .folder > .folder-item:hover {
+        background-color: #8ca2a3;
+    }
+
     .node-item {
         padding: 0 0 0.2em 0.4em;
     }
