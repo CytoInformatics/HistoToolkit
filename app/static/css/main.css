@@ -135,7 +135,7 @@ input.drag-over {
     }
 
     .folder > .folder-item:hover {
-        background-color: #8ca2a3;
+        background-color: #2c6363;
     }
 
     .node-item {
@@ -144,6 +144,10 @@ input.drag-over {
 
     .node-item:nth-child(odd) {
         background-color: #233833;
+    }
+
+    .node-item:hover {
+        background-color: #2c6363;
     }
 
     .node-item.selected {
