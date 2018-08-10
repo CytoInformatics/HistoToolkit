@@ -103,7 +103,7 @@ input.drag-over {
 }
 
     .option-menu {
-        height: 95%;
+        height: 100%;
         width: 100%;    
         display: grid;
         grid-template-rows: 4vh 2vh 94vh;
