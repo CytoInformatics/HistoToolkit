@@ -104,13 +104,20 @@ input.drag-over {
 
     .option-menu {
         height: 95%;
-        width: 100%;
-        overflow-y: auto;
+        width: 100%;    
+        display: grid;
+        grid-template-rows: 4vh 2vh 94vh;
+        overflow: hidden;
     }
 
     .options-label {
         padding: 0 0 0.2em 0.4em;
         font-size: 1.4em;
+    }
+
+    .options-content {
+        padding-bottom: 1.0em;
+        overflow: auto;
     }
 
     .option-menu > .folder {
@@ -171,10 +178,9 @@ input.drag-over {
 
     #file-list {
         width: 100%;
-        height: 80%;
         margin: 0.4em 0 1.0em 0;
 
-        overflow-y: scroll;
+        overflow-y: auto;
     }
 
     .file-item {
