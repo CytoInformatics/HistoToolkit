@@ -123,6 +123,7 @@ input.drag-over {
     .folder > .folder-label {
         padding: 0 0 0.2em 0.4em;
         font-size: 1.2em;
+        background-color: #111f1d;
     }
 
     .folder > .folder-item {
@@ -178,6 +179,8 @@ input.drag-over {
     .file-item {
         width: 100%;
         padding: 0.2em;
+        display: grid;
+        grid-template-columns: 32px 1fr;
     }
 
     .file-item:nth-child(odd) {
@@ -193,8 +196,8 @@ input.drag-over {
     }
 
     .file-item > img {
-        width: 2em;
-        height: 2em;
+        width: 32px;
+        height: 32px;
 
         border: 0.1em solid black;
         border-radius: 0.4em;
