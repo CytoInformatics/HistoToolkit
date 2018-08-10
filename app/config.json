@@ -42,5 +42,10 @@
         "tolerance": 5
     },
 
-    "DBLCLICK_DELTA": 300
+    "DBLCLICK_DELTA": 300,
+
+    "PACKAGES": [
+        "skimage.util",
+        "scipy.linalg"
+    ]
 }

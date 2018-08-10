@@ -1,17 +1,28 @@
-import re, os, json
+import re, os, json, warnings, importlib
 import numpy as np
 from app import app
 from flask import request, render_template, jsonify, url_for, Blueprint
 from .tools import histotoolkit as htk
 from .tools import opnet, ops
 
-import skimage
+config = app.config['APPDATA']
 
-config = app.config["APPDATA"]
+# load packages specified in config file
+pkgs = []
+for pkg in config['PACKAGES']:
+    p_root = pkg.split('.')[0]
+    try:
+        exec('import ' + p_root)
+        pkgs.append(pkg)
+    except ImportError:
+        warnings.warn('Could not find package: {}'.format(p_root))
+config['PACKAGES'] = pkgs
 
+# load blueprint to source file folder
 folder_bp = Blueprint('files', __name__, static_folder='current')
 app.register_blueprint(folder_bp, url_prefix='/files')
 
+# instantiate op_manager with desired operations
 def list_ops(ops_to_add):
     ops_together = []
     for op in ops_to_add:
@@ -24,16 +35,17 @@ def list_ops(ops_to_add):
         else:
             raise ValueError('Invalid list element: {}'.format(op))
     return ops_together
-    
-op_manager = opnet.OperationsManager(list_ops([
-    'skimage.util',
+
+lops = [
     [ops.multiply, 'Math', 'data'],
     [ops.convert_data_type, 'Data', 'data'],
     [ops.rescale_range, 'Data', ['data', 'out_min', 'out_max']],
     [ops.resize_image, 'Image', 'data'],
     [ops.adjust_brightness, 'Image', 'data'],
     [ops.adjust_contrast, 'Image', 'data']
-]))
+]
+lops.extend(config['PACKAGES'])
+op_manager = opnet.OperationsManager(list_ops(lops))
 
 @app.route('/')
 def home():

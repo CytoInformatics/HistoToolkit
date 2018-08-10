@@ -394,7 +394,7 @@ class OperationsManager:
             op.__code__
         except AttributeError:
             warnings.warn('Arguments of {} could not be found. \
-                Skipping operation.'.format(op.__name__))
+                Skipping operation.'.format(op))
             return
 
         if not callable(op):
