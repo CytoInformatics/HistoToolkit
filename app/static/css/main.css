@@ -40,7 +40,7 @@ canvas[resize] {
 }
 
 .inactive {
-    display: none;
+    display: none !important;
 }
 
 input.drag-over {
@@ -59,7 +59,7 @@ input.drag-over {
 }
 
 #sidebar {
-    height: 100%;
+    height: 100vh;
     text-align: center;
 }
 
@@ -236,7 +236,7 @@ input.drag-over {
 }
 
     #tabs {
-        height: 5%;
+        height: 5vh;
         width: 100%;
         border-bottom: 1px solid black;
     }
@@ -266,7 +266,7 @@ input.drag-over {
 
     #content {
         position: relative;
-        height: 95%;
+        height: 95vh;
         width: 100%;
     }
 
@@ -352,7 +352,7 @@ input.drag-over {
 
     #node-info-menu {
         width: 100%;
-        height: 100%;
+        height: 100vh;
         display: grid;
         grid-template-rows: 50px 40vh 50vh;
     }
