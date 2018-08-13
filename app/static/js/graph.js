@@ -124,7 +124,6 @@ var graph = {
             url: '/run-graph',
             data: formdata,
             success: function(response) {
-                console.log(response);
                 displayResponse(response);
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -522,7 +521,7 @@ function onMouseDrag(event) {
         draggingNodeBox.position += event.delta;
         for (var i = 0; i < draggingNodeBox.children.length; i++) {
             var child = draggingNodeBox.children[i];
-            if (!child.obj_type || !child.get_value()) {
+            if (!child.obj_type || child.datatype !== 'Conduit') {
                 continue;
             }
 
@@ -552,7 +551,7 @@ function onMouseUp(event) {
             var item = hit_result.item;
 
             // remove existing conduit and references if present
-            if (item.parent.get_value()) {
+            if (item.parent.get_value() && item.parent.get_value().delete) {
                 item.parent.get_value().delete();
             }
 
