@@ -503,7 +503,7 @@ function onMouseDown(event) {
 
             // check group item belongs to
             if (item.parent.obj_type == "output") {
-                if (typeof item.parent.get_value() !== 'undefined') {
+                if (item.parent.get_value() != null) {
                     item.parent.get_value().delete();
                 }
 

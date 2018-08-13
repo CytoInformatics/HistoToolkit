@@ -285,13 +285,16 @@ class Node:
         """
 
         outs = self.op(**self.unpack_params())
+        
+        if not isinstance(outs, dict):
+            outs = {'data': outs}
 
         # store outputs as value
-        for (s_out, out) in zip(self.outputs, outs):
+        for s_out, out in zip(self.outputs, outs):
             s_out.set_value(outs[out])
 
         # convert to dict for output
-        outs = {name: outs[out] for (name, out) in zip(self.list_outputs(), outs)}
+        outs = {name: outs[out] for name, out in zip(self.list_outputs(), outs)}
         return outs
 
 class Port:
