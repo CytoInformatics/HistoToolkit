@@ -5,6 +5,7 @@ from imageio.core.util import Image
 from imageio import imread, imwrite, get_reader
 from collections import Counter
 from horsetools.file_utils import list_files
+from skimage.transform import resize
 
 from . import opnet
 

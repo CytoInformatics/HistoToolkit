@@ -79,7 +79,8 @@ def available_operations():
     Return json object with available operations and parameters.
     """
 
-    return jsonify({key: val['info'] for key, val in op_manager.ops.items()})
+    obj = {key: val['info'] for key, val in op_manager.ops.items()}
+    return jsonify(obj)
 
 @app.route('/set-folder', methods=['POST'])
 def set_folder():
@@ -174,6 +175,8 @@ def run_graph():
                 node_params[p['name']] = htk.load_image(p['value'])
             elif not isinstance(p['value'], str):
                 node_params[p['name']] = p['value']
+            elif _s_abs(p['value']).lower() == 'inf':
+                node_params[p['name']] = float(p['value'])
             elif _s_abs(p['value']).isdigit():
                 node_params[p['name']] = int(p['value'])
             elif len(p['value'].split('.')) == 2 \
@@ -213,4 +216,8 @@ def run_graph():
     return jsonify(results)
 
 def _s_abs(s):
+    """
+    Remove all appearances of '-' from a string.
+    """
+
     return re.sub('-', '', s)

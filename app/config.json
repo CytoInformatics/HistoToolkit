@@ -46,6 +46,7 @@
 
     "PACKAGES": [
         "skimage.util",
+        "skimage.transform",
         "scipy.linalg"
     ]
 }

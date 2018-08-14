@@ -1,4 +1,5 @@
 import warnings
+from math import isinf
 from random import randint
 
 class OpNet:
@@ -425,6 +426,14 @@ class OperationsManager:
         varnames = op.__code__.co_varnames
         param_required = [True] * n_requireds + [False] * n_defaults
         param_defaults = [None] * n_requireds + list(default_vars)
+
+        # convert 'inf' values to string
+        for i, p in enumerate(param_defaults):
+            try:
+                param_defaults[i] = str(p) if isinf(p) else p
+            except TypeError:
+                continue
+
         outputs = [{"name": n} for n in ensure_is_listlike(outputs)]
         self.ops[op.__name__] = {
             "ref": op,

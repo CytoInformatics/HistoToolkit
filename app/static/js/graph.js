@@ -831,7 +831,6 @@ function populateOperationsMenu() {
         url: '/available-operations',
         async: true,
         success: function(obj) {
-            
             var ops_menu = $("#operations-list");
 
             // get unique categories and available operations from response
