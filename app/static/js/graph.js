@@ -1,3 +1,13 @@
+/* colors: #111f1d, #1e302c, #2c6363 (#233833), #8ca2a3, #e0faf6 */
+/* alt colors: #19212D, #252E39, #324170, #8B92A2, #BAC2CE */
+root = document.documentElement;
+root.style.setProperty('--paletteColor0', '#111f1d');
+root.style.setProperty('--paletteColor1', '#1e302c');
+root.style.setProperty('--paletteColor2', '#2c6363');
+root.style.setProperty('--paletteColor3', '#233833');
+root.style.setProperty('--paletteColor4', '#8ca2a3');
+root.style.setProperty('--paletteColor5', '#e0faf6');
+
 Array.prototype.unique = function() {
     var arr = [];
     for(var i = 0; i < this.length; i++) {
