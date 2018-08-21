@@ -1,20 +1,67 @@
-import os, json
+import re, os, json, warnings, importlib
 import numpy as np
 from app import app
 from flask import request, render_template, jsonify, url_for, Blueprint
 from .tools import histotoolkit as htk
-from .tools import opnet
+from .tools import opnet, ops
 
-config = app.config["APPDATA"]
+config = app.config['APPDATA']
 
+# load packages specified in config file
+pkgs = []
+for pkg in config['PACKAGES']:
+    p_root = pkg.split('.')[0]
+    try:
+        exec('import ' + p_root)
+        pkgs.append(pkg)
+    except ImportError:
+        warnings.warn('Could not find package: {}'.format(p_root))
+config['PACKAGES'] = pkgs
+
+# load blueprint to source file folder
 folder_bp = Blueprint('files', __name__, static_folder='current')
 app.register_blueprint(folder_bp, url_prefix='/files')
+
+# instantiate op_manager with desired operations
+def list_ops(ops_to_add):
+    ops_together = []
+    for op in ops_to_add:
+        if isinstance(op, list):
+            ops_together.append(op)
+        elif isinstance(op, str):
+            ops_set = [[eval(op + '.' + f), op, 'data'] 
+                      for f in dir(eval(op)) if not f[0] == '_']
+            ops_together.extend(ops_set)
+        else:
+            raise ValueError('Invalid list element: {}'.format(op))
+    return ops_together
+
+lops = [
+    [ops.multiply, 'Math', 'data'],
+    [ops.convert_data_type, 'Data', 'data'],
+    [ops.rescale_range, 'Data', ['data', 'out_min', 'out_max']],
+    [ops.resize_image, 'Image', 'data'],
+    [ops.adjust_brightness, 'Image', 'data'],
+    [ops.adjust_contrast, 'Image', 'data']
+]
+lops.extend(config['PACKAGES'])
+op_manager = opnet.OperationsManager(list_ops(lops))
 
 @app.route('/')
 def home():
     """
     Serve the application home page.
     """
+
+    # clear contents of temp folder
+    temp_folder = './app/static/temp'
+    for f in os.listdir(temp_folder):
+        f_path = os.path.join(temp_folder, f)
+        try:
+            if os.path.isfile(f_path):
+                os.unlink(f_path)
+        except Exception as e:
+            print(e)
 
     return render_template('index.html')
 
@@ -32,7 +79,7 @@ def available_operations():
     Return json object with available operations and parameters.
     """
 
-    return jsonify({key: val['info'] for key, val in htk.op_manager.ops.items()})
+    return jsonify({key: val['info'] for key, val in op_manager.ops.items()})
 
 @app.route('/set-folder', methods=['POST'])
 def set_folder():
@@ -127,10 +174,10 @@ def run_graph():
                 node_params[p['name']] = htk.load_image(p['value'])
             elif not isinstance(p['value'], str):
                 node_params[p['name']] = p['value']
-            elif p['value'].isdigit():
+            elif _s_abs(p['value']).isdigit():
                 node_params[p['name']] = int(p['value'])
             elif len(p['value'].split('.')) == 2 \
-                 and all(s.isdigit() for s in p['value'].split('.')):
+                 and all(_s_abs(s).isdigit() for s in p['value'].split('.')):
                 node_params[p['name']] = float(p['value'])
             elif p['value'][0] == '[' and p['value'][-1] == ']':
                 node_params[p['name']] = json.loads(p['value'])
@@ -138,7 +185,7 @@ def run_graph():
                 node_params[p['name']] = p['value']
 
         graph.add_node(
-            htk.op_manager.ops[node['op']]['ref'], 
+            op_manager.ops[node['op']]['ref'], 
             node_params, 
             node['outputs'], 
             name=node['name']
@@ -164,3 +211,6 @@ def run_graph():
             }
 
     return jsonify(results)
+
+def _s_abs(s):
+    return re.sub('-', '', s)

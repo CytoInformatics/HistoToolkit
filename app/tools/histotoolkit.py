@@ -1,9 +1,8 @@
-import os, hashlib, base64
+import os, hashlib, base64, random, string
 import warnings
 import numpy as np
 from imageio.core.util import Image
 from imageio import imread, imwrite, get_reader
-from skimage.transform import resize
 from collections import Counter
 from horsetools.file_utils import list_files
 
@@ -15,13 +14,19 @@ THUMBNAIL_SETTINGS = {
     'crop_mode': 'top-left'
 }
 
+def hash_str(my_str):
+    return hashlib.md5(my_str.encode('utf-8')).hexdigest()
+
+def random_str(n):
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=n))
+
 def hash_file(uri):
     """
     Create a hash string for the file stored at uri.
     """
 
     file_str = uri + str(os.path.getmtime(uri))
-    hashval = hashlib.md5(file_str.encode('utf-8')).hexdigest()
+    hashval = hash_str(file_str)
     return hashval
 
 def list_all_images(folder):
@@ -118,7 +123,8 @@ def save_image(name, img):
     Save IMG to uri NAME.
     """
 
-    return imwrite(name, img)
+    name = os.path.splitext(name)[0]
+    return imwrite(name, img, format='PNG', compress_level=0)
 
 def get_metadata(name, mode="i"):
     """
@@ -130,16 +136,23 @@ def get_metadata(name, mode="i"):
     reader.close()
     return metadata
 
-def json_sanitize(val):
+def json_sanitize(val, base64_images=False):
     """
     Convert VAL to a type that is serializable using jsonify.
     """
 
     if isinstance(val, Image) or isinstance(val, np.ndarray):
-        datatype = 'base64-image'
-        save_image('./app/test/tmp.png', val)
-        with open('./app/test/tmp.png', 'rb') as f:
-            newval = 'data:image/png;base64,' + base64.b64encode(f.read()).decode('utf-8')
+        if base64_images:
+            datatype = 'base64-image'
+            save_image('./app/test/tmp', val)
+            with open('./app/test/tmp', 'rb') as f:
+                newval = 'data:image/png;base64,' + base64.b64encode(f.read()).decode('utf-8')
+        else:
+            datatype = 'image'
+            code = random_str(6)
+            path = './app/static/temp/' + code
+            save_image(path, val)
+            newval = '/static/temp/' + code
     elif isinstance(val, np.generic):
         datatype = 'literal'
         newval = val.item()
@@ -149,85 +162,3 @@ def json_sanitize(val):
 
     return newval, datatype
 
-
-# *- OPERATIONS -*
-def multiply(data, scale):
-    """
-    Multiply DATA by a factor of SCALE.
-    """
-
-    op_output = {
-        'data': scale * data
-    }
-    return op_output
-
-
-def convert_data_type(data, datatype):
-    """
-    Convert DATA to DATATYPE.
-    """
-
-    op_output = {
-        'data': data.astype(datatype)
-    }
-    return op_output
-
-def rescale_range(data, out_min, out_max):
-    """
-    Rescale DATA to between OUT_MIN and OUT_MAX.
-    """
-
-    in_dtype = data.dtype
-    if out_min is None:
-        try:
-            out_min = np.iinfo(in_dtype).min
-        except ValueError:
-            try:
-                out_min = np.finfo(in_dtype).min
-            except ValueError:
-                out_min = 0
-        else:
-            out_min = 0
-
-    if out_max is None:
-        try:
-            out_max = np.iinfo(in_dtype).max
-        except ValueError:
-            try:
-                out_max = np.finfo(in_dtype).max
-            except ValueError:
-                out_max = 0
-        else:
-            out_max = 0
-
-    in_range = data.max() - data.min()
-    out_range = out_max - out_min
-    data = (out_range / in_range) * (data - data.min()) + out_min
-    data = data.astype(in_dtype)
-
-    op_output = {
-        'data': data, 
-        'out_min': data.min(), 
-        'out_max': data.max()
-    }
-    return op_output
-
-def resize_image(data, output_shape):
-    """
-    Resize DATA to OUTPUT_SHAPE.
-    """
-
-    data = resize(data, output_shape)
-
-    op_output = {
-        'data': data
-    }
-    return op_output
-
-
-op_manager = opnet.OperationsManager([
-    [multiply, 'Math', 'data'],
-    [convert_data_type, 'Data', 'data'],
-    [rescale_range, 'Data', ['data', 'out_min', 'out_max']],
-    [resize_image, 'Image', 'data']
-])

@@ -18,9 +18,12 @@ python run.py
 
 ### To-do
 ##### Essentials
-* Change style of invalid param paths
+* Import functions from external packages automatically
+* Protect against arbitrary code execution in input fields
 
 ##### Desirables
+* Change style of invalid param paths
+* Replace outer double quotes with single quotes
 * Fix slow response time when processing images (likely due to base64 encoding)
 * Change all uses of document methods to JQuery where possible
 * Double click node display name to change it

@@ -23,7 +23,7 @@ var graph = {
         }
 
         // remove selection from node list
-        var ops_menu = $('#options-3');
+        var ops_menu = $('#node-list');
         for (var i = 0; i < ops_menu[0].children.length; i++) {
             ops_menu[0].children[i].classList.remove('selected');
         }
@@ -124,17 +124,21 @@ var graph = {
             url: '/run-graph',
             data: formdata,
             success: function(response) {
-                console.log(response);
-                populateOutputTab(response);
+                displayResponse(response);
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log("ERROR: " + textStatus + " " + errorThrown);
+                var txt = jqXHR.responseText.split('Traceback').end()
+                txt = txt.replace('-->', '');
+                txt = txt.replace(/(?:\r\n|\r|\n)/g, '\n\n')
+                console.log(txt);
+                displayResponse(txt);
             }
         });
     }
 };
 
-function populateOutputTab(obj) {
+function displayResponse(resp) {
     function createOutputElement(data) {
         var item = document.createElement('div');
         item.classList.add('output-item');
@@ -159,7 +163,8 @@ function populateOutputTab(obj) {
             label.innerHTML = out_obj.name;
             output.append(label);
 
-            if (out_obj.datatype === 'base64-image') {
+            if (out_obj.datatype === 'base64-image'
+                || out_obj.datatype === 'image') {
                 var value = document.createElement('img');
                 value.src = out_obj.value;
             } else {
@@ -176,12 +181,75 @@ function populateOutputTab(obj) {
         return item;
     }
 
-    var output_content = document.getElementById('content-3');
+    function createOutputImage(src, name) {
+        var item = document.createElement('div');
+        item.classList.add('output-image-div');
+
+        var item_thumb = document.createElement('div');
+        item_thumb.classList.add('output-image-thumbnail');
+        var img = document.createElement('img');
+        img.src = src;
+        item_thumb.append(img);
+        item.append(item_thumb);
+
+        var img_panel = document.createElement('div');
+        img_panel.classList.add('output-image-panel');
+        var img_title = document.createElement('div');
+        img_title.classList.add('output-image-title');
+        img_title.innerHTML = name;
+        img_panel.append(img_title);
+
+        var img_buttons = document.createElement('div');
+        img_buttons.classList.add('output-image-buttons');
+        var view_button = document.createElement('div');
+        view_button.classList.add('output-image-view-button', 'center-items');
+        view_button.innerHTML = 'View';
+        view_button.setAttribute('value', src);
+        var overlay_button = document.createElement('div');
+        overlay_button.classList.add('output-image-overlay-button', 'center-items');
+        overlay_button.innerHTML = 'Overlay';
+        overlay_button.setAttribute('value', src);
+        img_buttons.append(view_button);
+        img_buttons.append(overlay_button);
+
+        img_panel.append(img_buttons);
+        item.append(img_panel);
+
+        return item;
+    }
+
+    var output_content = document.getElementById('response-list');
     output_content.innerHTML = '';
-    for (var i = 0; i < obj.length; i++) {
-        var row_data = obj[i];
-        var element = createOutputElement(row_data);
-        output_content.append(element);
+
+    var output_img_list = document.getElementById('output-image-list');
+    output_img_list.innerHTML = '';
+
+    if (resp !== null) {
+        if (typeof resp === 'object') {
+            for (var i = 0; i < resp.length; i++) {
+                var row_data = resp[i];
+                var element = createOutputElement(row_data);
+                output_content.append(element);
+
+                // update output image
+                for (var key in row_data.outputs) {
+                    var output_data = row_data.outputs[key];
+                    if (output_data.datatype === 'base64-image'
+                        || output_data.datatype === 'image') {
+                        var img_div = createOutputImage(
+                            output_data.value,
+                            row_data.node + ': ' + output_data.name
+                        );
+                        output_img_list.append(img_div);
+                    }
+                }
+            }
+        } else {
+            var element = document.createElement('textarea');
+            element.value = resp;
+            element.readOnly = true;
+            output_content.append(element);
+        }
     }
 }
 
@@ -226,7 +294,7 @@ function Node(op, params, outputs, position, node_props, box_props) {
             port.obj_type = port_type;
             port.node = this;
             port.name = port_names[i].name
-            port._value = undefined;
+            port._value = graph.valid_ops[this.op_name].params[i].defaults;
             port.set_value = function(val, datatype) {
                 this._value = val;
 
@@ -434,7 +502,7 @@ function onMouseDown(event) {
 
             // check group item belongs to
             if (item.parent.obj_type == "output") {
-                if (typeof item.parent.get_value() !== 'undefined') {
+                if (item.parent.get_value() != null) {
                     item.parent.get_value().delete();
                 }
 
@@ -453,7 +521,7 @@ function onMouseDrag(event) {
         draggingNodeBox.position += event.delta;
         for (var i = 0; i < draggingNodeBox.children.length; i++) {
             var child = draggingNodeBox.children[i];
-            if (!child.obj_type || !child.get_value()) {
+            if (!child.obj_type || child.datatype !== 'Conduit') {
                 continue;
             }
 
@@ -483,7 +551,7 @@ function onMouseUp(event) {
             var item = hit_result.item;
 
             // remove existing conduit and references if present
-            if (item.parent.get_value()) {
+            if (item.parent.get_value() && item.parent.get_value().delete) {
                 item.parent.get_value().delete();
             }
 
@@ -581,14 +649,14 @@ function createPortItem(port, name) {
 }
 
 function toggleNodeMenu(node) {
-    if (typeof node == 'undefined') {
-        // hide menu when deselected
-        $("#float-menu").addClass("hidden");
-    } else {
+    // hide any visible menu within div
+    $("#node-info").addClass("hidden");
+
+    if (typeof node !== 'undefined') {
         // update title and description
-        $("#float-title").text(node.display_name);
+        $("#node-title").text(node.display_name);
         var op_data = graph.valid_ops[node.op_name];
-        $("#float-description").text(op_data.docstring);
+        $("#node-description").text(op_data.docstring);
 
         // update params
         var param_list = document.getElementById("param-list");
@@ -615,40 +683,29 @@ function toggleNodeMenu(node) {
         }
 
         // show menu
-        $("#float-menu").removeClass("hidden");
+        $("#node-info").removeClass("hidden");
     }
 }
-
-function toggleOptionsMenu() {
-    var button = $("#button-1");
-    var dropdown_menu = $("#dropdown-menu");
-    if (button.hasClass("di-selected")) {
-        button.removeClass("di-selected");
-
-        dropdown_menu.addClass("inactive");
-    } else {
-        button.addClass("di-selected");
-
-        dropdown_menu.removeClass("inactive");
-    }
-}
-
-// add click handler to dropdown icon
-$('#button-1').click(toggleOptionsMenu);
 
 // add click handler to dropdown menu
-$('#dropdown-menu').click(function(event) {
+$('#sidebar').click(function(event) {
     event.preventDefault();
 
     if (event.target !== event.currentTarget) {
-        var options = $('#options');
-        if ($(event.target).hasClass('dropdown-item')) {
-            var idx = event.target.id.split('-').end();
-            $(options).children('.option-menu').addClass('inactive');
-            
-            $('#options-'+idx).removeClass('inactive');
+        var dropdown;
+        if ($(event.target).hasClass('dropdown-option')) {
+            dropdown = event.target;
+        } else if ($(event.target).parents('.dropdown-option')[0]) {
+            dropdown = $(event.target).parents('.dropdown-option')[0];
+        } else {
+            return;
         }
-        toggleOptionsMenu();
+        var idx = dropdown.id.split('-').end();
+
+        $('#sidebar').children().removeClass('selected');
+        $(dropdown).addClass('selected');
+        $('#menu').children('.option-menu').addClass('inactive');
+        $('#options-'+idx).removeClass('inactive');
     }
 })
 
@@ -657,11 +714,17 @@ function openTab(num) {
         num = num.toString();
     }
 
+    // style tab
     $('#tabs').children().removeClass('selected');
     $('#tab-' + num).addClass('selected');
 
-    $(content).children().addClass('inactive');
+    // activate content div
+    $('#content').children().addClass('inactive');
     $('#content-' + num).removeClass('inactive');
+
+    // activate side menu div
+    $('#side-menu').children().addClass('inactive');
+    $('#info-menu-' + num).removeClass('inactive');
 }
 
 // add click handler to viewer tabs
@@ -669,24 +732,22 @@ $('#tabs').click(function(event) {
     event.preventDefault();
 
     if (event.target !== event.currentTarget) {
-        var content = document.getElementById('content');
-
         if (event.target.id == 'tab-1') {
             openTab('1');
         } else if (event.target.id == 'tab-2') {
             openTab('2');
         } else if (event.target.id == 'tab-3') {
             openTab('3');
-        } else if (event.target.id == "tab-4") {
-            openTab('4');
-        } else if (event.target.id == 'tab-5') {
-            graph.run();
         }
     }
 })
 
+$('#run-button').click(function(event) {
+    graph.run();
+})
+
 // add click handler to options menu
-$('#options-1').click(function(event) {
+$('#operations-list').click(function(event) {
     event.preventDefault();
 
     if (event.target !== event.currentTarget 
@@ -733,7 +794,7 @@ function newNode(key, position) {
 }
 
 function addNodeToList(node) {
-    var ops_menu = $("#options-3");
+    var ops_menu = $("#node-list");
 
     // create folder element
     var node_item = document.createElement("div");
@@ -771,7 +832,7 @@ function populateOperationsMenu() {
         async: true,
         success: function(obj) {
             
-            var ops_menu = $("#options-1");
+            var ops_menu = $("#operations-list");
 
             // get unique categories and available operations from response
             var categories = [];
@@ -788,7 +849,7 @@ function populateOperationsMenu() {
                 // create folder element
                 var cat = categories[i];
                 var folder = document.createElement("div");
-                folder.id = folder_id_root + cat;
+                folder.id = folder_id_root + cat.replace('.', '_');
                 folder.classList.add("folder");
 
                 // create folder label element
@@ -810,7 +871,8 @@ function populateOperationsMenu() {
                 newitem.classList.add("folder-item");
 
                 // attach to folder element
-                var folder_id = "#" + folder_id_root + obj[key].category;
+                var folder_id = "#" + folder_id_root 
+                                + obj[key].category.replace('.', '_');
                 $(folder_id).append(newitem);
             }
         }
@@ -929,6 +991,29 @@ function initOpenSeadragon(id) {
 
     return viewer;
 };
+
+$('#output-image-list').click(function(event) {
+    event.preventDefault();
+
+    if (event.target !== event.currentTarget) {
+        if ($(event.target).hasClass('output-image-view-button')) {
+            img_viewer.open(event.target.getAttribute('value'));
+        } else if ($(event.target).hasClass('output-image-overlay-button')) {
+            var overlay_src = event.target.getAttribute('value');
+
+            viewer.removeOverlay('overlay');
+
+            var overlay = document.createElement('img');
+            overlay.id = 'output-overlay';
+            overlay.src = overlay_src;
+            overlay.style = 'opacity: 0.5;';
+            viewer.addOverlay({
+                element: overlay, 
+                location: new OpenSeadragon.Rect(0.0, 0.0, 1.0, 1.0)
+            });
+        }
+    }
+})
 
 var folder_id_root = 'folder-';
 var config;

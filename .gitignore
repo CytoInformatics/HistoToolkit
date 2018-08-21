@@ -3,4 +3,5 @@
 
 *.pyc
 app/static/thumbs
+app/static/temp
 app/test

@@ -1,3 +1,4 @@
+import warnings
 from random import randint
 
 class OpNet:
@@ -284,13 +285,16 @@ class Node:
         """
 
         outs = self.op(**self.unpack_params())
+        
+        if not isinstance(outs, dict):
+            outs = {'data': outs}
 
         # store outputs as value
-        for (s_out, out) in zip(self.outputs, outs):
+        for s_out, out in zip(self.outputs, outs):
             s_out.set_value(outs[out])
 
         # convert to dict for output
-        outs = {name: outs[out] for (name, out) in zip(self.list_outputs(), outs)}
+        outs = {name: outs[out] for name, out in zip(self.list_outputs(), outs)}
         return outs
 
 class Port:
@@ -371,12 +375,13 @@ class OperationsManager:
 
     def __init__(self, ops=None):
         self.ops = {}
+
         if ops is not None:
-            try:
-                for op_ins in ops:
-                    self.add_valid_op(*op_ins)
-            except IndexError:
-                warnings.warn("input ops is not iterable.")
+            for op in ops:
+                try:
+                    self.add_valid_op(*op)
+                except IndexError:
+                    warnings.warn('input op ({}) is not iterable.'.format(op))
 
     def add_valid_op(self, op, category, outputs):
         """
@@ -388,13 +393,38 @@ class OperationsManager:
             outputs: Name or list of names of output variables.
         """
 
-        n_requireds = op.__code__.co_argcount
-        default_vars = op.__defaults__
-        default_vars = [] if isinstance(default_vars, type(None)) else default_vars
+        try:
+            op.__code__
+        except AttributeError:
+            warnings.warn('Arguments of {} could not be found. \
+                Skipping operation.'.format(op))
+            return
+
+        if not callable(op):
+            warnings.warn('{} is not callable. Skipping operation.'.format(
+                op.__name__))
+            return
+
+        try:
+            default_vars = op.__defaults__
+        except AttributeError:
+            default_vars = []
+        default_vars = [] if isinstance(default_vars, type(None)) else list(default_vars)
+        
+        # reject parameters with default of type 'type'
+        n_vars = len(op.__code__.co_varnames)
+        enabled = [True] * n_vars
+        for i in range(len(default_vars)):
+            if isinstance(default_vars[i], type):
+                default_vars[i] = None
+                enabled[i + n_vars] = False
+        # default_vars = list(filter(lambda x: not isinstance(x, type), default_vars))
+
         n_defaults = len(default_vars)
+        n_requireds = op.__code__.co_argcount - n_defaults
         varnames = op.__code__.co_varnames
         param_required = [True] * n_requireds + [False] * n_defaults
-        param_defaults = [None] * n_requireds + default_vars
+        param_defaults = [None] * n_requireds + list(default_vars)
         outputs = [{"name": n} for n in ensure_is_listlike(outputs)]
         self.ops[op.__name__] = {
             "ref": op,
@@ -405,8 +435,10 @@ class OperationsManager:
                     {
                         "name": n,
                         "required": r,
-                        "defaults": d
-                    } for n, r, d in zip(varnames, param_required, param_defaults)
+                        "defaults": d,
+                        "enabled": e
+                    } for n, r, d, e in zip(varnames, param_required, 
+                                            param_defaults, enabled)
                 ],
                 "outputs": outputs
             }
