@@ -12,7 +12,7 @@ pip install .
 
 #### Launch server
 ```
-cd HistoToolkit
+cd CompuToolkit
 python run.py
 ```
 
