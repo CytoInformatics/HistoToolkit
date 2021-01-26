@@ -1,18 +1,76 @@
-import os, hashlib, base64, random, string
+import os
+import hashlib
+import base64
+import random
+import string
 import warnings
+from collections import Counter
+
 import numpy as np
+import cv2 as cv
 from imageio.core.util import Image
 from imageio import imread, imwrite, get_reader
-from collections import Counter
-from horsetools.file_utils import list_files
 
 from . import opnet
 
+
+TEMP_B64 = '/tmp/.hydrogentk.b64img'
 IMAGE_EXTS = ('.jpg', '.jpeg', '.png', '.tif', '.tiff', '.bmp',)
 THUMBNAIL_SETTINGS = {
-    'dims': [300, 300],
+    'dims': (300, 300),
     'crop_mode': 'top-left'
 }
+
+def list_files(loc, return_dirs=False, return_files=True, recursive=False, valid_exts=None):
+    """
+    Return a list of all filenames within a directory loc.
+    Inputs:
+        loc - Path to directory to list files from.
+        return_dirs - If true, returns directory names in loc. (default: False)
+        return_files - If true, returns filenames in loc. (default: True)
+        recursive - If true, searches directories recursively. (default: False)
+        valid_exts - If a list, only returns files with extensions in list. If None,
+            does nothing. (default: None)
+    Outputs:
+        files - List of names of all files and/or directories in loc.
+    """
+    
+    files = [os.path.join(loc, x) for x in os.listdir(loc)]
+
+    if return_dirs or recursive:
+        # check if file is directory and add it to output if so
+        is_dir = [os.path.isdir(x) for x in files]
+        found_dirs = [files[x] for x in range(len(files)) if os.path.is_dir[x]]
+    else:
+        found_dirs = []
+
+    if return_files:
+        # check if file is not directory and add it to output
+        is_file = [os.path.isfile(x) for x in files]
+        found_files = [files[x] for x in range(len(files)) if is_file[x]]
+    else:
+        found_files = []
+
+    if recursive and not return_dirs:
+        new_dirs = []
+    else:
+        new_dirs = found_dirs
+
+    deeper_files = []
+    if recursive:
+        for d in found_dirs:
+            deeper_files.extend(list_files(d, return_dirs=return_dirs, 
+                return_files=return_files, recursive=recursive))
+
+    if isinstance(valid_exts, (list, tuple)):
+        concat_files = found_files + deeper_files
+        new_files = []
+        for e in valid_exts:
+            new_files.extend([f for f in concat_files if f.endswith(e)])
+    else:
+        new_files = found_files + deeper_files
+
+    return new_dirs + new_files
 
 def hash_str(my_str):
     return hashlib.md5(my_str.encode('utf-8')).hexdigest()
@@ -58,11 +116,11 @@ def create_thumbnail(img_uri, thumb_uri):
     if THUMBNAIL_SETTINGS['crop_mode'] == 'top-left':
         min_dim = min(img.shape[0:2])
         img_trim = img[:min_dim, :min_dim]
-        thumbnail = resize(img_trim, THUMBNAIL_SETTINGS['dims'])
+        thumbnail = cv.resize(img_trim, THUMBNAIL_SETTINGS['dims'])
     else:
         min_dim = min(img.shape[0:2])
         img_trim = img[:min_dim, :min_dim]
-        thumbnail = resize(img_trim, THUMBNAIL_SETTINGS['dims'])
+        thumbnail = cv.resize(img_trim, THUMBNAIL_SETTINGS['dims'])
 
     # discard alpha channel
     if len(img.shape) > 2 and img.shape[2] > 3:
@@ -144,15 +202,15 @@ def json_sanitize(val, base64_images=False):
     if isinstance(val, Image) or isinstance(val, np.ndarray):
         if base64_images:
             datatype = 'base64-image'
-            save_image('./app/test/tmp', val)
-            with open('./app/test/tmp', 'rb') as f:
+            save_image(TEMP_B64, val)
+            with open(TEMP_B64, 'rb') as f:
                 newval = 'data:image/png;base64,' + base64.b64encode(f.read()).decode('utf-8')
         else:
             datatype = 'image'
             code = random_str(6)
-            path = './app/static/temp/' + code
-            save_image(path, val)
-            newval = '/static/temp/' + code
+            img_path = os.path.join('./app/static/temp/', code)
+            save_image(img_path, val)
+            newval = os.path.join('/static/temp/', code)
     elif isinstance(val, np.generic):
         datatype = 'literal'
         newval = val.item()

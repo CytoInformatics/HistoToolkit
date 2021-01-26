@@ -2,10 +2,12 @@ import re, os, json, warnings, importlib
 import numpy as np
 from app import app
 from flask import request, render_template, jsonify, url_for, Blueprint
-from .tools import histotoolkit as htk
+from .tools import io as io
 from .tools import opnet, ops
 
+
 config = app.config['APPDATA']
+TEMP_DIR = 'app/static/temp'
 
 # load packages specified in config file
 pkgs = []
@@ -54,9 +56,8 @@ def home():
     """
 
     # clear contents of temp folder
-    temp_folder = './app/static/temp'
-    for f in os.listdir(temp_folder):
-        f_path = os.path.join(temp_folder, f)
+    for f in os.listdir(TEMP_DIR):
+        f_path = os.path.join(TEMP_DIR, f)
         try:
             if os.path.isfile(f_path):
                 os.unlink(f_path)
@@ -93,19 +94,16 @@ def set_folder():
     # set blueprint static folder
     folder_bp.static_folder = new_folder
 
-    try:
-        image_list = htk.list_all_images(config["FILE_DIR"])
-        images_info = [htk.get_image_info(uri) for uri in image_list]
+    image_list = io.list_all_images(config["FILE_DIR"])
+    images_info = [io.get_image_info(uri) for uri in image_list]
 
-        for img in images_info:
-            img['route'] = url_for(
-                'files.static', 
-                filename=img['filename']
-            )
+    for img in images_info:
+        img['route'] = url_for(
+            'files.static', 
+            filename=img['filename']
+        )
 
-        return jsonify(images_info)
-    except:
-        return 'failed'
+    return jsonify(images_info)
 
 @app.route('/get-thumbnail', methods=['POST'])
 def get_thumbnail():
@@ -121,12 +119,12 @@ def get_thumbnail():
         os.makedirs(thumbs_dir)
 
     # get name of thumbnail file
-    thumbnail_fname = htk.hash_file(img_uri) + config['THUMBNAIL_EXT']
+    thumbnail_fname = io.hash_file(img_uri) + config['THUMBNAIL_EXT']
     fpath_server = os.path.join(thumbs_dir, thumbnail_fname)
 
     # verify thumbnail exists
     if not os.path.exists(fpath_server):
-        htk.create_thumbnail(img_uri, fpath_server)
+        io.create_thumbnail(img_uri, fpath_server)
 
     # return relative path to client
     fpath_client = os.path.join('static', config['THUMBS_DIR'], thumbnail_fname)
@@ -138,12 +136,12 @@ def data_summary():
     Run all data operations and return output to user.
     """
 
-    img_names = htk.list_all_images(config["FILE_DIR"])
+    img_names = io.list_all_images(config["FILE_DIR"])
 
     ops_output = []
-    ops_output.append(htk.count_file_types(img_names))
-    ops_output.append(htk.count_data_types(img_names))
-    ops_output.append(htk.get_image_shapes(img_names))
+    ops_output.append(io.count_file_types(img_names))
+    ops_output.append(io.count_data_types(img_names))
+    ops_output.append(io.get_image_shapes(img_names))
 
     return jsonify(ops_output)
 
@@ -153,8 +151,8 @@ def count_data_types():
     Count all unique data types in list of images at DATA_FOLDER.
     """
 
-    img_names = htk.list_all_images(config["FILE_DIR"])
-    out = htk.count_data_types(img_names)
+    img_names = io.list_all_images(config["FILE_DIR"])
+    out = io.count_data_types(img_names)
     return jsonify(out)
 
 @app.route('/run-graph', methods=['POST'])
@@ -171,7 +169,7 @@ def run_graph():
         node_params = {}
         for p in node['params']:
             if p['type'] == 'image':
-                node_params[p['name']] = htk.load_image(p['value'])
+                node_params[p['name']] = io.load_image(p['value'])
             elif not isinstance(p['value'], str):
                 node_params[p['name']] = p['value']
             elif _s_abs(p['value']).isdigit():
@@ -202,7 +200,7 @@ def run_graph():
     results = graph.run()
     for node in results:
         for key, val in node['outputs'].items():
-            newval, datatype = htk.json_sanitize(val)
+            newval, datatype = io.json_sanitize(val)
 
             node['outputs'][key] = {
                 'name': key,

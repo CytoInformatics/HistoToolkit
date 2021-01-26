@@ -1,6 +1,7 @@
 import warnings
 from random import randint
 
+
 class OpNet:
     """
     Manager class for all created nodes, ports, and conduits.

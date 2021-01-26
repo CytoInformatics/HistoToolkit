@@ -122,18 +122,16 @@ var graph = {
         $.ajax({
             type: 'POST',
             url: '/run-graph',
-            data: formdata,
-            success: function(response) {
-                displayResponse(response);
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log("ERROR: " + textStatus + " " + errorThrown);
-                var txt = jqXHR.responseText.split('Traceback').end()
-                txt = txt.replace('-->', '');
-                txt = txt.replace(/(?:\r\n|\r|\n)/g, '\n\n')
-                console.log(txt);
-                displayResponse(txt);
-            }
+            data: formdata
+        }).done(function(response) {
+            displayResponse(response);
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.log("ERROR: " + textStatus + " " + errorThrown);
+            var txt = jqXHR.responseText.split('Traceback').end()
+            txt = txt.replace('-->', '');
+            txt = txt.replace(/(?:\r\n|\r|\n)/g, '\n\n')
+            console.log(txt);
+            displayResponse(txt);
         });
     }
 };
@@ -829,52 +827,50 @@ function populateOperationsMenu() {
     $.ajax({
         type: 'GET',
         url: '/available-operations',
-        async: true,
-        success: function(obj) {
-            
-            var ops_menu = $("#operations-list");
+        async: true
+    }).done(function(obj, textStatus, jqXHR) {
+        var ops_menu = $("#operations-list");
 
-            // get unique categories and available operations from response
-            var categories = [];
-            for (key in obj) {
-                categories.push(obj[key].category);
+        // get unique categories and available operations from response
+        var categories = [];
+        for (key in obj) {
+            categories.push(obj[key].category);
 
-                graph.valid_ops[key] = obj[key];
-            }
-            categories = categories.unique();
-            graph.op_categories = categories;
+            graph.valid_ops[key] = obj[key];
+        }
+        categories = categories.unique();
+        graph.op_categories = categories;
 
-            // create category folders in ops_menu
-            for (var i = 0; i < categories.length; i++) {
-                // create folder element
-                var cat = categories[i];
-                var folder = document.createElement("div");
-                folder.id = folder_id_root + cat.replace('.', '_');
-                folder.classList.add("folder");
+        // create category folders in ops_menu
+        for (var i = 0; i < categories.length; i++) {
+            // create folder element
+            var cat = categories[i];
+            var folder = document.createElement("div");
+            folder.id = folder_id_root + cat.replace('.', '_');
+            folder.classList.add("folder");
 
-                // create folder label element
-                var folder_label = document.createElement("div");
-                folder_label.innerHTML = cat;
-                folder_label.classList.add("folder-label");
+            // create folder label element
+            var folder_label = document.createElement("div");
+            folder_label.innerHTML = cat;
+            folder_label.classList.add("folder-label");
 
-                // attach label to folder and folder to menu
-                folder.append(folder_label)
-                ops_menu.append(folder);
-            }
+            // attach label to folder and folder to menu
+            folder.append(folder_label)
+            ops_menu.append(folder);
+        }
 
-            // create operation items in folders of ops_menu
-            for (key in obj) {
-                // create menu item element
-                var newitem = document.createElement("div");
-                newitem.innerHTML = key;
-                newitem.value = key;
-                newitem.classList.add("folder-item");
+        // create operation items in folders of ops_menu
+        for (key in obj) {
+            // create menu item element
+            var newitem = document.createElement("div");
+            newitem.innerHTML = key;
+            newitem.value = key;
+            newitem.classList.add("folder-item");
 
-                // attach to folder element
-                var folder_id = "#" + folder_id_root 
-                                + obj[key].category.replace('.', '_');
-                $(folder_id).append(newitem);
-            }
+            // attach to folder element
+            var folder_id = "#" + folder_id_root 
+                            + obj[key].category.replace('.', '_');
+            $(folder_id).append(newitem);
         }
     });
 }
@@ -909,7 +905,7 @@ function createFileItem(id, img_name) {
     return item;
 }
 
-var images;
+var images; // global, used in several functions, should consider alternative
 function setFolder(folder) {
     var formdata = {
       'folder': folder
@@ -919,38 +915,39 @@ function setFolder(folder) {
         type: 'POST',
         url: '/set-folder',
         async: true,
-        data: formdata,
-        success: function(obj) {
-            images = obj;
-            var file_list = document.getElementById('file-list');
-            file_list.innerHTML = '';
-            for (var i = 0; i < images.length; i++) {
-                var image = images[i];
-                var id = 'file-' + i.toString();
+        data: formdata
+    }).done(function(obj) {
+        images = obj;
+        var file_list = document.getElementById('file-list');
+        file_list.innerHTML = '';
+        for (var i = 0; i < images.length; i++) {
+            var image = images[i];
+            var id = 'file-' + i.toString();
 
-                // rewrite file list
-                var file_item = createFileItem(id, image['filename']);
-                file_list.append(file_item);
+            // rewrite file list
+            var file_item = createFileItem(id, image['filename']);
+            file_list.append(file_item);
 
-                // get thumbnail urls
-                $.ajax({
-                    type: 'POST',
-                    url: '/get-thumbnail',
-                    async: true,
-                    data: {'uri': images[i].uri},
-                    success_data: {
-                        'image': image,
-                        'id': id
-                    },
-                    success: function(thumbnail) {
-                        this.success_data['image'].thumbnail = thumbnail;
-                        var img_el = $('#'+this.success_data['id']).children('img')[0];
-                        $(img_el).attr('src', thumbnail);
-                    }
-                })
-            }
+            // get thumbnail urls
+            $.ajax({
+                type: 'POST',
+                url: '/get-thumbnail',
+                async: true,
+                data: {'uri': images[i].uri},
+                success_data: {
+                    'image': image,
+                    'id': id
+                }
+            }).done(function(thumbnail) {
+                this.success_data['image'].thumbnail = thumbnail;
+                var img_el = $('#' + this.success_data['id']).children('img')[0];
+                $(img_el).attr('src', thumbnail);
+            });
         }
-    });
+    }).fail(function(jq_xhr, text_status, error_thrown) {
+        console.log(jq_xhr);
+        console.log(error_thrown);
+    })
 }
 
 function initOpenSeadragon(id) {
@@ -1024,15 +1021,13 @@ $(document).ready(function() {
         $.ajax({
             type: 'GET',
             url: '/get-config',
-            async: true,
-            success: function(obj) {
-                return obj;
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log(textStatus);
-            }
+            async: true
+        }).done(function(obj) {
+            return obj;
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.log(textStatus);
         })
-    ).then(function(data, textStatus, jqXHR) {
+    ).then(function(data) {
         config = data;
 
         // set folder
