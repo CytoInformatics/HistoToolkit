@@ -1,7 +1,13 @@
-import re, os, json, warnings, importlib
+import re
+import os
+import json
+import warnings
+import importlib
+
 import numpy as np
-from app import app
 from flask import request, render_template, jsonify, url_for, Blueprint
+
+from app import app
 from .tools import io as io
 from .tools import opnet, ops
 

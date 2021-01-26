@@ -1,27 +1,28 @@
-# CompuToolkit
+# HydrogenTK
 
 A graphical user interface for prototyping data and image processing workflows.
 
 ## Installation
-#### Install horsetools
+
 ```
-git clone https://github.com/JimBoonie/PythonHelpers.git
-cd PythonHelpers
-pip install .
+pip install -r requirements.txt
 ```
 
-#### Launch server
+## Launch server
 ```
 cd CompuToolkit
 python run.py
 ```
 
-### To-do
-##### Essentials
+## To-do
+
+### Essentials
+
 * Import functions from external packages automatically
 * Protect against arbitrary code execution in input fields
 
-##### Desirables
+### Desirables
+
 * Change style of invalid param paths
 * Replace outer double quotes with single quotes
 * Fix slow response time when processing images (likely due to base64 encoding)
@@ -39,13 +40,16 @@ python run.py
 * Allow Node constructor to use ordered list for params as input
 * Make output names for nodes optional (option to unpack values if possible?)
 
-### Notes
-* Launch server
+## Notes
+
+### Launch server
+
 ```
 python run.py
 ```
 
-* Run scripts in app/test as __main__:
+### Run scripts in app/test as __main__:
+
 ```
 python -m app.test.test_script
 ```
